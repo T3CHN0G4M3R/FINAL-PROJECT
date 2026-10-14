@@ -134,14 +134,48 @@ public class InteractionSystem : MonoBehaviour
 
         Debug.DrawRay(ray.origin, ray.direction * interactDistance, Color.cyan);
 
+        // 1. First priority: Check if player is aiming directly at or near any object tagged 'TagDoor'
+        RaycastHit[] hits = Physics.SphereCastAll(ray, raycastRadius, interactDistance, interactableLayers, QueryTriggerInteraction.Collide);
+        if (hits != null && hits.Length > 0)
+        {
+            // Find closest valid hit tagged TagDoor
+            float closestDoorDist = float.MaxValue;
+            GameObject bestDoorCandidate = null;
+
+            for (int i = 0; i < hits.Length; i++)
+            {
+                Collider col = hits[i].collider;
+                if (col == null) continue;
+                if (playerTransform != null && (col.transform == playerTransform || col.transform.IsChildOf(playerTransform))) continue;
+                if (heldObject != null && (col.gameObject == heldObject || col.transform.IsChildOf(heldObject.transform))) continue;
+
+                if (col.CompareTag("TagDoor"))
+                {
+                    GameObject doorRoot = GetInteractableRoot(col.gameObject);
+                    if (doorRoot != null && hits[i].distance < closestDoorDist)
+                    {
+                        closestDoorDist = hits[i].distance;
+                        bestDoorCandidate = doorRoot;
+                    }
+                }
+            }
+
+            if (bestDoorCandidate != null)
+            {
+                currentInteractable = bestDoorCandidate;
+                return;
+            }
+        }
+
+        // 2. Secondary check: Standard raycast / spherecast for general interactable objects (Flashlight, pickups, etc.)
         RaycastHit hit;
         bool hitSomething = false;
 
-        if (Physics.SphereCast(ray, raycastRadius, out hit, interactDistance, interactableLayers, QueryTriggerInteraction.Collide))
+        if (Physics.Raycast(ray, out hit, interactDistance, interactableLayers, QueryTriggerInteraction.Collide))
         {
             hitSomething = true;
         }
-        else if (Physics.Raycast(ray, out hit, interactDistance, interactableLayers, QueryTriggerInteraction.Collide))
+        else if (Physics.SphereCast(ray, raycastRadius, out hit, interactDistance, interactableLayers, QueryTriggerInteraction.Collide))
         {
             hitSomething = true;
         }
@@ -175,14 +209,47 @@ public class InteractionSystem : MonoBehaviour
     {
         if (hitObj == null) return null;
 
-        if (hitObj.CompareTag("InteractiveObject"))
+        // 1. TagDoor check: If object or its hierarchy has TagDoor tag, find the associated InteractiveDoor
+        if (hitObj.CompareTag("TagDoor"))
         {
-            return hitObj;
+            InteractiveDoor doorOnHit = hitObj.GetComponent<InteractiveDoor>();
+            if (doorOnHit != null) return doorOnHit.gameObject;
+
+            InteractiveDoor doorInParent = hitObj.GetComponentInParent<InteractiveDoor>();
+            if (doorInParent != null) return doorInParent.gameObject;
+
+            InteractiveDoor doorInChildren = hitObj.GetComponentInChildren<InteractiveDoor>(true);
+            if (doorInChildren != null) return doorInChildren.gameObject;
+
+            if (hitObj.transform.parent != null)
+            {
+                InteractiveDoor doorInSibling = hitObj.transform.parent.GetComponentInChildren<InteractiveDoor>(true);
+                if (doorInSibling != null) return doorInSibling.gameObject;
+            }
         }
 
+        // 2. Direct InteractiveDoor component check
+        InteractiveDoor directDoor = hitObj.GetComponentInParent<InteractiveDoor>();
+        if (directDoor != null)
+        {
+            return directDoor.gameObject;
+        }
+
+        // 3. Hierarchy traversal for TagDoor, InteractiveObject, or IInteractable / IUsable
         Transform current = hitObj.transform;
         while (current != null)
         {
+            if (current.CompareTag("TagDoor"))
+            {
+                InteractiveDoor d = current.GetComponentInChildren<InteractiveDoor>(true);
+                if (d != null) return d.gameObject;
+                if (current.parent != null)
+                {
+                    InteractiveDoor sd = current.parent.GetComponentInChildren<InteractiveDoor>(true);
+                    if (sd != null) return sd.gameObject;
+                }
+            }
+
             if (current.CompareTag("InteractiveObject"))
             {
                 return current.gameObject;
@@ -203,14 +270,39 @@ public class InteractionSystem : MonoBehaviour
     private void HandleInput()
     {
         bool fPressed = IsFPressed();
+        bool ePressed = IsEPressed();
         bool rightClickPressed = IsRightClickPressed();
 
-        // [F] Key: Pick up or Drop
+        // [E] Key: Interact with doors and usable world objects
+        if (ePressed)
+        {
+            if (currentInteractable != null)
+            {
+                InteractiveDoor door = currentInteractable.GetComponent<InteractiveDoor>();
+                if (door == null) door = currentInteractable.GetComponentInChildren<InteractiveDoor>();
+
+                if (door != null)
+                {
+                    door.ToggleDoor();
+                }
+                else
+                {
+                    IUsable usable = currentInteractable.GetComponent<IUsable>();
+                    if (usable == null) usable = currentInteractable.GetComponentInChildren<IUsable>();
+                    if (usable != null && currentInteractable.GetComponent<IInteractable>() == null)
+                    {
+                        usable.Use(playerTransform != null ? playerTransform.gameObject : gameObject);
+                    }
+                }
+            }
+        }
+
+        // [F] Key: Pick up or Drop (only for pickup items, never doors)
         if (fPressed)
         {
             if (heldObject != null)
             {
-                if (currentInteractable != null && currentInteractable != heldObject)
+                if (currentInteractable != null && currentInteractable != heldObject && !IsDoor(currentInteractable))
                 {
                     GameObject targetToPick = currentInteractable;
                     DropObject();
@@ -221,7 +313,7 @@ public class InteractionSystem : MonoBehaviour
                     DropObject();
                 }
             }
-            else if (currentInteractable != null)
+            else if (currentInteractable != null && !IsDoor(currentInteractable))
             {
                 PickUpObject(currentInteractable);
             }
@@ -235,6 +327,29 @@ public class InteractionSystem : MonoBehaviour
                 UseObject(heldObject);
             }
         }
+    }
+
+    private bool IsDoor(GameObject obj)
+    {
+        if (obj == null) return false;
+        return obj.GetComponent<InteractiveDoor>() != null || obj.GetComponentInChildren<InteractiveDoor>() != null;
+    }
+
+    private bool IsEPressed()
+    {
+#if ENABLE_INPUT_SYSTEM
+        if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            return true;
+        }
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            return true;
+        }
+#endif
+        return false;
     }
 
     private bool IsFPressed()
@@ -274,6 +389,7 @@ public class InteractionSystem : MonoBehaviour
     public void PickUpObject(GameObject obj)
     {
         if (obj == null) return;
+        if (IsDoor(obj)) return; // Doors can never be picked up or carried
         if (handPoint == null)
         {
             InitializeReferences();
@@ -407,8 +523,19 @@ public class InteractionSystem : MonoBehaviour
         }
         else if (currentInteractable != null)
         {
-            string name = GetItemDisplayName(currentInteractable);
-            promptText.text = $"[F] Tomar {name}";
+            InteractiveDoor door = currentInteractable.GetComponent<InteractiveDoor>();
+            if (door == null) door = currentInteractable.GetComponentInChildren<InteractiveDoor>();
+
+            if (door != null)
+            {
+                string action = door.IsInUse ? "Cerrar" : "Abrir";
+                promptText.text = $"[E] {action} {door.DoorName}";
+            }
+            else
+            {
+                string name = GetItemDisplayName(currentInteractable);
+                promptText.text = $"[F] Tomar {name}";
+            }
         }
         else
         {

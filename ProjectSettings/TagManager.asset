@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - InteractiveObject
+  - TagDoor
   layers:
   - Default
   - TransparentFX
