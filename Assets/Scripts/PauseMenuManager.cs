@@ -54,9 +54,24 @@ public class PauseMenuManager : MonoBehaviour
     [SerializeField] private Slider sensitivityYSlider;
     [SerializeField] private TMP_Text sensitivityYValText;
     [SerializeField] private TMP_Text invertMouseText;
+    [SerializeField] private UnityEngine.UI.Slider mouseSmoothSlider;
+    [SerializeField] private TMPro.TMP_Text mouseSmoothValText;
+
+    private void OnEnable()
+    {
+        GameSettings.Changed -= RefreshSettings;
+        GameSettings.Changed += RefreshSettings;
+        RefreshSettings();
+    }
+
+    private void OnDisable()
+    {
+        GameSettings.Changed -= RefreshSettings;
+        GameSettings.Save();
+    }
 
     [Header("Video Settings Controls")]
-    [SerializeField] private TMP_Text fullscreenText;
+[SerializeField] private TMP_Text fullscreenText;
     [SerializeField] private TMP_Text vsyncText;
     [SerializeField] private GameObject shadowOffLine;
     [SerializeField] private GameObject shadowLowLine;
@@ -204,10 +219,10 @@ public class PauseMenuManager : MonoBehaviour
             mainPauseView.SetActive(true);
 
         if (crosshair != null)
-            crosshair.SetActive(true);
+            crosshair.SetActive(GameSettings.ShowHUD);
 
         // Lock cursor back to first person camera
-        if (playerInputs != null)
+if (playerInputs != null)
         {
             playerInputs.cursorLocked = true;
             playerInputs.cursorInputForLook = true;
@@ -226,8 +241,9 @@ public class PauseMenuManager : MonoBehaviour
 
     public void OpenSettings()
     {
+        RefreshSettings();
         if (mainPauseView != null)
-            mainPauseView.SetActive(false);
+mainPauseView.SetActive(false);
         if (settingsView != null)
             settingsView.SetActive(true);
 
@@ -237,8 +253,9 @@ public class PauseMenuManager : MonoBehaviour
 
     public void CloseSettings()
     {
+        GameSettings.Save();
         if (settingsView != null)
-            settingsView.SetActive(false);
+settingsView.SetActive(false);
         if (mainPauseView != null)
             mainPauseView.SetActive(true);
 
@@ -247,8 +264,9 @@ public class PauseMenuManager : MonoBehaviour
 
     public void ExitToMainMenu()
     {
+        GameSettings.Save();
         PlayClick();
-        IsGamePaused = false;
+IsGamePaused = false;
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -283,77 +301,36 @@ public class PauseMenuManager : MonoBehaviour
         PlayClick();
     }
 
-    public void ShowVideoTab()
-    {
-        if (panelGame) panelGame.SetActive(false);
-        if (panelControls) panelControls.SetActive(false);
-        if (panelVideo) panelVideo.SetActive(true);
-
-        if (lineGame) lineGame.SetActive(false);
-        if (lineControls) lineControls.SetActive(false);
-        if (lineVideo) lineVideo.SetActive(true);
-
-        PlayClick();
-    }
+    public void ShowVideoTab() => ShowGameTab();
 
     // --- Settings Logic & PlayerPrefs ---
 
     private void InitSettingsFromPlayerPrefs()
     {
-        // 1. Game Settings
-        int normalDiff = PlayerPrefs.GetInt("NormalDifficulty", 1);
-        SetDifficulty(normalDiff == 1);
-
-        int showHud = PlayerPrefs.GetInt("ShowHUD", 1);
-        if (showHudText) showHudText.text = showHud == 1 ? "on" : "off";
-
-        int tooltips = PlayerPrefs.GetInt("ToolTips", 1);
-        if (toolTipsText) toolTipsText.text = tooltips == 1 ? "on" : "off";
-
-        float musicVol = PlayerPrefs.GetFloat("MusicVolume", 0.75f);
-        if (musicSlider)
-        {
-            musicSlider.value = musicVol;
-            musicSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
-        }
-
-        // 2. Controls Settings
-        float sensX = PlayerPrefs.GetFloat("XSensitivity", 1f);
-        if (sensitivityXSlider)
-        {
-            sensitivityXSlider.value = sensX;
-            if (sensitivityXValText) sensitivityXValText.text = sensX.ToString("F1");
-            sensitivityXSlider.onValueChanged.AddListener(OnSensitivityXChanged);
-        }
-        if (playerController != null)
-        {
-            playerController.RotationSpeed = sensX;
-        }
-
-        float sensY = PlayerPrefs.GetFloat("YSensitivity", 1f);
-        if (sensitivityYSlider)
-        {
-            sensitivityYSlider.value = sensY;
-            if (sensitivityYValText) sensitivityYValText.text = sensY.ToString("F1");
-            sensitivityYSlider.onValueChanged.AddListener(OnSensitivityYChanged);
-        }
-
-        int inverted = PlayerPrefs.GetInt("Inverted", 0);
-        if (invertMouseText) invertMouseText.text = inverted == 1 ? "on" : "off";
-
-        // 3. Video Settings
-        if (fullscreenText) fullscreenText.text = Screen.fullScreen ? "on" : "off";
-        if (vsyncText) vsyncText.text = QualitySettings.vSyncCount > 0 ? "on" : "off";
-
-        int shadows = PlayerPrefs.GetInt("Shadows", 2);
-        UpdateShadowUI(shadows);
-
-        int textures = PlayerPrefs.GetInt("Textures", 2);
-        UpdateTextureUI(textures);
-
-        int aa = PlayerPrefs.GetInt("AntiAliasing", 4);
-        UpdateAntiAliasingUI(aa);
+        GameSettings.Changed -= RefreshSettings;
+        GameSettings.Changed += RefreshSettings;
+        RefreshSettings();
+        if (musicSlider != null) musicSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
+        if (sensitivityXSlider != null) sensitivityXSlider.onValueChanged.AddListener(OnSensitivityXChanged);
+        if (sensitivityYSlider != null) sensitivityYSlider.onValueChanged.AddListener(OnSensitivityYChanged);
+        if (mouseSmoothSlider != null) mouseSmoothSlider.onValueChanged.AddListener(OnMouseSmoothingChanged);
     }
+
+    public void RefreshSettings()
+    {
+        if (showHudText != null) showHudText.text = GameSettings.ShowHUD ? "on" : "off";
+        if (toolTipsText != null) toolTipsText.text = GameSettings.ToolTips ? "on" : "off";
+        if (invertMouseText != null) invertMouseText.text = GameSettings.InvertMouse ? "on" : "off";
+        if (musicSlider != null) musicSlider.SetValueWithoutNotify(GameSettings.MusicVolume);
+        if (sensitivityXSlider != null) sensitivityXSlider.SetValueWithoutNotify(GameSettings.HorizontalSensitivity);
+        if (sensitivityYSlider != null) sensitivityYSlider.SetValueWithoutNotify(GameSettings.VerticalSensitivity);
+        if (mouseSmoothSlider != null) mouseSmoothSlider.SetValueWithoutNotify(GameSettings.MouseSmoothing);
+        if (sensitivityXValText != null) sensitivityXValText.text = GameSettings.HorizontalSensitivity.ToString("F1");
+        if (sensitivityYValText != null) sensitivityYValText.text = GameSettings.VerticalSensitivity.ToString("F1");
+        if (mouseSmoothValText != null) mouseSmoothValText.text = GameSettings.MouseSmoothing.ToString("F1");
+    }
+
+    public void OnMouseSmoothingChanged(float value) => GameSettings.SetMouseSmoothing(value);
 
     // Game
     public void ToggleNormalDifficulty()
@@ -378,54 +355,25 @@ public class PauseMenuManager : MonoBehaviour
 
     public void ToggleShowHUD()
     {
-        int cur = PlayerPrefs.GetInt("ShowHUD", 1);
-        cur = (cur == 1) ? 0 : 1;
-        PlayerPrefs.SetInt("ShowHUD", cur);
-        if (showHudText) showHudText.text = cur == 1 ? "on" : "off";
+        GameSettings.SetShowHUD(!GameSettings.ShowHUD);
         PlayClick();
     }
 
     public void ToggleToolTips()
     {
-        int cur = PlayerPrefs.GetInt("ToolTips", 1);
-        cur = (cur == 1) ? 0 : 1;
-        PlayerPrefs.SetInt("ToolTips", cur);
-        if (toolTipsText) toolTipsText.text = cur == 1 ? "on" : "off";
+        GameSettings.SetToolTips(!GameSettings.ToolTips);
         PlayClick();
     }
 
-    private void OnMusicVolumeChanged(float val)
-    {
-        PlayerPrefs.SetFloat("MusicVolume", val);
-        if (audioSource != null)
-        {
-            audioSource.volume = val;
-        }
-    }
+    private void OnMusicVolumeChanged(float val) => GameSettings.SetMusicVolume(val);
 
     // Controls
-    public void OnSensitivityXChanged(float val)
-    {
-        PlayerPrefs.SetFloat("XSensitivity", val);
-        if (sensitivityXValText) sensitivityXValText.text = val.ToString("F1");
-        if (playerController != null)
-        {
-            playerController.RotationSpeed = val;
-        }
-    }
-
-    public void OnSensitivityYChanged(float val)
-    {
-        PlayerPrefs.SetFloat("YSensitivity", val);
-        if (sensitivityYValText) sensitivityYValText.text = val.ToString("F1");
-    }
+    public void OnSensitivityXChanged(float val) => GameSettings.SetHorizontalSensitivity(val);
+    public void OnSensitivityYChanged(float val) => GameSettings.SetVerticalSensitivity(val);
 
     public void ToggleInvertMouse()
     {
-        int cur = PlayerPrefs.GetInt("Inverted", 0);
-        cur = (cur == 1) ? 0 : 1;
-        PlayerPrefs.SetInt("Inverted", cur);
-        if (invertMouseText) invertMouseText.text = cur == 1 ? "on" : "off";
+        GameSettings.SetInvertMouse(!GameSettings.InvertMouse);
         PlayClick();
     }
 

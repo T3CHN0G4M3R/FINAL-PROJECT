@@ -46,14 +46,34 @@ public class InteractionSystem : MonoBehaviour
     public GameObject HeldObject => heldObject;
     public GameObject CurrentInteractable => currentInteractable;
 
+    private bool _showPrompts;
+
     private void Awake()
     {
         InitializeReferences();
     }
 
+    private void OnEnable()
+    {
+        GameSettings.Changed -= RefreshPromptSettings;
+        GameSettings.Changed += RefreshPromptSettings;
+        RefreshPromptSettings();
+    }
+
+    private void OnDisable() => GameSettings.Changed -= RefreshPromptSettings;
+
+    private void RefreshPromptSettings()
+    {
+        _showPrompts = GameSettings.ShowHUD && GameSettings.ToolTips;
+        if (promptText != null && !_showPrompts) promptText.text = "";
+    }
+
     private void Start()
     {
         InitializeReferences();
+        GameSettings.Changed -= RefreshPromptSettings;
+        GameSettings.Changed += RefreshPromptSettings;
+        RefreshPromptSettings();
     }
 
     private void InitializeReferences()
@@ -506,9 +526,14 @@ public class InteractionSystem : MonoBehaviour
     private void UpdateUI()
     {
         if (promptText == null) return;
+        if (!_showPrompts || PauseMenuManager.IsGamePaused)
+        {
+            promptText.text = "";
+            return;
+        }
 
         if (heldObject != null)
-        {
+{
             string name = GetItemDisplayName(heldObject);
             bool isUsable = heldObject.GetComponent<IUsable>() != null || heldObject.GetComponentInChildren<IUsable>() != null || heldObject.GetComponentInChildren<Light>() != null;
 

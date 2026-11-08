@@ -60,6 +60,28 @@ namespace StarterAssets
 
 		// cinemachine
 		private float _cinemachineTargetPitch;
+		private float _verticalRotationSpeed = 1f;
+		private float _mouseSmoothing;
+		private bool _invertVertical;
+		private bool _lookSettingsApplied;
+		private Vector2 _filteredMouseVelocity;
+		[Tooltip("Maximum response time at full mouse smoothing, in seconds")]
+		[SerializeField] private float _maximumMouseResponseTime = 0.1f;
+
+		public void ApplyLookSettings(float horizontal, float vertical, float smoothing, bool invertVertical)
+		{
+			RotationSpeed = Mathf.Clamp(horizontal, 0f, 10f);
+			_verticalRotationSpeed = Mathf.Clamp(vertical, 0f, 10f);
+			_mouseSmoothing = Mathf.Clamp01(smoothing);
+			_invertVertical = invertVertical;
+			_lookSettingsApplied = true;
+			_filteredMouseVelocity = Vector2.zero;
+		}
+
+		private void OnApplicationFocus(bool hasFocus)
+		{
+			if (!hasFocus) _filteredMouseVelocity = Vector2.zero;
+		}
 
 		// player
 		private float _speed;
@@ -153,12 +175,14 @@ namespace StarterAssets
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
 
-			// Apply sensitivity from PlayerPrefs if saved
-			if (PlayerPrefs.HasKey("XSensitivity"))
+			// Project adapters inject shared settings before Start. Keep other prefab users compatible.
+			if (!_lookSettingsApplied)
 			{
-				RotationSpeed = PlayerPrefs.GetFloat("XSensitivity");
+				ApplyLookSettings(PlayerPrefs.GetFloat("XSensitivity", RotationSpeed),
+					PlayerPrefs.GetFloat("YSensitivity", RotationSpeed),
+					PlayerPrefs.GetFloat("MouseSmoothing", 0.5f), PlayerPrefs.GetInt("Inverted", 0) != 0);
 			}
-		}
+}
 
 		private void AssignAnimationIDs()
 		{
@@ -227,17 +251,30 @@ namespace StarterAssets
 
 		private void CameraRotation()
 		{
-			if (Time.timeScale == 0f) return;
-
-			// if there is an input
-			if (_input.look.sqrMagnitude >= _threshold)
+			if (Time.timeScale == 0f || !_input.cursorInputForLook)
 			{
-				//Don't multiply mouse input by Time.deltaTime
-				float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-				float invertMultiplier = PlayerPrefs.GetInt("Inverted", 0) == 1 ? -1.0f : 1.0f;
-				
-				_cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier * invertMultiplier;
-				_rotationVelocity = _input.look.x * RotationSpeed * deltaTimeMultiplier;
+				_filteredMouseVelocity = Vector2.zero;
+				return;
+			}
+
+			Vector2 look = _input.look;
+			if (look.sqrMagnitude < _threshold) _filteredMouseVelocity = Vector2.zero;
+			else
+			{
+				bool isMouse = IsCurrentDeviceMouse;
+				float deltaTimeMultiplier = isMouse ? 1.0f : Time.deltaTime;
+				if (isMouse && _mouseSmoothing > 0f && Time.unscaledDeltaTime > 0f)
+				{
+					// Filter velocity rather than frame deltas for consistent response at different frame rates.
+					float responseTime = _mouseSmoothing * _maximumMouseResponseTime;
+					float blend = responseTime > 0f ? 1f - Mathf.Exp(-Time.unscaledDeltaTime / responseTime) : 1f;
+					_filteredMouseVelocity = Vector2.Lerp(_filteredMouseVelocity, look / Time.unscaledDeltaTime, blend);
+					look = _filteredMouseVelocity * Time.unscaledDeltaTime;
+				}
+				else _filteredMouseVelocity = Vector2.zero;
+
+				_cinemachineTargetPitch += look.y * _verticalRotationSpeed * deltaTimeMultiplier * (_invertVertical ? -1f : 1f);
+				_rotationVelocity = look.x * RotationSpeed * deltaTimeMultiplier;
 
 				// clamp our pitch rotation
 				_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);

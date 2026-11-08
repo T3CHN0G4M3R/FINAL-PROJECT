@@ -139,8 +139,9 @@ namespace SlimUI.ModernMenu{
 
 		public void LoadScene(string scene){
 			if(scene != ""){
+				GameSettings.Save();
 				StartCoroutine(LoadAsynchronously(scene));
-			}
+}
 		}
 
 		public void  DisablePlayCampaign(){
@@ -153,18 +154,19 @@ namespace SlimUI.ModernMenu{
 		}
 
 		public void Position1(){
+			GameSettings.Save();
 			CameraObject.SetFloat("Animate",0);
 		}
 
 		void DisablePanels(){
 			PanelControls.SetActive(false);
-			PanelVideo.SetActive(false);
-			PanelGame.SetActive(false);
+			if (PanelVideo != null) PanelVideo.SetActive(false);
+PanelGame.SetActive(false);
 			PanelKeyBindings.SetActive(false);
 
 			lineGame.SetActive(false);
 			lineControls.SetActive(false);
-			lineVideo.SetActive(false);
+			if (lineVideo != null) lineVideo.SetActive(false);
 			lineKeyBindings.SetActive(false);
 
 			PanelMovement.SetActive(false);
@@ -179,18 +181,17 @@ namespace SlimUI.ModernMenu{
 			DisablePanels();
 			PanelGame.SetActive(true);
 			lineGame.SetActive(true);
+			PanelGame.GetComponentInParent<UISettingsManager>().RefreshSettings();
 		}
 
-		public void VideoPanel(){
-			DisablePanels();
-			PanelVideo.SetActive(true);
-			lineVideo.SetActive(true);
-		}
+		// Compatibility for old scene events; Video is no longer a configuration tab.
+		public void VideoPanel() => GamePanel();
 
 		public void ControlsPanel(){
 			DisablePanels();
 			PanelControls.SetActive(true);
 			lineControls.SetActive(true);
+			PanelControls.GetComponentInParent<UISettingsManager>().RefreshSettings();
 		}
 
 		public void KeyBindingsPanel(){
