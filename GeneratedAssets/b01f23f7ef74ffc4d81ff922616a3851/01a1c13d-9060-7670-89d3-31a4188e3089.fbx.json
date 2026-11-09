@@ -1,0 +1,12 @@
+{
+    "asset": "b01f23f7ef74ffc4d81ff922616a3851",
+    "fileName": "01a1c13d-9060-7670-89d3-31a4188e3089.fbx",
+    "prompt": "A realistic human death collapse. Start standing upright, knees buckle, lose balance and collapse backwards onto the ground. End lying flat on the back completely motionless. No recovery, no standing up, no looping. Remain close to the starting position. One-shot animation.",
+    "negativePrompt": "",
+    "model": "uthana-text-to-motion-3",
+    "modelName": "Uthana Text to Motion 3.0",
+    "customSeed": 1204054420,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "isTrimmed": false
+}

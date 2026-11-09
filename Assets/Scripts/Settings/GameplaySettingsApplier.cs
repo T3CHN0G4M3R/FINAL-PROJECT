@@ -34,15 +34,22 @@ public class GameplaySettingsApplier : MonoBehaviour
         RefreshHUD();
     }
 
+    private bool _wasCaptured;
     private void LateUpdate()
     {
-        if (_wasPaused != PauseMenuManager.IsGamePaused) RefreshHUD();
+        bool captured = GameSaveManager.Instance != null && GameSaveManager.Instance.EncounterInProgress;
+        if (_wasPaused != PauseMenuManager.IsGamePaused || _wasCaptured != captured)
+        {
+            _wasCaptured = captured;
+            RefreshHUD();
+        }
     }
 
     public void RefreshHUD()
     {
         _wasPaused = PauseMenuManager.IsGamePaused;
-        if (crosshair != null) crosshair.SetActive(_showHUD && !_wasPaused);
+        bool captured = GameSaveManager.Instance != null && GameSaveManager.Instance.EncounterInProgress;
+        if (crosshair != null) crosshair.SetActive(_showHUD && !_wasPaused && !captured);
     }
 
     private void OnApplicationPause(bool paused)

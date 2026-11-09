@@ -529,7 +529,7 @@ public class InteractionSystem : MonoBehaviour
     private void UpdateUI()
     {
         if (promptText == null) return;
-        if (!_showPrompts || PauseMenuManager.IsGamePaused)
+        if (!_showPrompts || PauseMenuManager.IsGamePaused || PersistenceInputBlocked)
         {
             promptText.text = "";
             return;

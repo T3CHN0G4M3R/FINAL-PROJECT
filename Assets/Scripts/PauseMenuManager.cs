@@ -141,6 +141,7 @@ public class PauseMenuManager : MonoBehaviour
 
     private void Update()
     {
+        if (GameSaveManager.Instance != null && GameSaveManager.Instance.EncounterInProgress) return;
         bool escPressed = false;
 #if ENABLE_INPUT_SYSTEM
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
@@ -179,6 +180,7 @@ public class PauseMenuManager : MonoBehaviour
 
     public void PauseGame()
     {
+        if (GameSaveManager.Instance != null && GameSaveManager.Instance.EncounterInProgress) return;
         IsGamePaused = true;
         Time.timeScale = 0f;
 
@@ -212,6 +214,7 @@ public class PauseMenuManager : MonoBehaviour
 
     public void ResumeGame()
     {
+        if (GameSaveManager.Instance != null && GameSaveManager.Instance.EncounterInProgress) return;
         IsGamePaused = false;
         Time.timeScale = 1f;
 

@@ -311,3 +311,305 @@ OVERWRITE SLOT?               START NEW GAME?
 - Existing save/load tests and ID counts remain intact; no periodic autosave has been added.
 - Existing user saves are preserved or restored; test-generated records are isolated rather than indiscriminately deleted.
 - No temporary verification script, screenshots, stale Done trigger or destructive deferred cleanup remains. Final report distinguishes successful core tests, the prior timeout, and any outstanding manual/build checks.
+
+# Siren Head Main Enemy Amendment
+
+Only this enemy amendment is pending approval for the current request. Preserve completed settings, fades, save/load, and collider work; do not repeat earlier maintenance.
+
+# Project Overview
+- Game Title: Existing FINAL-PROJECT; no branding change.
+- High-Level Concept: Single-player first-person neighborhood exploration with a roaming Siren Head threat. Break line of sight to escape, avoid its last-seen search area, and retry from the level-entry checkpoint after capture.
+- Players: Single player.
+- Inspiration / Reference Games: Siren Head is the requested creature reference; no additional reference game supplied.
+- Tone / Art Direction: Preserve existing horror neighborhood and imported creature appearance; use Skin_1 at imported size as the proposed default.
+- Target Platform: Windows desktop / StandaloneWindows64.
+- Screen Orientation / Resolution: Existing landscape configuration; verify 1920x1080 and smaller window.
+- Render Pipeline: URP PC_RPAsset; Unity 6000.3.8f1.
+
+## Selected Scope and Approach
+User selected **first-person capture**, **scene-entry checkpoint retry**, **random street waypoints**, and **Neighborhood outdoors only**. Add one enemy to Neighborhood, replacing the unused `Enemey` capsule placeholder after verifying references. Do not add enemies to Farm, MainMenu, Dog scenes, imported demo, or recovery scenes. Creature cannot enter houses, open doors, jump, or teleport through obstacles. Outdoor players can be pursued across explicitly included accessible outdoor ground; patrol destinations remain street-based.
+
+Two viable navigation designs were considered: random authored street waypoints on a baked NavMesh (selected) versus an ordered fixed route. Random points produce less predictable horror encounters (MDA tension); fixed routes are easier to learn and test but more predictable. Use a small explicit finite-state machine rather than adding a behavior-tree dependency: this request has few states, and Inspector debugging is clearer. Keep agent-driven movement and compatible supplied Generic animations; do not regenerate or rerig this existing humanoid-shaped biped, or convert its working rig to Humanoid unnecessarily.
+
+# Game Mechanics
+## Core Gameplay Loop
+Explore → avoid or encounter enemy → flee and break sight → enemy investigates last visible position and searches nearby → evade until search ends → enemy resumes street wandering. Capture locks the encounter, plays the supplied Death clip on Siren Head, then reloads the same gameplay scene and restores its entry snapshot. Fair, bounded detection supports player competence (SDT) without omniscient chasing.
+
+### Explicit States
+- **Roam:** Walk toward randomly chosen reachable street waypoints, avoiding immediate repeats when alternatives exist. Detect visible player within range and field of view; proximity alone does not reveal a player through walls.
+- **Chase:** Run and periodically repath toward the player only while sight is confirmed. Update last-known position only on positive sight checks. Reacquiring sight from any non-capture state immediately resumes Chase.
+- **Investigate:** On sustained sight loss, navigate to the recorded last-seen location at walking speed. Never continue tracking an unseen moving player. Bound travel by an Inspector investigation timeout; if the point is unreachable, approach a safe reachable outdoor point without crossing walls and proceed to search.
+- **Search:** Walk between valid local NavMesh points around that fixed last-seen position for `searchDuration` seconds (the requested x). This timer starts when investigation reaches its destination or times out, so local search actually lasts x. End → Roam. Zero search duration skips local search.
+- **Capture:** One-shot terminal encounter state, stopping navigation/perception and disabling player movement/look/interactions/pause/save/load commands until restart or controlled failure recovery.
+
+### Perception and Capture
+Inspector-assigned player root, player sight targets, eye transform, obstacle mask, and navigation area mask. Use range + horizontal FOV + physics occlusion to player head/torso; triggers and enemy/self/held-item colliders must not spuriously obstruct vision. Walls, fences and closed solid doors occlude; verify masks against actual scene layers. Small adjustable sight-loss grace prevents edge flicker, with no hidden target-position updates during loss.
+
+Capture requires distance to the actual player body/collider, appropriate vertical separation, and unobstructed close-range contact/line of sight. Never kill across a wall or floor, and do not rely on an oversized creature collider alone. Adjustable capture distance must be consistent with the agent stopping distance and physical clearance.
+
+### Inspector Configuration
+Expose grouped tooltips and safe value validation:
+- Walking speed (proposed 2 units/s), running speed (6 units/s), acceleration (12 units/s²), angular speed (180 degrees/s), arrival tolerance, agent radius/height/base offset and allowed areas.
+- Sight range (30 units), FOV (100 degrees), perception interval (0.1 s), chase repath interval (0.2 s), sight-loss grace (0.5 s), sight origin/targets and occlusion mask.
+- Search duration x (15 s), search radius (12 units), investigation timeout (15 s), waypoint dwell (0 s), local dwell (1 s), destination sampling distance/attempt budget, stuck timeout (3 s) and retry delay (0.5 s).
+- Capture distance (proposed 1.5 units; tune from physical dimensions), vertical tolerance, Death playback multiplier (1), blend time (0.15 s), post-animation restart delay (0.5 s), capture camera framing/offset and camera blend duration.
+- Locomotion playback multipliers/reference speeds and debug gizmo toggle. Walk/Run are the two locomotion roles; supplied Idle may be used only for stopped/dwell states, plus the requested one-shot Death capture action.
+- Runtime read-only state, last-seen marker, remaining search time and path status for diagnosis.
+All proposed values are initial tuning, not guaranteed final balance. Timers are scaled gameplay time and freeze during ordinary pause; capture cannot be paused. Finish detection uses animation completion, not a fixed 3.5-second wait that ignores playback speed.
+
+## Controls and Input Methods
+Verified Both backend (activeInputHandler = 2), PlayerInput / StarterAssetsInputs, FirstPersonController, and InputSystemUIInputModule. No enemy input component or new controls. Preserve existing bindings. Capture uses explicit gameplay gates and the existing save adapter input-block semantics; restore input ownership safely on errors, not unconditional enable. Do not disable the entire Player GameObject or Animator.
+
+# UI
+No new gameplay HUD or enemy state label. Preserve existing menus and settings. Hide crosshair/prompts during capture with correct ownership; restore according to settings on failure. First-person camera framing keeps the existing player perspective while visibly showing Siren Head's supplied Death action. This is not a paired player-body death animation.
+
+```text
+Gameplay: existing view + HUD
+Capture: locked first-person encounter view, no prompts/pause/save
+Death clip completed → optional Inspector delay → same level / entry checkpoint
+Inspector: [Movement] [Sight] [Patrol/Search] [Capture] [Runtime State] [Gizmos]
+```
+
+# Key Asset & Context
+## Verified State
+- AI Navigation 2.0.10 is installed; no NavMeshSurface, Agent, Obstacle, Link or Modifier was detected in the loaded Neighborhood, and NavMesh triangulation has zero triangles. Existing sole agent type is Humanoid, radius 0.5 / height 2: not automatically appropriate for the creature.
+- Skin_1/2/3 prefabs have valid Generic Avatars and a usable biped skeleton. Skin_1 renderer bounds are approximately 4.1 units tall; determine upright animated body width, feet, pivot and forward direction before fitting clearance (T-pose arm width is not the navigation radius).
+- Walking, Running, idle and Death exact non-preview subclips are named `Take 001`; all 81 bound transform paths match Skin_1. Walk = 1.375 s, Run = 0.792 s, Death = 3.5 s. All currently report non-looping; no animation events. Death animates the creature, not the current Humanoid player.
+- Player uses Man_MeshAvatar and StarterAssetsThirdPerson controller; no death state observed. FirstPersonController follows its animated head. Preserve player controller/Animator rather than forcing a mismatched Generic creature clip onto it.
+- `Enemey` is a childless untagged mesh/capsule at approximately (17.98, 0.94, 8.96), with no AI script. Verify its serialized references before replacement; use a safely sampled street spawn away from the player start.
+- AssetDatabase dependency/dependent inspection confirms original imported Siren assets are shared by all three skins and the demo scene. Create project-owned controller/clip copies and prefab wrapper instead of changing these shared assets globally.
+- `GameplaySaveAdapter.Start` publishes readiness after startup; `Capture`, `Restore` and `BlockInput(bool)` exist. `GameSaveManager.OnSceneReady` currently restores `_visited[scene]` on ordinary entry and autosaves. Blind scene reload would restore a recent save/death state, not the requested entry checkpoint.
+- Save manager exposes Busy, Save, Load and TravelToGameplay. Current schema has no enemy state; do not register creature as a pickup/door or change existing persistent IDs/counts. Enemy resets to authored spawn/Roam on entry/retry/load; exact AI state persistence is outside scope.
+- Temporary `Assets/Editor/SaveSystemVerification.cs` is absent. Current console contains a connection-reset Curl error, not an identified gameplay/compiler failure.
+
+## New Project-Owned Assets
+- `Assets/Characters/SirenHead/SirenHeadEnemy.prefab`: neutral-scale navigation root, supplied Skin_1 visual child with matching Generic Avatar, Animator, fitted agent, sight/capture anchors, and AI script. No conflicting CharacterController or dynamic Rigidbody driving navigation.
+- `Assets/Characters/SirenHead/SirenHeadEnemy.controller` and `Animations/{Walk,Run,Idle,Death}.anim`: validated copies of exact supplied clips. Loop locomotion/idle only; Death one-shot. Disable root motion so the NavMeshAgent exclusively drives locomotion.
+- `Assets/Scripts/Enemies/SirenHeadAI.cs`: bounded finite-state machine, perception, waypoint selection, local search, agent/Animator coupling, and gizmos.
+- `Assets/Scripts/Enemies/PlayerCaptureSequence.cs`: one-shot capture ownership, existing camera framing, animation completion observation, retry coordination and failure cleanup.
+- `Assets/Navigation/NeighborhoodSirenHeadNavMesh.asset`: editor-baked outdoor navigation; scene-owned surface/modifiers and waypoint group. Dedicated creature agent settings in `ProjectSettings/NavMeshAreas.asset` if required after sizing.
+- Optional compatible tests under `Assets/Tests/Enemies/`; no extra package installation.
+
+## Existing Files/Items To Modify
+- `Assets/Scenes/Neighborhood Scene.unity`: one enemy, explicit player/save/pause/camera references, street points, outdoor navigation boundaries and fitted safe spawn; disable/remove placeholder only after reference checks.
+- `Assets/Scripts/Saving/GameSaveManager.cs`: immutable per-current-scene entry snapshot and explicit retry coordinator. Add narrow encounter/transition operation guards; preserve manual saves and existing load/new-run/Exit behavior.
+- `Assets/Scripts/Saving/GameplaySaveAdapter.cs`: expose readiness/block state and entry-retry integration only if necessary; reuse coherent capture/restore semantics without changing ID registration.
+- `Assets/Scripts/PauseMenuManager.cs`: narrow capture gate on pause/resume/save/exit commands; scenes without capture behave unchanged.
+- `Assets/Scripts/InteractionsSystem.cs` and `Assets/Scripts/Settings/GameplaySettingsApplier.cs` only if needed for distinct capture/input/HUD ownership, after reading current files and impact checks. Prefer encounter-owned adapters over broad controller changes.
+- No package source edits, Humanoid conversions, global material changes, build-list changes or new input symbols.
+
+# Implementation Steps
+1. **Recheck targets and impact.** Read this amendment, inspect dependencies/dependents of every existing edit target (AssetDatabase fallback when dedicated tool unavailable), exact road/outdoor geometry/collision, placeholder references, current save/pause/HUD/input/camera wiring and scene readiness. Preserve scene setup. Dependency: approval.
+2. **Validate visual/animation setup first.** Create project-owned clip/controller/prefab assets from the already-rigged source. Verify each clip actually animates at runtime, Walk/Run/Idle looping, Death completion and no root drift. Fit feet/pivot/forward/body clearance using upright animated bounds. Keep supplied Generic rig. Dependency: Step 1.
+3. **Bake outdoor navigation.** Create fitted creature agent type if needed, outdoor-only surface collection/masks/modifiers including roads and accessible outdoor ground while excluding roofs/interiors/terrain shortcuts across fences. Include physical blockers; exclude player/enemy/dynamic held items from bake. Generate no automatic jump links. Validate connected street paths and adequate body/head clearance; do not shrink height just to fit doors. Static street obstacles must affect paths; add local scene-owned navigation obstacles only for confirmed dynamic outdoor blockers, never agent+obstacle on same enemy. Dependency: Steps 1–2.
+4. **Implement AI and couple locomotion.** Add explicit transitions, range/FOV/LOS perception, last-seen memory, random reachable street patrols, bounded investigation/local search, path/stuck recovery and parameter validation. Use complete paths for roaming/search, bounded projection for inaccessible player targets, and check enabled/on-NavMesh/pathPending before navigation APIs. Actual velocity selects idle/moving presentation; state selects Walk versus Run. Frame-rate-independent timers and bounded sampling prevent spin loops. Dependency: Steps 2–3.
+5. **Implement entry checkpoint retry.** Capture a deep immutable entry snapshot after normal fresh-entry or save restoration has fully completed, before enemy activation; on loading a saved game that restored state becomes this scene session's entry checkpoint. Preserve across death reload, do not replace it with the death snapshot. Explicit same-scene retry path validates checkpoint/destination, holds Busy/encounter ownership, bypasses ordinary `_visited` restoration and suppresses retry-entry autosave. Replace current scene's in-memory visited state with a deep copy of the retry checkpoint; preserve other visited scenes, run ID, manual files, existing autosave and settings. Ordinary entries retain prior autosave policy. Clear/rebase entry checkpoint on intentional load/new run/scene change, not on retry. Missing checkpoint/failed restart must report a clear error and restore controllable state rather than overwrite saves or silently load a different scene. Dependency: Step 1; save API impact review.
+6. **Implement first-person capture.** Win a single encounter guard only when gameplay ready/not paused/not restoring/transitioning. Stop agent and enter Capture, clear movement/look inputs, block controller/PlayerInput/interactions/pause/save/load and hide gameplay prompts. Preserve active player Animator and frame the supplied creature action from the player perspective; existing camera must not overwrite capture framing. Disable/freeze only necessary camera-follow ownership temporarily, restoring previous values on abort. Observe confirmed Death state entry and normalized completion including Inspector speed; use bounded diagnostic timeout only as failure recovery, never pretend a missing clip played. After completion/delay call entry retry once. No separate player-body death clip is promised. Dependency: Steps 4–5.
+7. **Wire Neighborhood and tune.** Place one canonical saved enemy instance on the connected streets, bind player/body sight targets and capture coordinator, waypoint group, masks, Animator and save readiness. Replace placeholder safely, verify safe initial separation and no body clipping through fences/cars. Freeze AI/perception/timers on pause, save restoration and transitions; activate after checkpoint registration. Save intended assets only. Dependency: Steps 3–6.
+8. **Verify incrementally.** Compile after each script stage, run focused AI/state/checkpoint tests plus actual Game View animation/capture checks, then Windows development build when available. Avoid prior stalled forced-domain-reload/long combined verification workflow. Isolate test save directory and never delete user saves. Report actual evidence and limitations. Dependency: Steps 2–7.
+
+# Verification & Testing
+- Exactly one visible Siren Head in Neighborhood; Skin_1 material renders in URP, correct feet height/forward axis/scale, no leftover active capsule enemy. Other scenes/imported demos unchanged.
+- Surface and agent type match; nonempty baked NavMesh, valid street paths around houses/cars/fences; no roofs/interiors or fence-crossing shortcuts. No agent/Rigidbody/root-motion conflicts or invalid destination API errors.
+- Far/out-of-FOV player → walking roam. Visible nearby player → Run/Chase. Player behind a wall even nearby → no detection/capture. Test sight at head/torso and held flashlight, triggers, boundaries and vertical separation.
+- Break sight at a corner → last-seen position stays fixed while player moves unseen; bounded Investigate then local Search for x; expiry returns to roaming. Reacquisition from Roam/Investigate/Search immediately chases. Verify x = 0, short and long values; pause freezes elapsed search time.
+- Walk/Run visibly loop over multiple cycles; animation transitions match actual movement and chase state. Death plays once and is not substituted for player animation. Test playback multipliers 0.5/1/2: reload occurs after real animation completion plus configured delay.
+- Unreachable waypoint, blocked path, off-NavMesh target, empty waypoint array and stuck movement recover safely without teleporting, omniscience, infinite sampling or repeated console spam.
+- Capture cannot happen through walls, floor or outside allowed range. Duplicate contact/perception events cause one capture and one reload. Escape/pause/save/load cannot interrupt capture or save the death pose. Failure path recovers input/HUD/camera with settings respected.
+- Entry checkpoint test: enter Neighborhood, then move, open doors and pick up/drop/toggle flashlight, manually save elsewhere, get caught. Retry restores entry player pose, view pitch, entry door/item/held/light state, not death location or newest manual-save position. Other visited state and all manual/autosave files remain intact; no retry autosave overwrite.
+- Load an existing save → wait for readiness → its restored state becomes entry checkpoint for subsequent death. Repeat deaths, intentional loads, menu/new-run visits and direct Neighborhood play without stale checkpoint, service/listener duplication or input/time-scale/cursor corruption.
+- Existing Continue, three manual slots, entry/Exit autosaves, pause, settings, independent look axes, HUD/tooltips, doors and flashlight remain functional; persistent IDs/counts unchanged. Farm works unchanged without enemy.
+- Inspect runtime state/gizmos and actual Game View, not merely asset existence or Animator parameter values. Test 30/60/120 FPS and two window sizes when possible; do not claim standalone/manual checks passed without running them.
+
+# Player Death, Retry Fades and Proximity Chase Amendment
+
+This amendment supersedes only the earlier creature-death playback, death camera behavior, unfaded retry, and sight-only chase trigger. The enemy, outdoor NavMesh, street waypoints, save-safe scene-entry retry and prior maintenance already exist; do not recreate them.
+
+# Project Overview
+- Game Title: Existing FINAL-PROJECT; no branding changes.
+- High-Level Concept: Single-player first-person horror exploration. Siren Head detects visible players or nearby unobstructed players; capture causes the player to collapse, followed by a fade-out, entry-checkpoint reload under black, and fade-in.
+- Players: Single player.
+- Inspiration / Reference Games: Requested Siren Head enemy; retain existing design.
+- Tone / Art Direction: Existing neighborhood horror presentation, Skin_1 URP material and established black UI alpha fade.
+- Target Platform: Windows / StandaloneWindows64.
+- Screen Orientation / Resolution: Existing landscape; verify 1920x1080 and a smaller window when available.
+- Render Pipeline: URP PC_RPAsset, Unity 6000.3.8f1.
+
+## Confirmed Decisions and Approach
+- User selected **Generate player death**: create a compatible non-looping Humanoid death/collapse clip for the existing player. Do not retarget the creature-specific Generic clip or generate a new player mesh/rig. The current player has a valid Humanoid Avatar.
+- User selected **Blocked by walls** proximity awareness: proximity ignores the enemy's viewing direction, but requires a body-level unobstructed physics check. It is not through-wall hearing or automatic capture.
+- Retargeting the existing creature Death was considered: it preserves the original motion but requires compatibility/motion validation and may not represent a human collapse. A supplied player clip offers artistic control but requires an additional asset. The selected generated Humanoid collapse directly expresses player death.
+- For fades, reuse the existing project-owned `UIAlphaFadeEffect`, `UIFadeImage` and material with a small persistent death-retry overlay helper. Compared with using imported SceneTransitioner.LoadScene directly, a project-owned helper can await checkpoint restoration before revealing the level and works when Neighborhood is started directly without a menu manager. Preserve the imported transition manager and intro flow; never run two overlapping full-screen fades.
+- Scope remains Neighborhood outdoors only. Farm player/controller assets and imported reusable controllers stay unchanged.
+
+# Game Mechanics
+## Core Gameplay Loop
+Roam/Patrol → sight OR close-range awareness → Run/Chase → lost sight and left proximity → existing Investigate/Search → Roam. On valid capture: stop enemy → lock player controls/interactions/save/pause → play **player** Death → optional existing post-animation delay → Fade Out → reload same scene under opaque black → restore entry checkpoint → Fade In → release input, save and AI locks.
+
+### Player Death
+- Generate `Player_Death.anim`: a neutral upright humanoid loses balance, collapses to the ground, and stays motionless; one shot, no looping recovery or locomotion. Validate real animation data, positive duration, Humanoid compatibility and believable motion on Man_MeshAvatar before wiring gameplay.
+- Create a project-owned copy of the currently assigned StarterAssetsThirdPerson Animator Controller for Neighborhood. Preserve existing locomotion blend tree, jumps, parameters and events; add terminal `PlayerDeath` state with Inspector-controlled playback multiplier and transition timing. No exit back to locomotion while dead.
+- Play and observe the player's Animator, not `_enemy.Animator`. Siren Head stops moving and uses its compatible Idle pose during capture; it must not enter the creature Death state.
+- Keep player Animator active while controller and PlayerInput are blocked. Disable automatic locomotion writes without disabling the entire Player object. Preserve existing root-motion policy; constrain/validate generated translation so the corpse does not slide through geometry.
+- Adjust capture camera ownership to follow the animated player eye/head during collapse, rather than the current fixed eye position aimed at Siren Head. Preserve the first-person perspective, prevent head clipping/penetration into ground/walls, and use existing camera/head offset where practical. Cache original camera/Animator/input state for failure recovery. Do not invent a separate third-person death cinematic.
+- Completion uses the correct player's state/layer normalized time and transition status at the configured speed. Diagnostic timeouts abort visibly; they must not silently skip missing/incompatible animation or claim successful playback.
+
+### Proximity Chase
+- Add Inspector `Proximity Chase Radius` (proposed initial 8 world units, 0 disables proximity), distinct from sight range (30) and capture distance (1.5). Add clear tooltip and gizmo; clamp invalid/negative values.
+- Evaluate range using enemy body/root and actual player body center with 3D distance so players on another floor are not automatically nearby. Check occlusion from an enemy body-level origin to player body center; the very tall sight origin must not see over a short wall to satisfy proximity.
+- Detection becomes `visible || nearbyUnobstructed`. A player close behind the enemy therefore triggers Chase immediately at the perception cadence, without meeting FOV. Walls/fences/solid closed doors still block; ignore self, player, held-item colliders and triggers consistently with existing sight checks.
+- Update last-known position only while either awareness condition is positively met. Once both are false, existing sight-loss grace and last-seen investigation/search apply. Proximity is not a permanent hidden position tracker.
+- Capture retains its current separate close-contact/vertical/occlusion checks; entering the proximity radius only starts Chase, never death through walls.
+
+### Timing and Ownership
+Expose/retain Inspector death speed, death blend time, post-animation delay, and independent Fade Out / Fade In durations (proposed 1 second each) plus optional black hold (0.2 seconds). UI fades use unscaled time. Ordinary pause still freezes enemy behavior; pause is rejected during death and retry.
+
+# UI
+No new menu or HUD. Use the same screen-filling black Image/material/easing as existing fades. Hide crosshair/prompts for the entire death/retry sequence and restore according to settings only when fade-in finishes.
+
+```text
+Player collapse [HUD/input locked]
+   → visible scene gradually darkens (Fade Out)
+   → fully black [load + restore + optional hold]
+   → restored level gradually appears (Fade In)
+   → normal gameplay resumes
+
+Inspector: Proximity Chase Radius | Player Death Speed | Death Blend
+           Fade Out Seconds | Black Hold Seconds | Fade In Seconds
+```
+
+The overlay must be above every gameplay canvas, remain opaque across unload/load, and block pointer events only while active. Reuse the established alpha effect, not a new URP Volume or shader workaround. Preserve New Game/Dog fades and prevent overlap with an active SceneTransitioner.
+
+# Key Asset & Context
+## Verified Current Context
+- `PlayerCaptureSequence.cs` currently starts and watches `Base Layer.Death` on the creature Animator, freezes camera at capture eye position, and calls RetrySceneEntry after completion. This is the precise behavior to replace.
+- Player has valid Humanoid `Man_MeshAvatar`, using `Assets/Imported/Starter Assets/Runtime/ThirdPersonController/Character/Animations/StarterAssetsThirdPerson.controller`. Inspected states are locomotion blend, InAir, JumpLand and JumpStart; no player Death state exists.
+- Only discovered Death candidates are `Assets/Imported/Siren Head/Animation/Death.fbx` and its project `.anim` copy. Both are Generic (`humanMotion = false`), unsuitable for direct Humanoid playback on the player.
+- `SirenHeadAI.cs` updates memory/chase from CanSeePlayer only. ClearLine already ignores self/player/held-item colliders and triggers. `_captureOrigin` is a body-level anchor suitable for proximity occlusion after verifying placement.
+- `GameSaveManager` already owns immutable entry checkpoint JSON, Busy/EncounterInProgress, RetrySceneEntry and RetryEntryRoutine. Its OnSceneReady retry branch currently releases Busy/input immediately after Restore; this must defer until Fade In completes.
+- `GameplaySaveAdapter` has Ready, Capture, Restore and BlockInput; its early Start initialization blocks input. Preserve capture/restore semantics, stable IDs and autosave suppression.
+- `UIAlphaFadeEffect.cs` supplies AnimateOut(Image), AnimateIn(Image) and Configure(out,in,hold), using black alpha and unscaled time. Assets exist at `Assets/Transitions/UIAlphaFade.asset`, `UIFadeImage.prefab`, `UIFadeMaterial.mat`.
+- The imported SceneTransitioner survives menu launch and supports PlayTransition(Action) but does not await an asynchronous midpoint action. No SceneTransitioner was detected in the directly opened Neighborhood scene. Do not assume a menu singleton exists.
+- Prior final tests passed walking, sight, search, capture and retry/user-save preservation. Temporary enemy verification script/screenshots were removed. Do not recreate stale cleanup hooks or rerun the prior long test indiscriminately.
+
+## Existing Assets to Modify
+- `Assets/Scripts/Enemies/PlayerCaptureSequence.cs`: player Animator playback/completion, corpse-eye camera handling, idle enemy presentation and fade-enabled retry configuration.
+- `Assets/Scripts/Enemies/SirenHeadAI.cs`: proximity radius/body-level awareness, combined detection and last-seen handling; capture stops into Idle instead of retaining moving pose.
+- `Assets/Scripts/Saving/GameSaveManager.cs`: accept/delegate fade-enabled retry, keep encounter/Busy/input ownership until the reveal finishes, explicit restored-ready signaling and failure cleanup.
+- `Assets/Scenes/Neighborhood Scene.unity`: project-owned player controller reference, death clip/state parameters, shared fade asset/Image prefab and timing values, proximity defaults/body origin. Preserve player persistent IDs, enemy spawn, navigation and waypoints.
+- `Assets/Characters/SirenHead/SirenHeadEnemy.prefab`: proximity default/body origin changes if required, without changing imported creature rig, clips or materials.
+- `Assets/Scripts/Saving/GameplaySaveAdapter.cs`, `Assets/Scripts/Settings/GameplaySettingsApplier.cs` only if required for deferred input/HUD release and first-person camera restore; inspect current implementation/impact first. Prefer reuse of existing public APIs.
+
+## New Assets
+- `Assets/Characters/Player/Animations/Player_Death.anim`: generated compatible one-shot Humanoid collapse clip; use actual returned asset path as source of truth.
+- `Assets/Characters/Player/NeighborhoodPlayer.controller`: project-owned controller copy, existing functionality plus PlayerDeath state and speed parameter.
+- `Assets/Scripts/Transitions/DeathRetryTransition.cs`: transient persistent overlay helper using existing Image prefab, material and cloned UIAlphaFadeEffect. Expose alpha/phase for focused verification if appropriate; no redundant global fade singleton.
+- Optional focused tests in compatible existing test infrastructure. Do not install new packages or modify package source for this request.
+
+# Implementation Steps
+1. **Recheck exact references and impact.** Read this amendment; inspect dependencies/dependents for existing edit targets and imported controller source, player mesh/bones/eye/camera setup, pause/save input gates and fade assets. Confirm no pending verification script triggers. Preserve current scene setup. Dependency: user approval of this amendment.
+2. **Generate and validate player Death first.** Use approved Humanoid animation generation for a clear collapse/still end pose. Verify real clip/humanMotion/length/non-looping/events, play on existing player rig, and assess root displacement/head/ground behavior. Stop and report generation/compatibility failure rather than falling back to the creature clip. No rig or mesh regeneration. Dependency: Step 1.
+3. **Create/wire project player controller.** Copy the currently assigned controller, preserve locomotion/jump parameters/state machine, add terminal PlayerDeath state and speed/blend configuration, assign only Neighborhood's scene player. Validate actual pose changes and one-shot completion at 0.5/1/2 speed before changing the capture pipeline. Dependency: Step 2.
+4. **Implement proximity awareness.** Add radius and body-level occlusion to SirenHeadAI, integrate with sight OR awareness condition and last-known memory updates, and document zero-disable behavior. Retain safe pathfinding and capture-distance rules. Configure on scene/prefab as appropriate. Dependency: Step 1.
+5. **Implement restoration-aware persistent retry fades.** Add helper that creates screen-space overlay from existing prefab, clones/configures shared alpha effect, runs Fade Out and holds exact opaque black while coordinator loads/restores the checkpoint, then runs Fade In. Move retry orchestration to a persistent owner before outgoing scene destruction; never run two scene loads or two fades. Keep `_retryPending`/restored readiness distinct from operation completion so OnSceneReady restores state but does not release input/Busy/Encounter prematurely. Release after reveal and dispose cloned effect/material/overlay. Preserve normal entry/load/Exit autosave behavior and save bytes. Dependency: Step 1; existing entry-checkpoint retry API.
+6. **Replace capture playback/camera ownership.** Stop enemy and present Idle, play/watch PlayerDeath on the active player Animator, follow the animated player eye during collapse with validated ground/head clearance, and lock input/pause/interactions/save/HUD throughout. After real clip completion and configured delay, request fade-enabled entry retry once. No creature Death call or watch remains. Cache and restore Animator/camera/input state on pre-reload failure; a failure after reload restores a usable new player and clears opaque overlay/locks with visible status. Dependency: Steps 3–5.
+7. **Wire, save and clean up.** Bind Neighborhood death/controller/fade/image references and timing defaults, proximity body origin/radius, and preserve outdoor enemy/navigation/IDs. Direct Neighborhood play and menu-launched play must both work. Save intended scenes/assets only; remove temporary diagnostics safely after results/screenshots are retrieved. Dependency: Steps 4–6.
+8. **Focused verification.** Compile after each stage; isolate runtime saves in a separate test directory, preserve original user records and evidence. Use actual Game View screenshots/video to assess collapse and partial/opaque/reveal alpha. Avoid forced domain-reload loops and do not claim a Windows build/other FPS/resolutions passed unless performed. Dependency: Steps 2–7.
+
+# Verification & Testing
+- Valid Humanoid player clip is non-looping and visibly collapses/stays still. Player Animator enters PlayerDeath; Siren Head Animator remains Idle and never plays creature Death. Player root stays within physical scene bounds.
+- At death playback multipliers 0.5/1/2, Fade Out begins only after true player clip completion plus configured delay. No fixed wait based on creature clip duration. Normal locomotion/jump/held-item animation still works before capture.
+- Camera stays first person during player collapse, follows animated eye motion, and never clips through head, ground, nearby walls or held item. Verify actual Game View, not just camera coordinates.
+- Fade Out shows visible partial alpha, then exact opaque black. No old/new scene flash, falling corpse frame after reload, or clear frame before restore. Fade In begins only after initialization/checkpoint restoration and runs to exact transparent endpoint; HUD/input/AI/save stay locked until completion.
+- Test direct Neighborhood play with no menu transition manager, menu-launched gameplay with an existing manager, repeated deaths, zero/short/long fades and black hold, missing clip/effect/Image reference, missing level, failed restore and disabled helper. No duplicate overlays, stuck black screen, orphan material/effect, permanently disabled input or parallel scene load.
+- Proximity radius: inside threshold behind enemy and outside FOV → Chase; outside threshold and outside FOV → no detection; inside threshold behind solid wall/fence/closed door or sufficiently separated vertically → no proximity detection. Zero disables only proximity, not normal sight.
+- Both awareness conditions lost → fixed last-seen memory → existing investigate/search timer → Roam. Reacquire by sight or proximity → Chase. Close proximity never bypasses separate wall/contact/vertical capture checks.
+- Scene-entry retry restores player pose/pitch/world/held-light state, not death pose or latest manual-save location. Manual/autosave bytes and other visited-scene snapshots remain intact; no retry-entry autosave. Existing 443 Neighborhood persistent IDs unchanged.
+- Existing main menu/Dog fades, pause, settings, save/load, ordinary entry/Exit autosaves, navigation and Farm remain unchanged. No imported controller/package edits or new input backend/defines.
+- Final report distinguishes verified tests from outstanding manual/standalone checks; temporary test scripts, screenshots and deferred cleanup triggers are absent after safe cleanup.
+
+# Camera-Based Scenery Activation Amendment
+
+Only this amendment is pending approval for the current optimization request. Preserve earlier work. The user selected **Visual objects only (recommended)**: activate/deactivate audited scenery visuals, not gameplay objects or entire houses. This does not authorize true asset streaming or changes to enemy behavior.
+
+# Project Overview
+- Game Title: Existing FINAL-PROJECT; no branding changes.
+- High-Level Concept: Existing first-person horror neighborhood exploration with Siren Head. Reduce active decorative scene objects outside the gameplay camera's view while retaining physical world continuity and off-screen enemy simulation.
+- Players: Single player.
+- Inspiration / Reference Games: Existing Siren Head reference; no additional design changes.
+- Tone / Art Direction: Preserve existing horror scenery, materials, lighting and shadows.
+- Target Platform: Windows / StandaloneWindows64.
+- Screen Orientation / Resolution: Existing landscape configuration; preserve camera FOV, near/far clipping, and UI scaling.
+- Render Pipeline: URP PC_RPAsset, Unity 6000.3.8f1.
+
+## Recovery State and Selected Approach
+- Native camera frustum culling already works. No custom visibility controller, registry or camera attachment was found after reconnection. No optimization implementation is complete; previous renderer-bound counts were inspection results, not measured performance gains.
+- Current loaded Neighborhood scene is dirty. Do not reload, revert, or automatically save unrelated pending changes. Inspect and preserve those edits; obtain confirmation if an intended scene save would also commit unrelated work.
+- `Neighborhood` and `NeighborhoodBoundaryFences` are currently inactive; preserve their authored/current inactive state. `NewNeighborhood` and `Neighborhood Vegetation` are active.
+- `NewNeighborhood`: 29,647 renderers; preliminary audit found 21,692 active untagged MeshRenderer/MeshFilter-only leaf candidates. All 21,692 cast shadows. Candidates are not yet proven safe against ancestor logic or serialized references.
+- `Neighborhood Vegetation`: 412 similar leaves, all shadowcasting and under LODGroups. Exclude vegetation from initial activation ownership to avoid fighting LOD selection or billboard transitions.
+- Enemy and player visual children also superficially qualify as mesh-only leaves. Therefore never use a project-wide component-only filter; use explicit scenery roots and protected ancestor/reference checks.
+- Existing QualitySettings shadow distance reads 40, but effective URP shadow settings must be checked independently before relying on that value.
+- Alternatives considered: full decorative-chunk deactivation reduces controller overhead but has fewer safe targets; async level streaming can reduce resident memory but requires a larger save/navigation-aware restructuring. User chose visual-only activation. It preserves the horror dynamics and fairness (MDA/SDT): turning away does not remove walls, stop the threat, or erase world state.
+- Scope: Neighborhood only, initially audited visual leaves under `NewNeighborhood`. No Farm/menu/Dog edits, packages, importer changes, build settings, input changes, or duplicated shadow-proxy meshes.
+
+# Game Mechanics
+## Core Gameplay Loop
+Keep existing explore, interact, evade, capture, retry and save/load flow unchanged. The manager tracks camera visibility and activates visual-only scenery before it can enter view; it deactivates distant, definitely irrelevant visuals after a short grace period. Collision and enemy perception continue independently of camera direction.
+
+This is **activation control**, not actual loading/unloading: meshes, textures and scene references remain resident. Native frustum culling already avoids most off-screen color rendering, so extra activation overhead may outweigh benefits. Measure before retaining the feature; never promise FPS or memory improvements without evidence.
+
+## Controls and Input Methods
+Preserve Both backend, event-driven PlayerInput/StarterAssetsInputs, CinemachineBrain and the capture camera's temporary ownership. Add no new player controls. Inspect the final actual Camera pose/projection each frame, including death FOV changes, rather than virtual-camera settings. The manager must run after current camera movement and before rendering.
+
+# UI
+No visible menus, HUD elements or new toggles. Inspector-only enable switch, camera/root assignments, safety distances, grace time and read-only counts:
+
+```text
+Scenery Visibility
+  Camera: Main Camera (1)
+  Registry: NeighborhoodSceneryVisibility
+  Nearby safety radius / bounds padding / off-screen grace
+  Enabled | registered | active | deactivated | shadow-protected
+```
+
+Existing HUD, pause/save dialogs and retry fade remain untouched.
+
+# Key Asset & Context
+## New project-owned assets
+- `Assets/Scripts/Optimization/CameraSceneryVisibility.cs`: one scene-owned activation manager, cached registrations and spatial-cell bounds, no per-object Update components.
+- `Assets/Scripts/Optimization/SceneryVisibilityRegistry.cs`: serializable GameObject/MeshRenderer entries, immutable initial bounds/cell membership and validation metadata. No dependency from StarterAssets or package assemblies to this code.
+- `Assets/Optimization/NeighborhoodSceneryVisibility.asset`: scene-independent metadata only if suitable; scene object references must live in the scene component/scene-owned registry, not a persistent ScriptableObject asset. Prefer a scene-owned serialized registry to avoid invalid scene references.
+- `Assets/Editor/Optimization/SceneryVisibilityAudit.cs`: explicitly invoked targeted audit/registration and validation; no auto-run cleanup/import hooks, no blanket scene edits or prefab modification.
+- Optional tests under `Assets/Tests/Optimization/` using compatible existing test infrastructure. No new packages solely for testing.
+
+## Existing asset to modify
+- `Assets/Scenes/Neighborhood Scene.unity`: add one optimization owner outside controlled visual roots, explicitly assign `Main Camera (1)` and audited visual entries. Do not reparent scenery, alter mesh bounds, transform scales, tags/layers, colliders, static flags, materials or light settings. Preserve currently inactive roots.
+
+## Protected context (read, do not modify by default)
+- `Assets/Scripts/Enemies/SirenHeadAI.cs`: range/FOV/proximity and collider-based line-of-sight, NavMeshAgent and Animator must remain active off-screen.
+- `Assets/Scripts/Enemies/PlayerCaptureSequence.cs`: moves the actual camera in LateUpdate and changes FOV; preserve player collapse, clearance checks, retry ownership and all references.
+- `Assets/Scripts/Saving/GameplaySaveAdapter.cs`: explicitly registered persistent IDs, world capture/restore and player input gates; preserve registrations and world states.
+- `Assets/Scripts/Saving/PersistentSaveId.cs`, `GameSaveManager.cs`, `Assets/Scripts/InteractiveDoor.cs`, `Assets/Scripts/InteractionsSystem.cs`, sky/weather and navigation components: inspect references and runtime object discovery before registration.
+- `Assets/Settings/PC_RPAsset.asset`, `PC_Renderer.asset`, realtime lights and cameras: inspect effective shadows, reflection/secondary camera use and batching; no global configuration changes.
+- Dedicated dependency tool is not available in the current tool set. Use read-only AssetDatabase.GetDependencies and dependent/serialized-reference inspection as fallback before implementation edits. Earlier checks show AI used by the enemy prefab and Neighborhood; capture by Neighborhood; save adapter by Farm and Neighborhood. Do not expand these scripts' edit scope.
+
+# Implementation Steps
+1. **Recheck current scene and edit impact.** Dependency: approval of this amended plan. Preserve dirty scene/user changes; snapshot current object activeSelf states and all intended registrations. Inspect pipeline/renderer dependencies, realtime shadow distance/cascades, lights, auxiliary cameras/reflections, static batching, and referenced visual objects. Verify no prior implementation appeared after reconnect. Do not repeat earlier completed maintenance.
+2. **Audit eligible scenery explicitly.** Dependency: Step 1. Restrict to currently active `NewNeighborhood` visual leaves with Transform, MeshFilter and MeshRenderer only, no children, untagged, no missing components, no LODGroup/Animator/Rigidbody/particle/terrain ownership, no pickup/door/persistent-ID or other gameplay-sensitive ancestor. Review ancestors' scripts, serialized incoming references to each candidate GameObject/Transform/Renderer, and runtime name/tag/component discovery that may depend on active visuals. Protect referenced or uncertain entries rather than guessing. Exclude all player/enemy/held-item/navigation/sky/UI/light/camera roots and inactive root branches. Produce counts and rejection reasons before assigning entries.
+3. **Build a cached spatial registry.** Dependency: Step 2. Serialize scene references on one scene-owned owner; build coarse spatial cells from initial world bounds without reparenting. Use aggregate cell bounds that fully enclose assigned meshes, conservative treatment of large/spanning meshes, and separate always-active exclusions. Cache membership once; no full hierarchy searches, LINQ, bounds rebuilding or allocations per frame. Keep meshes with runtime movement or uncertain static ownership outside this registry.
+4. **Implement conservative visibility and shadow safety.** Dependency: Steps 1–3. Calculate the actual camera's planes using reusable arrays after camera/capture updates. Test expanded cell bounds; keep nearby visual geometry active with a safety radius, keep frustum-intersecting cells active immediately, and deactivate only after off-screen grace. All preliminary candidates cast shadows, so off-screen does not imply irrelevant: build a conservative shadow-receiver volume from the camera region up to the effective URP shadow distance. For directional lights extend it toward the light across the finite registered scene bounds; conservative AABB sweeps are acceptable even if they retain extra scenery. For shadowed point/spot lights retain potential casters within their influence when they can affect that receiver region. Keep unsupported/mixed/baked configurations or uncertain casters active; preserve baked lighting/reflection/probe contributions and do not alter shadowCastingMode. If auxiliary/reflection camera visibility cannot be accounted for safely, preserve relevant entries or fall back to original activation rather than remove their contribution.
+5. **Implement activation ownership and failure recovery.** Dependency: Step 4. Change activeSelf only on registered visual leaves, never parent houses/colliders/scripts. Record only objects deactivated by this manager; disabling the feature or losing its camera/registry restores those objects, never originally inactive/external-disabled objects. Restore entries that are reparented, moved, gain components or otherwise become unsafe; invalidate/refit conservatively rather than toggle gameplay objects. Manager remains outside its controlled hierarchy. Use immediate activation for cells that enter view, stagger only safe off-screen deactivation with a bounded per-frame budget, and use a grace interval to limit churn. Update before the camera renders, even while paused and during capture; honor changed FOV, camera teleports/save restoration and scene reloads. No writes to game-save active state, persistent IDs, enemy readiness or input locks. Reset cleanly on scene unload and repeated/no-domain-reload play.
+6. **Wire and validate locally.** Dependency: Steps 3–5. Attach the manager/registry to Neighborhood only; leave the camera's existing components and lens values unchanged. Verify runtime leaf activation, solid walls/floors/doors staying physically present, off-screen shadows, and transitions. If batching or rapid-turn activation generates hitches, narrow the audited set, coarsen conservative grouping, or disable the system rather than introducing unsafe culling. Save only intentional edits after handling existing dirty-scene state.
+7. **Benchmark and finalize.** Dependency: Step 6. Compare feature off/on in equivalent camera paths with matching baseline active states. Measure main-thread controller/activation cost, CPU/GPU frame times, spikes and allocations with available profiling tools; active-object reduction alone is not success. Use a Windows development player if available; Editor results are not a standalone guarantee. Retain enabled behavior only when it provides a measured benefit without gameplay/visual regressions; otherwise keep it disabled and report the outcome. Remove temporary diagnostics safely; leave the audit tool explicit/manual, with no deferred cleanup.
+
+# Verification & Testing
+- Registry contains only audited scenery visuals. No player/enemy/door/pickup/collider/LOD/sky/navigation/UI/camera component or sensitive referenced child is controlled. Existing inactive roots remain inactive when toggling or disabling the manager.
+- Look away/return, spin camera quickly, move toward large buildings and cross cell boundaries: visible meshes are active before rendering, with no missing wall/floor views or persistent flicker. Test near plane, partial bounds, wide death FOV and camera teleport after save/load/retry.
+- Off-screen walls still block player motion, enemy sight/proximity/capture and interaction raycasts. Enemy continues roam/chase/investigate/search while off-screen; no attack through walls and no paused/off-screen AI reset.
+- Off-screen shadowcasters that influence the visible street remain active. Compare feature off/on shadows at representative low/high sun angles and local lights; LOD trees, sky, baked lighting and reflection effects remain unchanged. Unsupported cases fail conservatively.
+- Pause/resume, capture/player death, full retry fade, scene-entry checkpoint restore, manual saves/Continue/Load, held flashlight and door states remain functional. Persistent IDs/counts and user save bytes are not altered by visibility state.
+- Missing/disabled camera, disabled manager, invalid registry entries, destroyed/reparented/moved candidate and repeated scene reload recover without exceptions or reviving originally/external-disabled objects. Disabling restores only manager-owned changes.
+- No runtime full-scene scans or steady-state allocations. Activation/deactivation churn and static-batching effects are profiled during rapid turns; record median/high-percentile frames and spikes, not only average FPS.
+- Report registered/active/deactivated/shadow-protected counts and rejection reasons alongside actual timings. Explicitly state assets stay resident, native frustum culling was already active, and whether the extra system improves performance. Do not claim build/manual/profile checks passed if not executed.
+

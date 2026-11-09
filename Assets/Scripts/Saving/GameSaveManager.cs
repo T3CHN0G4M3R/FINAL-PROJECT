@@ -42,6 +42,7 @@ public sealed class GameSaveManager : MonoBehaviour
     {
         GameplaySaveAdapter.SceneReady -= OnSceneReady;
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        if (_retryTransition != null) _retryTransition.Dispose();
         if (Instance == this) Instance = null;
     }
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -49,6 +50,8 @@ public sealed class GameSaveManager : MonoBehaviour
         if (scene.name == "MainMenu")
         {
             _adapter = null;
+            _entryCheckpointJson = null; _entryScene = null;
+            _retryPending = false; EncounterInProgress = false;
             Time.timeScale = 1f;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -64,7 +67,17 @@ public sealed class GameSaveManager : MonoBehaviour
             string error = adapter.ValidateObjects();
             if (error != null) throw new InvalidOperationException(error);
             bool loading = _pending != null;
-            if (loading)
+            if (_retryPending)
+            {
+                if (!HasEntryCheckpoint(adapter.ScenePath)) throw new InvalidOperationException("Retry loaded the wrong level");
+                var checkpoint = JsonUtility.FromJson<SavedSceneState>(_entryCheckpointJson);
+                adapter.Restore(checkpoint);
+                _visited[adapter.ScenePath] = JsonUtility.FromJson<SavedSceneState>(_entryCheckpointJson);
+                _retryPending = false;
+                _retryRestored = true;
+                Report("Entry checkpoint restored; revealing level");
+            }
+            else if (loading)
             {
                 var state = _pending.scenes.FirstOrDefault(s => s.path == adapter.ScenePath);
                 if (_pending.currentScene != adapter.ScenePath || state == null) throw new InvalidOperationException("Wrong scene loaded");
@@ -73,6 +86,8 @@ public sealed class GameSaveManager : MonoBehaviour
                 _visited.Clear();
                 foreach (var visited in _pending.scenes) _visited.Add(visited.path, visited);
                 _pending = null;
+                _entryScene = adapter.ScenePath;
+                _entryCheckpointJson = JsonUtility.ToJson(adapter.Capture());
                 Busy = false;
                 Report("Game loaded");
                 var complete = _loadCompletion; _loadCompletion = null;
@@ -82,13 +97,16 @@ public sealed class GameSaveManager : MonoBehaviour
             else
             {
                 if (_visited.TryGetValue(adapter.ScenePath, out var previous)) adapter.Restore(previous);
+                _entryScene = adapter.ScenePath;
+                _entryCheckpointJson = JsonUtility.ToJson(adapter.Capture());
                 adapter.BlockInput(false);
                 Save(0, out _);
             }
         }
         catch (Exception e)
         {
-            if (_pending != null) FailLoad(e.Message);
+            if (_retryPending) { _retryError = e.Message; _retryPending = false; Report("Retry restore failed: " + e.Message); }
+            else if (_pending != null) FailLoad(e.Message);
             else { adapter.BlockInput(false); Report("Save unavailable: " + e.Message); }
         }
     }
@@ -167,6 +185,94 @@ public sealed class GameSaveManager : MonoBehaviour
         catch (Exception e) { error = e.Message; Time.timeScale = 0f; return false; }
         finally { Busy = false; }
     }
+    private string _entryCheckpointJson;
+    private string _entryScene;
+    private bool _retryPending;
+    private bool _retryRestored;
+    private string _retryError;
+    private DeathRetryTransition _retryTransition;
+    public bool EncounterInProgress { get; private set; }
+    public bool HasEntryCheckpoint(string scenePath) => _entryScene == scenePath && !string.IsNullOrEmpty(_entryCheckpointJson);
+
+    public bool BeginEncounter(string scenePath)
+    {
+        if (Busy || EncounterInProgress || _adapter == null || !_adapter.Ready || !HasEntryCheckpoint(scenePath)) return false;
+        EncounterInProgress = true;
+        Busy = true;
+        return true;
+    }
+    public void CancelEncounter()
+    {
+        if (_retryPending) return;
+        EncounterInProgress = false;
+        Busy = false;
+        Changed?.Invoke();
+    }
+    public bool RetrySceneEntry(out string error) => RetrySceneEntry(null, null, 0, 0, 0, out error);
+
+    public bool RetrySceneEntry(UIAlphaFadeEffect effect, UnityEngine.UI.Image imagePrefab,
+        float fadeOut, float fadeIn, float blackHold, out string error)
+    {
+        if (!EncounterInProgress || _retryPending || _retryTransition != null || _adapter == null || !HasEntryCheckpoint(_adapter.ScenePath))
+        { error = "No current scene-entry checkpoint is available"; return false; }
+        if (PixeLadder.EasyTransition.SceneTransitioner.Instance != null && PixeLadder.EasyTransition.SceneTransitioner.Instance.IsTransitioning)
+        { error = "Another scene transition is already running"; return false; }
+        if (!Application.CanStreamedLevelBeLoaded(_entryScene)) { error = "The current level is missing or disabled"; return false; }
+        if (effect != null && (imagePrefab == null || effect.transitionMaterial == null))
+        { error = "Death retry fade is missing its Image prefab or material"; return false; }
+        var checkpoint = JsonUtility.FromJson<SavedSceneState>(_entryCheckpointJson);
+        error = _adapter.ValidateObjects(checkpoint);
+        if (error != null) return false;
+        if (effect != null)
+        {
+            var overlay = new GameObject("DeathRetryTransition");
+            _retryTransition = overlay.AddComponent<DeathRetryTransition>();
+            try { _retryTransition.Initialize(effect, imagePrefab, fadeOut, fadeIn, blackHold); }
+            catch (Exception e)
+            {
+                _retryTransition.Dispose(); _retryTransition = null;
+                error = "Could not initialize death fade: " + e.Message; return false;
+            }
+        }
+        _retryPending = true; _retryRestored = false; _retryError = null;
+        StartCoroutine(RetryEntryRoutine(_entryScene));
+        return true;
+    }
+    private IEnumerator RetryEntryRoutine(string path)
+    {
+        bool hasFade = _retryTransition != null;
+        if (hasFade) yield return _retryTransition.FadeOut();
+        string failure = hasFade && (_retryTransition == null || !_retryTransition.IsUsable) ? "Death fade was interrupted" : null;
+        AsyncOperation operation = null;
+        if (failure == null)
+        {
+            try { Time.timeScale = 1f; operation = SceneManager.LoadSceneAsync(path); }
+            catch (Exception e) { failure = e.Message; }
+            if (operation != null)
+            {
+                while (!operation.isDone) yield return null;
+                float deadline = Time.realtimeSinceStartup + 15f;
+                while (_retryPending && !_retryRestored && Time.realtimeSinceStartup < deadline) yield return null;
+                if (!_retryRestored) failure = _retryError ?? "Level checkpoint did not become ready";
+            }
+            else failure = failure ?? "Could not reload the current level";
+        }
+        if (failure == null && hasFade)
+        {
+            if (_retryTransition == null || !_retryTransition.IsUsable) failure = "Death fade was interrupted before reveal";
+            else
+            {
+                yield return _retryTransition.FadeIn();
+                if (_retryTransition == null || !_retryTransition.IsUsable) failure = "Death fade was interrupted during reveal";
+            }
+        }
+        if (_retryTransition != null) _retryTransition.Dispose();
+        _retryTransition = null;
+        _retryPending = false; EncounterInProgress = false; Busy = false;
+        if (_adapter != null) _adapter.BlockInput(false);
+        Report(failure == null ? "Level restarted at entry checkpoint" : "Retry failed: " + failure);
+    }
+
     // Any future gameplay travel must use this boundary to capture before unloading.
     public bool TravelToGameplay(string path, out string error)
     {
