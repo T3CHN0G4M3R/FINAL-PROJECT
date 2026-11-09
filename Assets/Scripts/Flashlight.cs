@@ -182,6 +182,12 @@ public class Flashlight : InteractableObject, IUsable
         Toggle();
     }
 
+    public void RestoreSavedState(bool state)
+    {
+        isOn = state;
+        if (flashlightLight != null) flashlightLight.enabled = state;
+    }
+
     public void Toggle()
     {
         SetState(!isOn);

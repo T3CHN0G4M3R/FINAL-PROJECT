@@ -157,7 +157,11 @@ public class PauseMenuManager : MonoBehaviour
         {
             if (IsGamePaused)
             {
-                if (settingsView != null && settingsView.activeSelf)
+                if (saveSlotPanel != null && saveSlotPanel.IsOpen)
+                {
+                    saveSlotPanel.CancelOrBack();
+                }
+                else if (settingsView != null && settingsView.activeSelf)
                 {
                     CloseSettings();
                 }
@@ -262,15 +266,57 @@ settingsView.SetActive(false);
         PlayClick();
     }
 
+    [Header("Save Game")]
+    [SerializeField] private SaveSlotPanel saveSlotPanel;
+    [SerializeField] private TMPro.TMP_Text saveStatus;
+
+    public void OpenSaveGame()
+    {
+        if (GameSaveManager.Instance == null || GameSaveManager.Instance.Busy || saveSlotPanel == null) return;
+        if (mainPauseView != null) mainPauseView.SetActive(false);
+        saveSlotPanel.ShowSlots(true, SaveManualSlot, CloseSaveGame);
+        PlayClick();
+    }
+
+    private void SaveManualSlot(int slot)
+    {
+        bool success = GameSaveManager.Instance.Save(slot, out string error);
+        if (saveStatus != null) saveStatus.text = success ? "Game saved to slot " + slot : "Save failed: " + error;
+        saveSlotPanel.ShowSlots(true, SaveManualSlot, CloseSaveGame);
+    }
+
+    private void CloseSaveGame()
+    {
+        if (saveSlotPanel != null) saveSlotPanel.Close();
+        if (mainPauseView != null) mainPauseView.SetActive(true);
+    }
+
     public void ExitToMainMenu()
     {
-        GameSettings.Save();
-        PlayClick();
-IsGamePaused = false;
-        Time.timeScale = 1f;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        SceneManager.LoadScene("MainMenu");
+        if (GameSaveManager.Instance == null)
+        {
+            GameSettings.Save();
+            IsGamePaused = false;
+            Time.timeScale = 1f;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("MainMenu");
+            return;
+        }
+        if (GameSaveManager.Instance.Busy) return;
+        if (GameSaveManager.Instance.ExitToMenu(true, out string error)) { IsGamePaused = false; return; }
+        if (saveStatus != null) saveStatus.text = "Exit save failed: " + error;
+        if (saveSlotPanel != null)
+        {
+            if (mainPauseView != null) mainPauseView.SetActive(false);
+            GameSaveManager.Instance.Report("Exit save failed: " + error);
+            saveSlotPanel.ShowConfirmation("Could not save before Exit", "Retry", ExitToMainMenu, "Cancel", CloseSaveGame,
+                "Exit without saving", () =>
+                {
+                    if (GameSaveManager.Instance.ExitToMenu(false, out string exitError)) IsGamePaused = false;
+                    else GameSaveManager.Instance.Report("Exit failed: " + exitError);
+                });
+        }
     }
 
     // --- Tab Navigation ---

@@ -9,14 +9,38 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 9b9f6ba2ae8de7c4fa4ab8318f085c18
   - enabled: 1
-    path: Assets/Scenes/TestScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/Dog1.unity
+    guid: bca731bfadd348541ba08ba36f526667
   - enabled: 1
-    path: Assets/Scenes/FarmScene.unity
-    guid: ccdb868149a3473478ee1a5778a05d3a
+    path: Assets/Scenes/Dog2.unity
+    guid: e78835dc15121aa4a9afde7ad942abdf
+  - enabled: 1
+    path: Assets/Scenes/Dog3.unity
+    guid: aa5482714981ec849b46a1dbad26b4d9
+  - enabled: 1
+    path: Assets/Scenes/Dog4.unity
+    guid: f7527415403fcd04cb60e7acf89e9e95
+  - enabled: 1
+    path: Assets/Scenes/Dog5.unity
+    guid: 9d7d01340d59dcc4689b1bf106e860b2
+  - enabled: 1
+    path: Assets/Scenes/Dog6.unity
+    guid: 20884b0d4a85402439896b22b26f7d07
+  - enabled: 1
+    path: Assets/Scenes/Dog7.unity
+    guid: 4e0eb791cb151314d92b58986e043cd1
+  - enabled: 1
+    path: Assets/Scenes/Dog8.unity
+    guid: 80e7e50bc422d8146869fe0590299654
   - enabled: 1
     path: Assets/Scenes/Neighborhood Scene.unity
     guid: 3fb2459a2761aca48bb417f01bcb31be
+  - enabled: 1
+    path: Assets/Scenes/FarmScene.unity
+    guid: ccdb868149a3473478ee1a5778a05d3a
+  - enabled: 0
+    path: Assets/Scenes/TestScene.unity
+    guid: 99c9720ab356a0642a771bea13969a05
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

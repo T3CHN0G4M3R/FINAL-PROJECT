@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 725e0e1fa8b8b4c4ab82cba0879440b2
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 192794
+  packageName: Siren Head
+  packageVersion: 1.0
+  assetPath: Assets/Siren Head/Siren Head Animator Controller.controller
+  uploadId: 426672

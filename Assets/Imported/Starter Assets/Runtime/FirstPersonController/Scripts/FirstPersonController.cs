@@ -78,6 +78,29 @@ namespace StarterAssets
 			_filteredMouseVelocity = Vector2.zero;
 		}
 
+		public float SavedViewPitch => _cinemachineTargetPitch;
+
+		public void RestoreSavedPose(Vector3 position, float yaw, float pitch)
+		{
+			if (_controller == null) _controller = GetComponent<CharacterController>();
+			if (_input == null) _input = GetComponent<StarterAssetsInputs>();
+			bool wasEnabled = _controller != null && _controller.enabled;
+			if (_controller != null) _controller.enabled = false;
+			transform.SetPositionAndRotation(position, Quaternion.Euler(0f, yaw, 0f));
+			_cinemachineTargetPitch = Mathf.Clamp(pitch, BottomClamp, TopClamp);
+			_speed = _verticalVelocity = _rotationVelocity = _animationBlend = 0f;
+			_filteredMouseVelocity = Vector2.zero;
+			_airborneTimer = _stepDistanceCounter = 0f;
+			if (_input != null) { _input.move = Vector2.zero; _input.look = Vector2.zero; _input.jump = false; _input.sprint = false; }
+			if (CinemachineCameraTarget != null)
+			{
+				CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch, yaw, 0f);
+				if (_headBone != null) CinemachineCameraTarget.transform.position = _headBone.position + transform.TransformDirection(CameraOffset);
+			}
+			if (_controller != null) _controller.enabled = wasEnabled;
+			Physics.SyncTransforms();
+		}
+
 		private void OnApplicationFocus(bool hasFocus)
 		{
 			if (!hasFocus) _filteredMouseVelocity = Vector2.zero;

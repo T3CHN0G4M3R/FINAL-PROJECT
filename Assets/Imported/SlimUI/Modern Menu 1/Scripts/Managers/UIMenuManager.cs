@@ -137,11 +137,24 @@ namespace SlimUI.ModernMenu{
 			mainMenu.SetActive(true);
 		}
 
-		public void LoadScene(string scene){
-			if(scene != ""){
-				GameSettings.Save();
-				StartCoroutine(LoadAsynchronously(scene));
-}
+		private bool _isLoading;
+
+		public void LoadScene(string scene)
+		{
+		    if (_isLoading) return;
+		    if (string.IsNullOrWhiteSpace(scene) || !Application.CanStreamedLevelBeLoaded(scene))
+		    {
+		        Debug.LogWarning("Requested scene is missing or disabled: " + scene, this);
+		        return;
+		    }
+		    if (mainCanvas == null || loadingMenu == null || loadingBar == null || (waitForInput && loadPromptText == null))
+		    {
+		        Debug.LogWarning("Loading screen references are incomplete.", this);
+		        return;
+		    }
+		    GameSettings.Save();
+		    _isLoading = true;
+		    StartCoroutine(LoadAsynchronously(scene));
 		}
 
 		public void  DisablePlayCampaign(){
@@ -264,7 +277,20 @@ PanelGame.SetActive(false);
 
 		// Load Bar synching animation
 		IEnumerator LoadAsynchronously(string sceneName){ // scene name is just the name of the current scene being loaded
-			AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
+			AsyncOperation operation = null;
+			try
+			{
+			    operation = SceneManager.LoadSceneAsync(sceneName);
+			}
+			catch (System.Exception exception)
+			{
+			    Debug.LogWarning("Could not load scene " + sceneName + ": " + exception.Message, this);
+			}
+			if (operation == null)
+			{
+			    _isLoading = false;
+			    yield break;
+			}
 			operation.allowSceneActivation = false;
 			mainCanvas.SetActive(false);
 			loadingMenu.SetActive(true);

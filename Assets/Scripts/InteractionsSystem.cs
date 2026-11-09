@@ -287,8 +287,11 @@ public class InteractionSystem : MonoBehaviour
         return null;
     }
 
+    public bool PersistenceInputBlocked { get; set; }
+
     private void HandleInput()
     {
+        if (PauseMenuManager.IsGamePaused || PersistenceInputBlocked) return;
         bool fPressed = IsFPressed();
         bool ePressed = IsEPressed();
         bool rightClickPressed = IsRightClickPressed();

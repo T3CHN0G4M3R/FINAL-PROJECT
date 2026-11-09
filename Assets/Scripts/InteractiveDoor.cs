@@ -105,6 +105,12 @@ public class InteractiveDoor : MonoBehaviour, IUsable
         return false;
     }
 
+    public void RestoreSavedState(bool open)
+    {
+        isOpen = open;
+        transform.localRotation = isOpen ? openLocalRot : closedLocalRot;
+    }
+
     public void ToggleDoor()
     {
         isOpen = !isOpen;
