@@ -5,117 +5,140 @@ using UnityEngine.SceneManagement;
 [DisallowMultipleComponent]
 public class NewGameSceneSequence : MonoBehaviour
 {
-    [Header("Easy Transition")]
-    [SerializeField] private PixeLadder.EasyTransition.SceneTransitioner _transitioner;
+    [Header("Intro Fade")]
     [SerializeField] private PixeLadder.EasyTransition.TransitionEffect _fadeEffect;
+    [SerializeField] private UnityEngine.UI.Image _fadeImagePrefab;
     [SerializeField, Min(0f)] private float _fadeOutSeconds = 1f;
     [SerializeField, Min(0f)] private float _fadeInSeconds = 1f;
     [SerializeField, Min(0f)] private float _blackHoldSeconds = 0.2f;
-
-    [Header("Intro Timing")]
-    [Tooltip("Time each Dog scene stays fully visible AFTER fade-in, before the next fade-out. Uses real-time seconds.")]
-    [SerializeField, Min(0f)] private float _dogSceneDurationSeconds = 3f;
-
-    [Header("Scene Order")]
-    [Tooltip("Scene names or full build scene paths, in playback order.")]
-    [SerializeField] private string[] _dogScenes =
-    {
-        "Assets/Scenes/Dog1.unity", "Assets/Scenes/Dog2.unity",
-        "Assets/Scenes/Dog3.unity", "Assets/Scenes/Dog4.unity",
-        "Assets/Scenes/Dog5.unity", "Assets/Scenes/Dog6.unity",
-        "Assets/Scenes/Dog7.unity", "Assets/Scenes/Dog8.unity"
-    };
+    [Header("Scenes")]
+    [SerializeField] private string _introScene = "Assets/Scenes/VideoIntro.unity";
     [SerializeField] private string _gameplayScene = "Assets/Scenes/Neighborhood Scene.unity";
-
-    private PixeLadder.EasyTransition.TransitionEffect _runtimeFade;
+    [SerializeField, Min(1f)] private float _readinessTimeout = 30f;
+    private DeathRetryTransition _overlay;
+    private GameplaySaveAdapter _readyAdapter;
+    private string _failure;
     public bool IsRunning { get; private set; }
+    public static bool IntroActive { get; private set; }
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatic() => IntroActive = false;
 
-    // Wired to New Game in MainMenu; this root survives only for the intro.
     public void BeginNewGame()
     {
-        if (IsRunning) return;
-        if (PixeLadder.EasyTransition.SceneTransitioner.Instance != null)
-            _transitioner = PixeLadder.EasyTransition.SceneTransitioner.Instance;
-
-        if (_transitioner == null || !_transitioner.isActiveAndEnabled || !(_fadeEffect is UIAlphaFadeEffect) || _fadeEffect.transitionMaterial == null)
-        {
-            Debug.LogWarning("New Game requires an active Easy Transition manager and a UI Alpha Fade with a material.", this);
-            return;
-        }
-        if (_transitioner.IsTransitioning) return;
-        if (_dogScenes == null || _dogScenes.Length == 0 || !CanLoad(_gameplayScene)) return;
-        foreach (string scene in _dogScenes)
-            if (!CanLoad(scene)) return;
-
+        if (!Validate()) return;
         if (GameSaveManager.Instance == null || !GameSaveManager.Instance.BeginFreshRun(out _)) return;
         GameSettings.Save();
+        StartIntro(false);
+    }
+    public static void BeginDirectIntro(UIAlphaFadeEffect effect, UnityEngine.UI.Image image)
+    {
+        if (IntroActive) return;
+        var root = new GameObject("Direct Video Intro Sequence");
+        var sequence = root.AddComponent<NewGameSceneSequence>();
+        sequence._fadeEffect = effect;
+        sequence._fadeImagePrefab = image;
+        if (!sequence.Validate()) { Destroy(root); return; }
+        sequence.StartIntro(true);
+    }
+    private bool Validate()
+    {
+        if (IsRunning || IntroActive) return false;
+        var transitioner = PixeLadder.EasyTransition.SceneTransitioner.Instance;
+        if (transitioner != null && transitioner.IsTransitioning) return false;
+        if (!(_fadeEffect is UIAlphaFadeEffect) || _fadeEffect.transitionMaterial == null || _fadeImagePrefab == null)
+        { Debug.LogError("Intro requires the UI fade effect, material and Image prefab.", this); return false; }
+        if (!Application.CanStreamedLevelBeLoaded(_introScene) || !Application.CanStreamedLevelBeLoaded(_gameplayScene))
+        { Debug.LogError("VideoIntro or Neighborhood is missing from the build scene list.", this); return false; }
+        return GameSaveManager.Instance != null && !GameSaveManager.Instance.Busy;
+    }
+    private void StartIntro(bool direct)
+    {
         IsRunning = true;
+        IntroActive = true;
         DontDestroyOnLoad(gameObject);
-        _runtimeFade = Instantiate(_fadeEffect);
-        ((UIAlphaFadeEffect)_runtimeFade).Configure(_fadeOutSeconds, _fadeInSeconds, _blackHoldSeconds);
-        StartCoroutine(PlaySequence());
+        GameSaveManager.Instance.BeginIntroTransition();
+        GameplaySaveAdapter.SceneReady += OnGameplayReady;
+        var root = new GameObject("Intro Fade Overlay");
+        _overlay = root.AddComponent<DeathRetryTransition>();
+        _overlay.Initialize((UIAlphaFadeEffect)_fadeEffect, _fadeImagePrefab, _fadeOutSeconds, _fadeInSeconds, _blackHoldSeconds);
+        StartCoroutine(PlaySequence(direct));
     }
-
-    private bool CanLoad(string scene)
+    private void OnGameplayReady(GameplaySaveAdapter adapter)
     {
-        if (!string.IsNullOrWhiteSpace(scene) && Application.CanStreamedLevelBeLoaded(scene)) return true;
-        Debug.LogError($"New Game scene '{scene}' is missing or disabled in the active build scene list.", this);
-        return false;
+        if (adapter.ScenePath == _gameplayScene) { _readyAdapter = adapter; adapter.BlockInput(true); }
     }
-
-    private IEnumerator PlaySequence()
+    private IEnumerator Load(string path)
     {
-        foreach (string scene in _dogScenes)
+        AsyncOperation op = null;
+        try { op = SceneManager.LoadSceneAsync(path); }
+        catch (System.Exception e) { _failure = e.Message; }
+        if (op == null) { _failure = _failure ?? "Scene loading could not start."; yield break; }
+        yield return op;
+    }
+    private IEnumerator PlaySequence(bool direct)
+    {
+        Time.timeScale = 1f;
+        if (direct)
         {
-            _transitioner.LoadScene(scene, _runtimeFade);
-            while (_transitioner != null && _transitioner.IsTransitioning) yield return null;
-            if (_transitioner == null || !IsActiveScene(scene))
-            {
-                FinishSequence();
-                yield break;
-            }
-
-            float visibleUntil = Time.realtimeSinceStartup + Mathf.Max(0f, _dogSceneDurationSeconds);
-            while (Time.realtimeSinceStartup < visibleUntil)
-            {
-                if (_transitioner == null || !_transitioner.isActiveAndEnabled || !IsActiveScene(scene))
-                {
-                    FinishSequence();
-                    yield break;
-                }
-                yield return null;
-            }
+            // Zero-length blackening hides preparation without consuming the opening.
+            var image = _overlay.GetComponentInChildren<UnityEngine.UI.Image>();
+            if (image != null) image.color = Color.black;
         }
-
-        if (_transitioner == null || !_transitioner.isActiveAndEnabled)
+        else
         {
-            FinishSequence();
-            yield break;
+            yield return _overlay.FadeOut();
+            yield return Load(_introScene);
         }
-        _transitioner.LoadScene(_gameplayScene, _runtimeFade);
-        while (_transitioner != null && _transitioner.IsTransitioning) yield return null;
-        if (IsActiveScene(_gameplayScene))
+        float deadline = Time.realtimeSinceStartup + _readinessTimeout;
+        while (_failure == null && (VideoIntroController.Instance == null || !VideoIntroController.Instance.Ready) && Time.realtimeSinceStartup < deadline)
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            if (VideoIntroController.Instance != null && VideoIntroController.Instance.Error != null) _failure = VideoIntroController.Instance.Error;
+            yield return null;
         }
-        FinishSequence();
+        var video = VideoIntroController.Instance;
+        if (_failure == null && (video == null || !video.Ready)) _failure = "Video did not become ready.";
+        if (_failure != null) { yield return Recover(); yield break; }
+        yield return _overlay.FadeIn();
+        video.PlayVideo();
+        // Hold the first frame during the reveal, then play the complete clip with audio.
+        while (video != null && !video.Completed && video.Error == null && SceneManager.GetActiveScene().path == _introScene) yield return null;
+        if (video == null || !video.Completed) { _failure = video != null ? video.Error : "Video playback was interrupted."; yield return Recover(); yield break; }
+        yield return _overlay.FadeOut();
+        yield return Load(_gameplayScene);
+        deadline = Time.realtimeSinceStartup + _readinessTimeout;
+        while (_failure == null && _readyAdapter == null && Time.realtimeSinceStartup < deadline) yield return null;
+        if (_readyAdapter == null || !GameSaveManager.Instance.HasEntryCheckpoint(_gameplayScene))
+            _failure = _failure ?? "Gameplay initialization failed.";
+        if (_failure != null) { yield return Recover(); yield break; }
+        yield return _overlay.FadeIn();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        Finish();
     }
-
-    private static bool IsActiveScene(string scene)
+    private IEnumerator Recover()
     {
-        Scene active = SceneManager.GetActiveScene();
-        return active.path == scene || active.name == scene;
+        Debug.LogError("Intro failed: " + _failure, this);
+        GameSaveManager.Instance.Report("Intro failed: " + _failure);
+        if (Application.CanStreamedLevelBeLoaded("MainMenu")) yield return Load("MainMenu");
+        if (_overlay != null) yield return _overlay.FadeIn();
+        Cursor.lockState = CursorLockMode.None; Cursor.visible = true;
+        Finish();
     }
-
-    private void FinishSequence()
+    private void Finish()
     {
-        IsRunning = false;
+        if (GameSaveManager.Instance != null) GameSaveManager.Instance.EndIntroTransition();
+        IsRunning = false; IntroActive = false;
+        if (_overlay != null) _overlay.Dispose();
         Destroy(gameObject);
     }
-
     private void OnDestroy()
     {
-        if (_runtimeFade != null) Destroy(_runtimeFade);
+        GameplaySaveAdapter.SceneReady -= OnGameplayReady;
+        if (IsRunning)
+        {
+            IntroActive = false;
+            if (GameSaveManager.Instance != null) GameSaveManager.Instance.EndIntroTransition();
+        }
+        if (_overlay != null) _overlay.Dispose();
     }
 }

@@ -57,6 +57,15 @@ public sealed class GameSaveManager : MonoBehaviour
             Cursor.visible = true;
         }
     }
+    public bool IntroTransitionInProgress { get; private set; }
+    public void BeginIntroTransition() { IntroTransitionInProgress = true; Busy = true; }
+    public void EndIntroTransition()
+    {
+        IntroTransitionInProgress = false;
+        Busy = false;
+        if (_adapter != null) _adapter.BlockInput(false);
+        Changed?.Invoke();
+    }
     public void Report(string status) { Status = status; Changed?.Invoke(); }
     private void OnSceneReady(GameplaySaveAdapter adapter)
     {
@@ -99,8 +108,10 @@ public sealed class GameSaveManager : MonoBehaviour
                 if (_visited.TryGetValue(adapter.ScenePath, out var previous)) adapter.Restore(previous);
                 _entryScene = adapter.ScenePath;
                 _entryCheckpointJson = JsonUtility.ToJson(adapter.Capture());
-                adapter.BlockInput(false);
+                if (!IntroTransitionInProgress) adapter.BlockInput(false);
+                if (IntroTransitionInProgress) Busy = false;
                 Save(0, out _);
+                if (IntroTransitionInProgress) { Busy = true; adapter.BlockInput(true); }
             }
         }
         catch (Exception e)

@@ -1070,17 +1070,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
---- !u!114 &247761840 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2541666409870520583, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-  m_PrefabInstance: {fileID: 247761839}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77b525215f79aa7468598d85400f45f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &269799997
 GameObject:
   m_ObjectHideFlags: 0
@@ -4470,22 +4459,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbc7946ef268b2e41828001346aeb1a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NewGameSceneSequence
-  _transitioner: {fileID: 247761840}
   _fadeEffect: {fileID: 11400000, guid: 1097a28e540a9b3419106892e20f72d1, type: 2}
+  _fadeImagePrefab: {fileID: 2175856970961285118, guid: c116f2243760eb449bb4383d68f5c5ea, type: 3}
   _fadeOutSeconds: 1
   _fadeInSeconds: 1
   _blackHoldSeconds: 0.2
-  _dogSceneDurationSeconds: 3
-  _dogScenes:
-  - Assets/Scenes/Dog1.unity
-  - Assets/Scenes/Dog2.unity
-  - Assets/Scenes/Dog3.unity
-  - Assets/Scenes/Dog4.unity
-  - Assets/Scenes/Dog5.unity
-  - Assets/Scenes/Dog6.unity
-  - Assets/Scenes/Dog7.unity
-  - Assets/Scenes/Dog8.unity
+  _introScene: Assets/Scenes/VideoIntro.unity
   _gameplayScene: Assets/Scenes/Neighborhood Scene.unity
+  _readinessTimeout: 30
 --- !u!4 &1962285579
 Transform:
   m_ObjectHideFlags: 0

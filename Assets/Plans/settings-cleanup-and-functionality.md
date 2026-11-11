@@ -613,3 +613,61 @@ Existing HUD, pause/save dialogs and retry fade remain untouched.
 - No runtime full-scene scans or steady-state allocations. Activation/deactivation churn and static-batching effects are profiled during rapid turns; record median/high-percentile frames and spikes, not only average FPS.
 - Report registered/active/deactivated/shadow-protected counts and rejection reasons alongside actual timings. Explicitly state assets stay resident, native frustum culling was already active, and whether the extra system improves performance. Do not claim build/manual/profile checks passed if not executed.
 
+# Canvas Video Intro Amendment
+
+Only this amendment is pending approval for this request. Supersede the former Dog1–Dog8 intro with MainMenu → VideoIntro → Neighborhood Scene. Preserve save confirmation, manual saves, gameplay, enemy, settings and retry transitions.
+
+# Project Overview
+- Game Title: Existing FINAL-PROJECT; unchanged.
+- High-Level Concept: Existing first-person horror exploration, introduced by the supplied cinematic video.
+- Players: Single player.
+- Inspiration / Reference Games: Existing project; no new design references.
+- Tone / Art Direction: Preserve horror presentation; full-screen video with black letterboxing.
+- Target Platform: Windows StandaloneWindows64.
+- Screen Orientation / Resolution: Landscape, existing reference UI scaling; preserve 16:9 video aspect at other window sizes.
+- Render Pipeline: Existing URP PC_RPAsset, Unity 6000.3.8f1.
+
+# Game Mechanics
+## Core Gameplay Loop
+New Game (existing autosave replacement confirmation when applicable) → fade out menu → load VideoIntro under black → fade in cinematic → play to actual completion → fade out final frame → load Neighborhood Scene under black → fade in gameplay. No timed Dog holds and no automatic skip control.
+## Controls and Input Methods
+Preserve Both backend and InputSystemUIInputModule. Retain SaveMenuController.NewGame and its single BeginNewGame call, click audio and duplicate-operation gates. Continue/Load bypass the cinematic as before. No new input bindings.
+
+# UI
+```text
+VideoIntro Canvas (screen-space overlay)
+  Black Background — full viewport
+  VideoDisplay RawImage — centered, aspect-fit 1280 × 720
+Persistent fade overlay — above video and gameplay UI
+```
+Use the existing Canvas and VideoPlayer, not a second redundant player. Enable audio from the clip's one embedded track; do not classify it as menu music or modify global audio settings. No new menus or skip button.
+
+# Key Asset & Context
+- Assets/Scenes/VideoIntro.unity is currently dirty: live scene contains Main Camera, Directional Light, EventSystem with InputSystemUIInputModule, and Canvas with CanvasScaler/GraphicRaycaster/VideoPlayer. Preserve these unsaved edits; do not reload/revert them. If saving also commits unrelated user work, obtain confirmation first.
+- Current VideoPlayer has the supplied clip, RenderTexture mode, no assigned target texture, non-looping playback, playOnAwake enabled, Direct audio. Canvas uses ScreenSpaceCamera. It lacks a RawImage output.
+- Assets/Videos/copy_BEC5D5CE-610A-446F-9006-5634618EE150.mov: 1280×720, approximately 22.592 seconds, one audio track. Preserve source/import settings unless Windows decode testing identifies an incompatibility; report codec issues rather than silently replacing the file.
+- Build list already enables MainMenu, VideoIntro, Neighborhood Scene and FarmScene; TestScene disabled. Dog scenes are no longer included. No build-list change required.
+- Assets/Scripts/NewGameSceneSequence.cs still validates/loads disabled Dog scenes. Modify it to coordinate the new video flow with existing fresh-run/settings behavior.
+- Assets/Scripts/Saving/SaveMenuController.cs already routes NewGame through confirmation to BeginNewGame. Preserve callback/public API; scene changes only if wiring/reference correction is needed.
+- Create Assets/Scripts/VideoIntroController.cs for video preparation, texture assignment, first-frame readiness, completion/error events, final-frame retention and cleanup.
+- Create Assets/Videos/VideoIntro.renderTexture sized 1280×720 for the VideoPlayer and RawImage.
+- Reuse Assets/Transitions/UIAlphaFade.asset, UIFadeImage.prefab and UIFadeMaterial.mat, plus established transition infrastructure. SceneTransitioner.LoadScene does not await asynchronous video preparation or gameplay restoration before revealing; coordinate the midpoint from project-owned code instead of altering imported/package source. Reuse existing restoration-aware overlay patterns where compatible, without modifying death-retry semantics.
+- Dependencies inspected via AssetDatabase.GetDependencies because a dedicated dependency tool is unavailable. Before editing, inspect dependents and serialized references for all affected scenes/scripts/fade assets; do not alter shared assets globally.
+
+# Implementation Steps
+1. Recheck scene ownership, dirty edits, MainMenu button/sequence references, fade and save readiness APIs, dependencies/dependents and current Console. Preserve loaded scene setup. Dependency: approval.
+2. Configure existing VideoIntro Canvas as screen-space overlay, black full-screen background and aspect-fit RawImage. Create/wire RenderTexture and retain supplied VideoPlayer clip. Disable autoplay, looping and automatic audio before readiness; use controlled preparation. Dependency: Step 1.
+3. Implement VideoIntroController with Prepare/prepareCompleted, first decoded frame readiness and loopPointReached/errorReceived subscriptions. Prepare/prime first frame while black; rewind/hold before starting visible playback so the opening is not lost during loading. Coordinate video/audio start with reveal; hold final frame through outgoing fade without replaying audio. Include bounded preparation timeout, duplicate-event guards and cleanup. Dependency: Step 2.
+4. Replace Dog sequence with validated VideoIntro and Neighborhood Scene destinations. Preserve BeginFreshRun boundary after existing confirmation/destination validation, GameSettings.Save, persistence, running guard and cleanup. Persistent project-owned orchestration fades out, loads under black, waits for video readiness, reveals and starts playback, waits for real completion, then fades out and loads gameplay. Await gameplay adapter initialization/restoration before reveal and keep gameplay commands locked until fade-in completes. Ensure entry autosave occurs once with existing policy. Use existing UI alpha effect and Inspector timings (1 second out/in, 0.2 second black hold), cloned per operation. No imported transition-manager source edits. Dependency: Steps 1–3.
+5. Support direct VideoIntro Play Mode with idempotent transition bootstrap, no parallel manager/overlay, and no accidental fresh-run reset when opened directly. Missing clip/decode failure reports a visible error and offers controlled return to MainMenu rather than silently claiming playback or hanging black; destination failure restores usable UI/input. Dependency: Steps 3–4.
+6. Save only intended scenes/assets, verify one New Game callback and no Dog references in active sequence. Preserve save/load/manual records, enemy/retry fades, optimization and settings. Remove temporary diagnostics without deferred cleanup hooks. Dependency: Steps 2–5.
+
+# Verification & Testing
+- New Game reaches VideoIntro (not Dog scenes), displays video inside Canvas with audible embedded track, plays once, then reaches Assets/Scenes/Neighborhood Scene.unity only after completion.
+- Actual Game View shows partial fade alpha, opaque loading midpoint and transparent reveal on both switches; no blank first-frame flash, early gameplay reveal, competing overlays or missing final-frame hold.
+- Full approximately 22.592-second clip is not replaced by a fixed duration timer; opening is not consumed during preparation/load. Aspect preserved at 1920×1080 and smaller/different-aspect window with black bars.
+- Double-click New Game, cancel/confirm autosave replacement, repeated menu visits and direct VideoIntro play: no duplicate load/listener/manager; manual saves and settings remain intact. Continue/Load still go directly to saved gameplay.
+- Missing texture/clip, preparation timeout/decode error, missing destination and interrupted operation recover visibly without stuck black/input locks or false success.
+- Neighborhood input/HUD/cursor/enemy readiness correct after reveal; no repeated entry autosave. Existing death-retry fades unaffected.
+- Compile and inspect Console; test Windows playback/build if available because Editor .mov import does not prove standalone codec support. Distinguish planned versus performed checks. Avoid prior long forced-domain-reload test workflow and preserve user saves.
+

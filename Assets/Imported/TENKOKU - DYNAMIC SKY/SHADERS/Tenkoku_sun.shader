@@ -10,6 +10,39 @@ Properties {
 
 	
 	SubShader {
+ Tags {"RenderPipeline"="UniversalPipeline" "Queue"="Background+1604" "RenderType"="Transparent"}
+ Pass {
+ Tags {"LightMode"="SRPDefaultUnlit"}
+ Blend SrcAlpha One
+ Cull Front
+ ZWrite Off
+ HLSLPROGRAM
+ #pragma vertex vert
+ #pragma fragment frag
+ #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+ CBUFFER_START(UnityPerMaterial)
+ float4 _TintColor, _CoronaColor;
+ float _overBright, _dispStrength;
+ CBUFFER_END
+ float4 _TenkokuSunColor, _Tenkoku_overcastColor;
+ float _Tenkoku_Ambient, _Tenkoku_AmbientGI, _Tenkoku_EclipseFactor;
+ struct Attributes {float4 positionOS:POSITION; float3 normalOS:NORMAL;};
+ struct Varyings {float4 positionCS:SV_POSITION; float3 normalWS:TEXCOORD0; float3 positionWS:TEXCOORD1;};
+ Varyings vert(Attributes v) {Varyings o; float3 p=v.positionOS.xyz+v.normalOS*0.75; o.positionCS=TransformObjectToHClip(p); o.positionWS=TransformObjectToWorld(p); o.normalWS=TransformObjectToWorldNormal(v.normalOS); return o;}
+ half4 frag(Varyings i):SV_Target {
+ float d=dot(normalize(GetWorldSpaceViewDir(i.positionWS)),-normalize(i.normalWS));
+ float size=saturate(1-saturate(_Tenkoku_overcastColor.a*3))*saturate(lerp(-1.0,1.0,_Tenkoku_Ambient));
+ float a=(saturate(lerp(-0.5,1.0,d))*0.05+saturate(lerp(-1.0,1.0,d))*0.05+saturate(lerp(-2.0,1.0,d))*0.1+saturate(lerp(-3.0,1.0,d))*0.1+saturate(lerp(-6.0,1.0,d))*0.1)*size*_Tenkoku_EclipseFactor+saturate(lerp(-2.0,1.0,d))*size;
+ half3 col=lerp(_CoronaColor.rgb,_TintColor.rgb*_TenkokuSunColor.rgb,a);
+ col=lerp(col,col*_TintColor.rgb,_TintColor.a);
+ col+=_overBright*d*saturate(4*_Tenkoku_AmbientGI);
+ a=saturate(a-saturate(_Tenkoku_overcastColor.a*3))*saturate(4*_Tenkoku_Ambient);
+ return half4(max(col,0),a);
+ }
+ ENDHLSL
+ }
+ }
+	SubShader {
 		
 
 		

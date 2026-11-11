@@ -12,6 +12,41 @@ Shader "TENKOKU/moonsphere_shader" {
  _GlowColor ("Glow Color", Color) = (0.5,0.5,0.5,0.5)
  }
  
+ SubShader
+ {
+ Tags {"RenderPipeline"="UniversalPipeline" "Queue"="Background+1605" "RenderType"="Transparent"}
+ Pass
+ {
+ Tags {"LightMode"="SRPDefaultUnlit"}
+ Cull Back
+ ZWrite Off
+ Blend SrcAlpha OneMinusSrcAlpha
+ HLSLPROGRAM
+ #pragma vertex vert
+ #pragma fragment frag
+ #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+ TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
+ CBUFFER_START(UnityPerMaterial)
+ float4 _MainTex_ST, _PrimaryTint, _Color, _AmbientTint;
+ CBUFFER_END
+ float4 Tenkoku_Vec_SunFwd, Tenkoku_MoonLightColor, Tenkoku_MoonHorizColor, _Tenkoku_overcastColor;
+ float Tenkoku_MoonHFac, _Tenkoku_Ambient;
+ struct Attributes { float4 positionOS:POSITION; float3 normalOS:NORMAL; float2 uv:TEXCOORD0; };
+ struct Varyings { float4 positionCS:SV_POSITION; float3 normalWS:TEXCOORD0; float2 uv:TEXCOORD1; };
+ Varyings vert(Attributes v) { Varyings o; o.positionCS=TransformObjectToHClip(v.positionOS.xyz); o.normalWS=TransformObjectToWorldNormal(v.normalOS); o.uv=TRANSFORM_TEX(v.uv,_MainTex); return o; }
+ half4 frag(Varyings i):SV_Target
+ {
+ half3 tex=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb;
+ tex*=clamp(lerp(-0.25,3.0,tex.r),0.0,3.0);
+ half phase=saturate(dot(normalize(i.normalWS),Tenkoku_Vec_SunFwd.xyz)*2.0);
+ half3 horizon=lerp(half3(1,1,1),Tenkoku_MoonHorizColor.rgb*2,Tenkoku_MoonHorizColor.a);
+ half3 tint=_PrimaryTint.rgb*lerp(horizon,half3(1,1,1),max(Tenkoku_MoonHFac,_Tenkoku_Ambient));
+ half3 col=tex*tint*half3(2.5,2.1,2.0)*max(half3(0.5,0.5,0.5),Tenkoku_MoonLightColor.rgb)*lerp(2.0,5.0,_AmbientTint.rgb);
+ return half4(col,phase*saturate(lerp(1.0,-3.0,_Tenkoku_overcastColor.a)));
+ }
+ ENDHLSL
+ }
+ }
  SubShader 
  {
  

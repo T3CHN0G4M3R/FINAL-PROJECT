@@ -17,6 +17,13 @@ public sealed class SirenHeadAI : MonoBehaviour
     [SerializeField] private Transform[] _streetPoints;
     [SerializeField] private InteractionSystem _interactions;
     [SerializeField] private GameplaySaveAdapter _saveAdapter;
+    [Header("Enemy Audio")]
+    [SerializeField] private AudioSource _chaseAudio;
+    [SerializeField] private AudioSource _footstepAudio;
+    [SerializeField] private AudioClip[] _footstepClips;
+    [Min(0.05f)] [SerializeField] private float _walkStepInterval = 0.8f;
+    [Min(0.05f)] [SerializeField] private float _runStepInterval = 0.45f;
+    private float _stepTime;
     [Header("Movement (units / second)")]
     [Min(0)] [SerializeField] private float _walkingSpeed = 2f;
     [Min(0)] [SerializeField] private float _runningSpeed = 6f;
@@ -49,9 +56,25 @@ public sealed class SirenHeadAI : MonoBehaviour
     [Min(0.05f)] [SerializeField] private float _walkPlayback = 1f;
     [Min(0.05f)] [SerializeField] private float _runPlayback = 1f;
     [Min(0)] [SerializeField] private float _animationBlend = 0.15f;
+    [Header("Protected Interiors")]
+    [SerializeField] private BoxCollider[] _protectedInteriors;
+    public bool IsPlayerProtected
+    {
+        get
+        {
+            if (_player == null || _protectedInteriors == null) return false;
+            foreach (var volume in _protectedInteriors)
+            {
+                if (volume == null || !volume.enabled || !volume.gameObject.activeInHierarchy) continue;
+                Vector3 point = volume.transform.InverseTransformPoint(_player.position) - volume.center;
+                Vector3 half = volume.size * 0.5f;
+                if (Mathf.Abs(point.x) < half.x && Mathf.Abs(point.y) < half.y && Mathf.Abs(point.z) < half.z) return true;
+            }
+            return false;
+        }
+    }
     [Header("Debug")]
-    [SerializeField] private bool _drawGizmos = true;
-    public EnemyState State { get; private set; }
+    [SerializeField] private bool _drawGizmos = true;public EnemyState State { get; private set; }
     public Vector3 LastSeenPosition { get; private set; }
     public float SearchTimeRemaining => State == EnemyState.Search ? Mathf.Max(0, _searchDuration - _stateTime) : 0;
     public NavMeshPathStatus PathStatus => _agent != null && _agent.isOnNavMesh ? _agent.pathStatus : NavMeshPathStatus.PathInvalid;
@@ -111,8 +134,13 @@ public sealed class SirenHeadAI : MonoBehaviour
         }
         if (_suspended) { _animator.speed = _savedAnimatorSpeed; _suspended = false; }
         _agent.isStopped = false;
-        float dt = Time.deltaTime;
-        _stateTime += dt;
+        if (IsPlayerProtected)
+        {
+            _visible = false;
+            _lostTime = 0;
+            if (State == EnemyState.Chase || State == EnemyState.Investigate || State == EnemyState.Search) EnterState(EnemyState.Roam);
+        }
+        float dt = Time.deltaTime;_stateTime += dt;
         _perceptionTime -= dt; _repathTime -= dt; _retryTime -= dt;
         if (_perceptionTime <= 0)
         {
@@ -160,9 +188,30 @@ public sealed class SirenHeadAI : MonoBehaviour
         }
         _previousPosition = transform.position;
         AnimateLocomotion();
+        UpdateFootsteps(dt);
+    }
+    private void UpdateFootsteps(float dt)
+    {
+        if (_footstepAudio == null || _footstepClips == null || _footstepClips.Length == 0) return;
+        if (_agent.velocity.sqrMagnitude <= 0.01f) { _stepTime = 0; return; }
+        _stepTime -= dt;
+        if (_stepTime > 0) return;
+        _stepTime = State == EnemyState.Chase ? _runStepInterval : _walkStepInterval;
+        AudioClip clip = _footstepClips[UnityEngine.Random.Range(0, _footstepClips.Length)];
+        if (clip != null) _footstepAudio.PlayOneShot(clip);
     }
     private void EnterState(EnemyState state)
     {
+        if (_chaseAudio != null)
+        {
+            if (state == EnemyState.Chase)
+            {
+                if (!_chaseAudio.isPlaying) _chaseAudio.Play();
+            }
+            else _chaseAudio.Stop();
+        }
+        if (state == EnemyState.Capture && _footstepAudio != null) _footstepAudio.Stop();
+        _stepTime = 0;
         State = state; _stateTime = 0; _stuckTime = 0; _repathTime = 0; _retryTime = 0;
         _destination = false; _arrivalHandled = false;
         if (_agent.enabled && _agent.isOnNavMesh) _agent.ResetPath();
@@ -211,6 +260,7 @@ public sealed class SirenHeadAI : MonoBehaviour
     public bool IsPlayerNearby()
     {
         if (_proximityChaseRadius <= 0 || _playerBody == null || _captureOrigin == null) return false;
+        if (IsPlayerProtected) return false;
         Vector3 origin = _captureOrigin.position;
         Vector3 target = _playerBody.bounds.center;
         return (target - origin).sqrMagnitude <= _proximityChaseRadius * _proximityChaseRadius && ClearLine(origin, target);
@@ -218,6 +268,7 @@ public sealed class SirenHeadAI : MonoBehaviour
 
     public bool CanSeePlayer()
     {
+        if (IsPlayerProtected) return false;
         if (_player == null || _sightOrigin == null) return false;
         Vector3 delta = _player.position - transform.position;
         if (delta.sqrMagnitude > _sightRange * _sightRange) return false;
@@ -244,6 +295,7 @@ public sealed class SirenHeadAI : MonoBehaviour
     public bool CanCapturePlayer()
     {
         if (!GameplayAvailable || _playerBody == null || _captureOrigin == null) return false;
+        if (IsPlayerProtected) return false;
         Vector3 origin = _captureOrigin.position;
         if (Mathf.Abs(_playerBody.bounds.center.y - origin.y) > _captureVerticalTolerance) return false;
         Vector3 closest = _playerBody.ClosestPoint(origin);
@@ -270,6 +322,8 @@ public sealed class SirenHeadAI : MonoBehaviour
     }
     private void OnDisable()
     {
+        if (_chaseAudio != null) _chaseAudio.Stop();
+        if (_footstepAudio != null) _footstepAudio.Stop();
         if (_agent != null && _agent.enabled && _agent.isOnNavMesh) _agent.isStopped = true;
         if (_suspended && _animator != null) { _animator.speed = _savedAnimatorSpeed; _suspended = false; }
     }
