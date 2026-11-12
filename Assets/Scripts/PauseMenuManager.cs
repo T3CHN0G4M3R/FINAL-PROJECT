@@ -11,6 +11,7 @@ using UnityEngine.InputSystem;
 public class PauseMenuManager : MonoBehaviour
 {
     public static bool IsGamePaused { get; private set; }
+    private static PauseMenuManager _activeManager;
 
     [Header("UI Panels")]
     [SerializeField] private GameObject pauseMenuRoot;
@@ -86,6 +87,13 @@ public class PauseMenuManager : MonoBehaviour
 
     private void Awake()
     {
+        if (_activeManager != null && _activeManager != this)
+        {
+            if (pauseMenuRoot != null) pauseMenuRoot.SetActive(false);
+            enabled = false;
+            return;
+        }
+        _activeManager = this;
         AudioListener.volume = 1f;
         AudioListener.pause = false;
 
@@ -178,8 +186,17 @@ public class PauseMenuManager : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        if (_activeManager != this) return;
+        _activeManager = null;
+        IsGamePaused = false;
+        Time.timeScale = 1f;
+    }
+
     public void PauseGame()
     {
+        if (_activeManager != this || IsGamePaused) return;
         if (GameSaveManager.Instance != null && GameSaveManager.Instance.EncounterInProgress) return;
         IsGamePaused = true;
         Time.timeScale = 0f;
@@ -214,6 +231,7 @@ public class PauseMenuManager : MonoBehaviour
 
     public void ResumeGame()
     {
+        if (_activeManager != this || !IsGamePaused) return;
         if (GameSaveManager.Instance != null && GameSaveManager.Instance.EncounterInProgress) return;
         IsGamePaused = false;
         Time.timeScale = 1f;

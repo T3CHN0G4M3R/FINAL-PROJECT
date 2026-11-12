@@ -119,7 +119,7 @@ public sealed class SirenHeadAI : MonoBehaviour
         }
         EnterState(EnemyState.Roam);
     }
-    private bool GameplayAvailable => EncounterReady && _saveAdapter != null && _saveAdapter.Ready &&
+    private bool GameplayAvailable => _saveAdapter != null && _saveAdapter.Ready &&
         !PauseMenuManager.IsGamePaused && Time.timeScale > 0 &&
         (GameSaveManager.Instance == null || !GameSaveManager.Instance.Busy) &&
         (PixeLadder.EasyTransition.SceneTransitioner.Instance == null || !PixeLadder.EasyTransition.SceneTransitioner.Instance.IsTransitioning);
@@ -294,7 +294,7 @@ public sealed class SirenHeadAI : MonoBehaviour
     }
     public bool CanCapturePlayer()
     {
-        if (!GameplayAvailable || _playerBody == null || _captureOrigin == null) return false;
+        if (!EncounterReady || !GameplayAvailable || _playerBody == null || _captureOrigin == null) return false;
         if (IsPlayerProtected) return false;
         Vector3 origin = _captureOrigin.position;
         if (Mathf.Abs(_playerBody.bounds.center.y - origin.y) > _captureVerticalTolerance) return false;

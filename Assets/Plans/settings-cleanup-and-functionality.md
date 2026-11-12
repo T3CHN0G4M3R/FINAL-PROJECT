@@ -671,3 +671,184 @@ Use the existing Canvas and VideoPlayer, not a second redundant player. Enable a
 - Neighborhood input/HUD/cursor/enemy readiness correct after reveal; no repeated entry autosave. Existing death-retry fades unaffected.
 - Compile and inspect Console; test Windows playback/build if available because Editor .mov import does not prove standalone codec support. Distinguish planned versus performed checks. Avoid prior long forced-domain-reload test workflow and preserve user saves.
 
+# Twisting Road — CarScene Amendment
+
+Only this amendment is proposed for the current request. Do not repeat earlier unrelated work.
+
+# Project Overview
+- Game Title: Existing FINAL-PROJECT; unchanged.
+- High-Level Concept: Build a long, visually disorienting but continuously traversable start-to-finish road using the supplied Simple Roads modular assets. Difficulty comes from alternating bends, hairpins and an elevated crossing, not broken geometry or ambiguous mandatory forks.
+- Players: Scene environment only; no vehicle or player controller currently exists in CarScene. Creating driving gameplay is outside this request.
+- Inspiration / Reference Games: No additional reference supplied.
+- Tone / Art Direction: Supplied low-poly road kit; preserve existing scene presentation.
+- Target Platform: Windows StandaloneWindows64.
+- Screen Orientation / Resolution: Preserve existing landscape project configuration.
+- Render Pipeline: Existing URP PC_RPAsset, Unity 6000.3.8f1.
+
+# Game Mechanics
+## Core Gameplay Loop
+User selected the recommended twisting route rather than a branching maze or closed circuit. Construct approximately 1–1.5 km of connected roadway (target 80–110 modules, adjust to measured centerline length), with an entry straight, progressive S-bends, alternating tight and sweeping turns, two or three switchback sequences, a supported overpass crossing an earlier stretch, a final winding section and a distinct finish. Short straight recovery sections separate difficult combinations. This supports MDA challenge and player competence without frustrating dead ends. Completion timing cannot be established until a playable controller exists.
+## Controls and Input Methods
+Preserve Both input backend. No controls, vehicle physics, timers, checkpoint system or input bindings are added.
+
+# UI
+No new menus or HUD. Use scene-owned Start and Finish marker transforms and simple contrasting world-space marker geometry if needed; avoid introducing a UI dependency.
+
+```text
+START → entry straight → S-bends → sweeping loop → hairpins
+                                             ↓
+FINISH ← final winding section ← overpass ← switchbacks
+```
+Layout is illustrative; final coordinates follow actual connector geometry and crossing clearance.
+
+# Key Asset & Context
+- Modify only `Assets/Scenes/CarScene.unity` for the road environment. Live scene is dirty and contains Main Camera, Directional Light and Floor; user explicitly approved preserving and saving these existing edits together with the road.
+- Create scene-owned `TwistedRoad` root with numbered modular instances grouped by section, start/finish anchors and collision additions. Preserve prefab links and imported assets unchanged.
+- Prefer supplied `road straight.prefab`, `road curve.prefab`, `road turn large.prefab`, `road trun small.prefab`, `road ramp straight.prefab`, `road ramp curve.prefab`, `road ramp turn.prefab` and elevated straight/turn prefabs under `Assets/Imported/Simple Roads/Prefabs/`. Use actual spellings.
+- Inspected straight bounds are 8×2×16 with offset center (2,0,0); large turn bounds are 30×2×30 with center (1,0,-1); ramp straight spans 32 horizontally and 10 vertically with center height 4. Bounds are not road endpoint sockets: inspect mesh vertices and sample scene placement before fitting joins.
+- Several prefabs, including both ordinary and elevated straights, have no colliders. Other prefabs have colliders whose road/guard coverage still needs verification. Add missing static surface/guard collision only on generated scene instances; never globally edit the kit.
+- Floor currently has position (71.10,0,-155.38) and uniform scale 122.56. Inspect its actual mesh, bounds and collision before choosing track origin/height. Preserve it unless a confirmed support adjustment is necessary; prefer scene-owned kit terrain additions over altering existing user geometry.
+- Dependency inventory obtained through read-only AssetDatabase.GetDependencies (dedicated dependency tool unavailable). Materials already depend on URP Lit; do not perform blanket material conversion.
+- Use a single reusable construction script during implementation; revise that script for fitting fixes rather than repeatedly regenerating unrelated geometry. No persistent editor generator is required unless needed for reproducibility.
+
+# Implementation Steps
+1. **Recheck impact and geometry.** Dependency: approval. Inspect CarScene dependents, incoming serialized references, Floor bounds/collision, road mesh orientations, endpoint widths/heights, ramp elevation delta and guard geometry. Inspect kit sample Race Track placement read-only for connector conventions. Preserve current dirty scene without reload/revert. Confirm no existing TwistedRoad appeared since discovery.
+2. **Prototype connections.** Dependency: Step 1. Fit representative straight-to-turn, S-bend and ramp-to-elevated connections using transformed road endpoints, positive scales and compatible widths. Verify road surface versus renderer/support bounds. Use scene-owned static MeshColliders for uncovered road meshes where appropriate; avoid duplicates or coarse boxes blocking turns.
+3. **Lay out continuous route.** Dependency: Step 2. Use measured module connectors to author one deterministic route with approximately 80–110 pieces and 1–1.5 km target length. Establish section footprints before placement, allowing ample spacing between neighboring switchbacks. Keep meaningful recovery straights, no mandatory forks, no accidental same-level crossings and no unsupported jumps.
+4. **Build elevated crossing and support.** Dependency: Steps 2–3. Use compatible ramp/elevated pieces and supports, verify smooth slope joins and underpass clearance from actual meshes. Avoid negative scale mirroring. If elevation pieces cannot form a safe continuous crossing, resolve fitting before continuing rather than leave a disconnected bridge. Add only necessary scene-owned terrain/support kit instances; maintain existing Floor.
+5. **Finish presentation and collision.** Dependency: Steps 3–4. Add start/finish anchors and unobtrusive visual markers, organize numbered sections, verify prefab materials render normally, and fill confirmed collision gaps on road/guards. Preserve camera/light configuration; frame Scene View for review without replacing the existing Main Camera. No vehicle, UI, lighting redesign or build-list changes.
+6. **Visually validate and save.** Dependency: Step 5. Capture fresh multi-angle Scene View images of the complete track and representative turns/ramp/crossing. Check scale, overlaps, support, seam continuity and elevation clearance. Reuse and revise construction code, capture fresh evidence after each fix, maximum three capture/fix rounds before requesting guidance. Save only intended CarScene changes and authorized preserved edits.
+
+# Verification & Testing
+- One continuous Start-to-Finish route; target centerline length measured and reported, not inferred only from module count.
+- Inspect every neighboring endpoint for position, height, tangent and width agreement; no visible gaps, raised lips, coplanar z-fighting or guard rails obstructing a join.
+- Verify downward surface raycasts along straights, curves and ramps, plus side/guard collision where applicable. Existing colliders alone do not prove full drivable coverage.
+- Overpass has adequate road and guard clearance, attached ramps and visible supports; route crossings occur at different elevations and do not intersect meshes/collision.
+- Multi-angle overview and close-ups demonstrate a long winding route, switchbacks, recovery straights and distinct start/finish; no magenta materials or floating/sunken pieces.
+- No imported prefab/model/material, unrelated scene, controller, save system, input backend or build-list edits.
+- Recheck Console for new errors/warnings. Traversal/driving difficulty and completion duration remain unverified because CarScene contains no playable vehicle/controller; report that limitation rather than claim a driving test passed.
+
+# Tangled Abandoned Walkable Route Amendment
+Only this amendment is pending for the current request. Supersede the former regular nine-pass layout and flat-only constraint; preserve unrelated completed work.
+
+# Project Overview
+- Game Title: Existing FINAL-PROJECT.
+- High-Level Concept: Explore an abandoned, tangled roadway on foot, following one continuous route through irregular curves, diagonals, short straights and supported rises/descents. Distribute the route throughout the Floor rather than along a single diagonal or repeated uniform rows.
+- Players: Existing single-player Player character.
+- Inspiration / Reference Games: No new reference supplied.
+- Tone / Art Direction: Desaturated, weathered low-poly infrastructure with sparse overgrowth, inactive streetlights, leaning signs and roadside rubble; visual decay must not make the required route impassable.
+- Target Platform: Windows StandaloneWindows64.
+- Screen Orientation / Resolution: Existing landscape configuration.
+- Render Pipeline: Existing URP PC_RPAsset, Unity 6000.3.8f1.
+
+# Game Mechanics
+## Core Gameplay Loop
+User selected a continuous route, not a branching maze. Walk from the lower corner toward the opposite upper corner, explore irregular broad loops and tight turns, traverse diagonals and supported over/underpasses, descend and continue to the finish. Preserve whole-Floor spatial coverage, but avoid blindly preserving the earlier roughly 17 km length: walking duration and exact new length must be measured and reported rather than guaranteed. Alternating complex sections with short readable recovery sections supports MDA tension and player competence. No mandatory jumps, disconnected gaps or accidental same-level crossings.
+## Controls and Input Methods
+Preserve Both backend, PlayerInput/StarterAssetsInputs and existing FirstPersonController controls. Do not add legacy polling, new bindings or AI navigation for a manually controlled Player. Keep controller slopeLimit 50 degrees and stepOffset 0.5 unless actual tests establish a need; design continuous ramp slopes conservatively around 10–20 degrees, below that limit, with smooth entries/exits and capsule clearance.
+
+# UI
+No new HUD, menus or gameplay systems. Retain Start/Finish anchors, add readable world-space abandoned signposts and sparse visual breadcrumbs at confusing crossings. Decay should not hide the traversable surface or obscure route continuity.
+
+# Key Asset & Context
+- Modify `Assets/Scenes/CarScene.unity`: replace only generated TwistedRoad geometry/dressing, preserve Floor and newly added Player/camera edits. Scene is currently dirty; user expressly authorized preserving/saving those edits, moving Player to the start and repairing scene-local walking wiring.
+- Floor bounds center (71.10,0,-155.38), extents approximately (612.80,0,612.80); unchanged scale/position. Plan route using world-space bounds and inset safety margins.
+- Current TwistedRoad has 4,672 renderers. Existing layout is regular and flat; do not treat prior raycast tests as proof the revised route is walkable.
+- Player at approximately (46.16,0.12,50.49) uses CharacterController height 1.7, radius 0.4, slopeLimit 50, stepOffset 0.5, Animator, PlayerInput, StarterAssetsInputs, FirstPersonController and BasicRigidBodyPush. Keep mesh, animation and controller architecture.
+- Both Main Camera and Main Camera (1) are currently enabled, tagged MainCamera and have AudioListeners. Verify actual follow ownership before retaining the player camera and locally disabling redundant original camera/listener. Do not assume Cinemachine exists in this scene.
+- Player has GameplaySaveAdapter with `_player` assigned but missing interaction/pause references and many unresolved object entries. CarScene is not automatically a supported save scene. Inspect GameSaveManager/SupportedScene handling before disabling this incomplete scene-local adapter if it obstructs walking; do not modify shared saving scripts, add CarScene saving, alter IDs or write user saves.
+- Reuse Simple Roads straight/curve/turn/ramp/elevated assets. Large-turn measured sockets are entry (-8,0,-16), exit (16,0,8), centerline radius 24; straight fitting requires correct two-lane scene overrides. Ramp straight rises 8 over 32 horizontal units; validate actual slope curvature and endpoints.
+- For diagonals use properly fitted 45-degree connector sections: verify kit support; if unavailable create project-owned partial curved mesh copies with matching road/sidewalk/guard cross-section rather than rotating pieces into disconnected joins.
+- Prefer existing PoplarTree001_pr, FastMesh StreetSign-1, ModularHousePack road streetlight assets for dressing after bounds/material/component inspection. Do not attach their unrelated gameplay logic or add hundreds of realtime lights. Use project-owned material copies and sparse mesh rubble if suitable source assets are absent; AI asset generation is unnecessary.
+- New assets only as needed under `Assets/Environment/CarScene/Materials/` and `Assets/Environment/CarScene/Meshes/`; optional explicit construction tooling under `Assets/Editor/Environment/`. Do not edit imported shared assets/packages globally.
+- Dependency tool unavailable in current read-only tool set: use AssetDatabase.GetDependencies plus dependent and serialized-reference scans before each existing edit. Live scene references must be inspected because unsaved Player additions are absent from disk dependency lists.
+
+# Implementation Steps
+1. **Recheck ownership and wiring.** Dependency: approval. Inspect scene dependencies/dependents and incoming references to TwistedRoad, Player, cameras and adapter; read current FirstPersonController camera/grounding code, GameSaveManager unsupported-scene behavior, input action setup and Player Animator/head target. Preserve dirty scene without reload/revert; record original enabled states. Inventory suitable dressing prefabs and ramp meshes/materials.
+2. **Author route skeleton and connectors.** Dependency: Step 1. Define a deterministic continuous centerline distributed through lower/middle/upper Floor regions, irregular loops, short straights, 45-degree diagonals and multiple controlled elevation changes. Reserve footprints and crossing heights before instantiation. Fit native or project-owned 45-degree curves and ramp connectors in a small representative section first. Do not approximate joins by overlapping incompatible road ends.
+3. **Construct walkable geometry.** Dependency: Step 2. Replace only generated road hierarchy using one reusable builder; preserve unrelated scene objects. Add correct static collision on road/guards, continuous widths/heights/tangents, supported elevated sections and adequate Player head clearance under crossings. Keep supports off required walking lanes and Floor intact. Add side protection at elevated bends; no invisible barriers replacing visibly missing geometry.
+4. **Add abandoned presentation.** Dependency: Step 3. Create scene-specific weathered/desaturated material copies, sparse overgrowth beside paths, inactive or damaged streetlights, leaning signs and small rubble patches. Keep clear walkable corridor at least 2 m wide, full capsule head clearance and readable navigation. Place damage at shoulders, not as mandatory broken gaps. Match physical support/ground contact and avoid expensive broad scatter or global lighting changes.
+5. **Wire existing Player locally.** Dependency: Steps 1 and 3. Move Player safely to Start with feet on verified surface and initial facing along route; retain valid head/camera follow. Resolve duplicate camera/listener ownership and only confirmed scene-local startup input blockers. Disable the incomplete scene-local save adapter only if impact inspection shows it is inappropriate for this unsupported scene; preserve shared save behavior elsewhere. No new character, controller rewrite, binding changes, save integration or build-list edits.
+6. **Test traversal and visually validate.** Dependency: Steps 3–5. Check surface interiors and seams, slope extrema, capsule sweep clearance, crossing heights and Floor containment. Test actual Player movement/look and representative straight/diagonal/curve/ascent/descent/underpass sections in Play Mode, including camera follow and audio listener uniqueness. Capture fresh multi-angle scene views and first-person Game View evidence; revise same builder for defects, at most three capture/fix rounds before asking for guidance. Do not claim full-route traversal from raycasts alone.
+7. **Save and report.** Dependency: Step 6. Save intended CarScene and project-owned environment assets, retaining authorized user edits. Remove temporary builder copies and diagnostic hooks safely; no deferred cleanup that affects saves. Report route length, elevation range, spatial coverage, verified walking sections and outstanding end-to-end/build testing. Keep existing user save files untouched.
+
+# Verification & Testing
+- One Start-to-Finish route across the Floor with visibly varied straights, curves, diagonals, loops, climbs and descents; no regular repeated nine-row pattern, unintentional crossings or disconnected joins.
+- All critical road seams meet in position/height/tangent and collision; surface-interior checks plus seam checks. Investigate precision misses rather than conceal them with a broad underlying Floor collider.
+- Slopes and ramp entry/exit steps are safe for existing CharacterController; capsule sweeps show clear lanes, adequate underpass height and no support/guard collision blocking the route.
+- Existing Player moves and looks normally on representative sections; grounding, footsteps and first-person head/camera behavior work. Exactly one intended active gameplay camera/listener; no wrong Camera.main resolution or startup save-adapter input lock.
+- Weathered materials render in URP; roadside vegetation/rubble/signs appear grounded and deliberately abandoned, without obstructing the corridor, floating props or excessive realtime lights.
+- Multi-angle whole-layout and close-up captures, plus actual first-person walking evidence; measure actual route length/elevation, do not promise a completion duration without traversal testing.
+- Other scenes, imported assets, settings/save scripts, persistent IDs, packages, input backend and user saves unchanged. No new console/compiler errors; standalone and full end-to-end walking are reported as unverified unless actually tested.
+
+# CarScene Neighborhood Systems Transfer — Recovery Amendment
+Only this amendment is pending approval. Supersede prior exclusions of CarScene UI, saving, enemy/navigation, lighting and boundary additions for this requested transfer. Do not rebuild the existing road or repeat completed maintenance.
+
+# Project Overview
+- Game Title: Existing FINAL-PROJECT.
+- High-Level Concept: Explore the existing tangled abandoned road at night, surrounded by grass and dense trees, with Neighborhood's pause/settings/save and Siren Head threat. Keep the player confined to the continuous roadway with readable rails and physical boundaries.
+- Players: Existing single player on foot.
+- Inspiration / Reference Games: Existing Neighborhood Scene and Siren Head assets.
+- Tone / Art Direction: Existing abandoned low-poly horror route; match source night atmosphere without sacrificing route readability.
+- Target Platform: Windows StandaloneWindows64.
+- Screen Orientation / Resolution: Existing landscape; verify 1920x1080 and smaller windows.
+- Render Pipeline: URP PC_RPAsset, Unity 6000.3.8f1.
+
+## Confirmed Recovery State and Decisions
+- Live CarScene is dirty. Preserve its unsaved edits without reload/revert; confirm before saving any unrelated newly discovered edits.
+- Current roots: Main Camera, Directional Light, Floor, Main Camera (1), Player, TwistedRoad, CarScene First Person Camera. TwistedRoad currently has 801 renderers and 664 colliders; these counts do not prove seam or boundary correctness.
+- No PauseMenuManager, SirenHeadAI, PlayerCaptureSequence or GameplaySaveAdapter was found in the live scene. Transfer work is not complete.
+- Source dependency inspection confirms existing SirenHeadEnemy prefab/controller/animations, PauseMenuManager, Neighborhood navigation and Tenkoku DynamicSky. Reuse source configuration, not bare imported demo systems.
+- AI Navigation 2.0.10, Cinemachine 3.1.7, Input System 1.19.0 and URP 17.3.0 are installed.
+- User selected full system transfer including saving/entry checkpoints, and visible rails plus continuous collision. This preserves familiar horror dynamics (MDA) and fair recoverable failure (SDT), at greater integration cost than pause-only or invisible barriers.
+- SaveGameData currently permits only Neighborhood/Farm and at most two scene snapshots. CarScene is absent from enabled build scenes; current list includes MainMenu, VideoIntro, Neighborhood and Garden, with Test disabled. Add CarScene without silently enabling Farm or changing the intro destination.
+
+# Game Mechanics
+## Core Gameplay Loop
+Walk the existing route, avoid Siren Head, pause/save/settings/resume, and retry the CarScene entry checkpoint with existing player-death and fade behavior on capture. Enemy resets on load/retry as in Neighborhood; do not promise exact AI-state or sky-time persistence.
+## Controls and Input Methods
+Preserve Both backend and current event-driven PlayerInput/StarterAssetsInputs and InputSystemUIInputModule. Rebind transferred scene references to CarScene's existing Player/camera/hand targets. No new character or input backend. Keep pause, save restoration, capture and fade locks coherent.
+
+# UI
+Reuse source UICanvas pause/HUD/save dialogs and existing shared settings styling; do not copy the source Player or duplicate EventSystems.
+```text
+Gameplay: existing first-person camera + crosshair/prompts
+Pause: Resume | Save Game | Settings | Exit
+Save: three slots + overwrite confirmation + Back/status
+Capture: player collapse → black/loading/checkpoint restore → reveal
+```
+Keep settings visibility rules and readable modal captions; Exit autosaves before MainMenu with existing error recovery.
+
+# Key Asset & Context
+- Modify Assets/Scenes/CarScene.unity: scene-local UI, interaction/settings/save references, enemy/capture, road navigation/waypoints, night sky and vegetation, rails/boundaries. Preserve Floor and existing route layout/player.
+- Read Assets/Scenes/Neighborhood Scene.unity as source only. Inspect source hierarchy in a safe read-only preview or serialized inspection, including exact sky/night overrides, grass, tree materials/LOD, pause and capture dependencies. Never transplant invalid source scene references.
+- Reuse Assets/Characters/SirenHead/SirenHeadEnemy.prefab, project-owned player death controller/clip, and Assets/Transitions fade assets; preserve shared prefab defaults unless a necessary backwards-compatible fix is approved in this scope.
+- Modify Assets/Scripts/Saving/SaveGameData.cs narrowly: include CarScene and update bounded scene-count validation consistently without changing schema fields or invalidating existing records. Read repository/manager/adapter consumers first.
+- Modify shared save/enemy/pause scripts only for confirmed hard-coded scene assumptions or backwards-compatible integration gaps after impact analysis; prefer scene wiring.
+- EditorBuildSettings: add CarScene for save loads/retries; preserve other scene inclusion and New Game destination.
+- New Assets/Navigation/CarSceneSirenHeadNavMesh.asset; use existing fitted enemy agent type, not Neighborhood's baked data.
+- Project-owned terrain/material/vegetation assets under Assets/Environment/CarScene/ only if required. Never share writable TerrainData with Neighborhood.
+- Inspect Tenkoku installed documentation and URP runtime compatibility before promising dynamic sky. Match working source configuration when compatible; if unsupported, report the limitation and seek approval for compatible night sky fallback, rather than modifying package guards or replacing it silently.
+- Dedicated dependency tool unavailable: use AssetDatabase.GetDependencies and serialized/dependent inspection for each existing edit target, including live unsaved scene references.
+
+# Implementation Steps
+1. Recheck source/destination ownership and dependencies. Read current save, pause, interaction, enemy, capture, camera and sky code; inventory navigation components/agent settings and exact source object references. Inspect current console and pending diagnostic hooks. Preserve dirty scene state. Dependency: approval.
+2. Integrate pause/settings/HUD/interactions using source scene-owned objects with remapped references, one EventSystem, intended gameplay camera/listener and current Player. Copy player death Animator configuration without replacing character. Dependency: Step 1.
+3. Extend save support narrowly, add CarScene to build list, create complete scene-local adapter/registrations with new unique IDs for CarScene saveable objects only. Preserve existing source IDs and save files; retain entry/Exit autosaves, manual slots and retry checkpoint semantics. Verify older two-scene records remain valid and three supported snapshots pass validation. Dependency: Steps 1–2.
+4. Repair roadway confinement. Audit actual surface/guard collision, including curves, diagonal connectors, ramps, seam gaps and overpasses. Add grounded visible rails with static positive-scale collision along both outer roadway edges, and sufficient aligned boundary collision to prevent jumping/stepping over them without blocking the road. Preserve intended Start/Finish access within bounded route; no escape to Floor or shortcuts between close road stretches. Avoid giant boxes cutting across curved lanes; retain at least 2 m clear corridor. Dependency: Step 1.
+5. Transfer grass and dense roadside trees using verified source assets/material overrides. Distribute varied clusters across surrounding Floor with clear road/rail setbacks, no growth on elevated lanes, grounded placement and LOD-aware density. Do not clone source terrain at mismatched coordinates or enable all expensive tree colliders/lights. Keep shared imported assets unchanged. Dependency: Step 4.
+6. Transfer supported dynamic night sky and source ambient/night presentation, remapping gameplay camera references and preventing duplicate sun/sky ownership. Validate actual Game View sky/materials, road visibility and runtime compatibility; do not substitute a static sky without approval if the requested system fails. Dependency: Steps 1 and 5.
+7. Bake road-only CarScene navigation after boundaries/dressing. Match existing enemy agent clearance, exclude Floor shortcuts, supports, player/UI and off-road decoration as walkable surfaces; incorporate real blockers. No automatic jump/drop links or through-rail shortcuts. Verify ramps/underpass clearance and connected waypoint paths without shrinking creature dimensions to conceal fitting failures. Dependency: Steps 4–6.
+8. Place one existing SirenHeadEnemy at a safely separated reachable road spawn, rebind patrol/sight/proximity/capture/player Animator/save/camera/fade references. Preserve roam/chase/investigate/search, pause freezing and player death checkpoint retry. Activate after adapter readiness/checkpoint setup. Dependency: Steps 2–3 and 7.
+9. Focused verification and save: compile incrementally, inspect UnityEvents/missing references, actual Game View and road boundary tests. Isolate test saves, never delete user records or create deferred cleanup hooks. Save intended assets and authorized preserved CarScene edits only. Dependency: Steps 2–8.
+
+# Verification & Testing
+- Exactly one functional pause/HUD/save interface, enemy, intended camera/listener and EventSystem. Source Neighborhood remains unchanged.
+- Pause freezes movement/AI timers; settings/HUD/tooltips work; manual slots, Exit autosave, MainMenu load/Continue and entry checkpoint retry work in CarScene without stale source references or save corruption.
+- Existing records still validate. New CarScene records and supported three-scene snapshots validate; no unrequested Farm build inclusion or intro rerouting.
+- Walk/run/jump into boundaries at straights, tight bends, diagonal seams, ramp transitions, elevated sides and adjacent close road sections. Player cannot reach Floor, jump rails, clip seams or shortcut to another stretch; corridor and Start/Finish remain usable.
+- NavMesh is nonempty and matched to enemy type; representative complete paths span turns/ramps/overpass without off-road or wrong-elevation projection. Source baked data is never reused.
+- Siren Head walks/runs, detects by sight/proximity with correct occlusion, searches after awareness loss, and captures once; player collapse and restoration-aware retry fades complete with input/HUD released at the right time.
+- Night sky actually renders and behaves as configured in URP; trees/grass render without magenta, floating placements or road obstruction. Compare dense scenery performance and LOD transitions; do not claim FPS improvements without measurement.
+- Compile/console checks, direct CarScene play and menu-load checks; report whole-route traversal, Windows build, alternate resolutions and performance measurements as unverified unless performed.
+

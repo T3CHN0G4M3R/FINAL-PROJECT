@@ -13,7 +13,7 @@ public sealed class SaveGameData
     public string currentScene;
     public List<SavedSceneState> scenes = new List<SavedSceneState>();
 
-    public static bool SupportedScene(string path) => path == "Assets/Scenes/Neighborhood Scene.unity" || path == "Assets/Scenes/FarmScene.unity";
+    public static bool SupportedScene(string path) => path == "Assets/Scenes/Neighborhood Scene.unity" || path == "Assets/Scenes/FarmScene.unity" || path == "Assets/Scenes/CarScene.unity";
     public static bool Finite(float value) => !float.IsNaN(value) && !float.IsInfinity(value) && Mathf.Abs(value) < 1000000f;
     public static bool Finite(Vector3 v) => Finite(v.x) && Finite(v.y) && Finite(v.z);
     public static bool RotationValid(Quaternion q)
@@ -25,7 +25,7 @@ public sealed class SaveGameData
     {
         if (version != 1) return "Incompatible save version";
         if (string.IsNullOrWhiteSpace(runId) || runId.Length > 64 || slot < 0 || slot > 3 || utcTicks <= 0 || utcTicks > DateTime.MaxValue.Ticks || commitOrder <= 0) return "Invalid save metadata";
-        if (!SupportedScene(currentScene) || scenes == null || scenes.Count == 0 || scenes.Count > 2) return "Invalid saved scene";
+        if (!SupportedScene(currentScene) || scenes == null || scenes.Count == 0 || scenes.Count > 3) return "Invalid saved scene";
         var paths = new HashSet<string>();
         foreach (var scene in scenes)
         {
