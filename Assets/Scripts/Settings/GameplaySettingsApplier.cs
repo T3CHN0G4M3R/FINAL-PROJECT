@@ -37,7 +37,7 @@ public class GameplaySettingsApplier : MonoBehaviour
     private bool _wasCaptured;
     private void LateUpdate()
     {
-        bool captured = GameSaveManager.Instance != null && GameSaveManager.Instance.EncounterInProgress;
+        bool captured = GameSaveManager.Instance != null && (GameSaveManager.Instance.EncounterInProgress || GameSaveManager.Instance.IntroTransitionInProgress);
         if (_wasPaused != PauseMenuManager.IsGamePaused || _wasCaptured != captured)
         {
             _wasCaptured = captured;
@@ -48,7 +48,7 @@ public class GameplaySettingsApplier : MonoBehaviour
     public void RefreshHUD()
     {
         _wasPaused = PauseMenuManager.IsGamePaused;
-        bool captured = GameSaveManager.Instance != null && GameSaveManager.Instance.EncounterInProgress;
+        bool captured = GameSaveManager.Instance != null && (GameSaveManager.Instance.EncounterInProgress || GameSaveManager.Instance.IntroTransitionInProgress);
         if (crosshair != null) crosshair.SetActive(_showHUD && !_wasPaused && !captured);
     }
 

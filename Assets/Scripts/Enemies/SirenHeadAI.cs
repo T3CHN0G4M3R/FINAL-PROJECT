@@ -57,7 +57,7 @@ public sealed class SirenHeadAI : MonoBehaviour
     [Min(0.05f)] [SerializeField] private float _runPlayback = 1f;
     [Min(0)] [SerializeField] private float _animationBlend = 0.15f;
     [Header("Protected Interiors")]
-    [SerializeField] private BoxCollider[] _protectedInteriors;
+    public BoxCollider[] _protectedInteriors;
     public bool IsPlayerProtected
     {
         get

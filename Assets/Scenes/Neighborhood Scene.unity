@@ -24953,6 +24953,43 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3162332872128749905, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
   m_PrefabInstance: {fileID: 1114936899}
   m_PrefabAsset: {fileID: 0}
+--- !u!84 &38750662
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 6
+  m_Width: 128
+  m_Height: 128
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 94
+  m_ColorFormat: 48
+  m_MipMap: 1
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_UseDynamicScaleExplicit: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &38954073
 GameObject:
   m_ObjectHideFlags: 0
@@ -278002,43 +278039,6 @@ MonoBehaviour:
   interactionDistance: 3
   doorName: Puerta
   requiresDoorKey: 0
---- !u!84 &389518007
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 6
-  m_Width: 128
-  m_Height: 128
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 94
-  m_ColorFormat: 48
-  m_MipMap: 1
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_UseDynamicScaleExplicit: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &389554230
 GameObject:
   m_ObjectHideFlags: 0
@@ -476304,6 +476304,7 @@ MonoBehaviour:
   animator: {fileID: 1116793966}
   playerCamera: {fileID: 2081317053}
   promptText: {fileID: 852171978}
+  sceneSign: {fileID: 929644527}
   doorKeyPickup: {fileID: 0}
   radioInteraction: {fileID: 591457078}
   additionalRadios: []
@@ -510582,43 +510583,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 700917711}
   m_Mesh: {fileID: 4803645095775272474, guid: e0147f4678533444ca8209554a9ead22, type: 3}
---- !u!84 &701059168
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 6
-  m_Width: 128
-  m_Height: 128
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 94
-  m_ColorFormat: 48
-  m_MipMap: 1
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_UseDynamicScaleExplicit: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &701067573
 GameObject:
   m_ObjectHideFlags: 0
@@ -602136,6 +602100,43 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3457222331045882779, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
   m_PrefabInstance: {fileID: 1114936899}
   m_PrefabAsset: {fileID: 0}
+--- !u!84 &822561281
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 6
+  m_Width: 128
+  m_Height: 128
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 94
+  m_ColorFormat: 48
+  m_MipMap: 1
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_UseDynamicScaleExplicit: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!23 &822598769 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2542050303764235303, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -676437,8 +676438,60 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c711690a01fe5064ebe3c67ad9ad8c97, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 929644528}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c711690a01fe5064ebe3c67ad9ad8c97, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 929644527}
   m_SourcePrefab: {fileID: 100100000, guid: c711690a01fe5064ebe3c67ad9ad8c97, type: 3}
+--- !u!1 &929644526 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c711690a01fe5064ebe3c67ad9ad8c97, type: 3}
+  m_PrefabInstance: {fileID: 929644525}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &929644527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 929644526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d12cf15e87b69894794bdb0f3200da2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SignSceneInteraction
+  _signCollider: {fileID: 929644528}
+  _cinematicScene: Assets/Scenes/NeighborHoodToGarden.unity
+  _gameplayScene: Assets/Scenes/GardenScene.unity
+  _fadeEffect: {fileID: 11400000, guid: 1097a28e540a9b3419106892e20f72d1, type: 2}
+  _fadeImagePrefab: {fileID: 2175856970961285118, guid: c116f2243760eb449bb4383d68f5c5ea, type: 3}
+  _fadeOutSeconds: 1
+  _fadeInSeconds: 1
+  _blackHoldSeconds: 0.2
+--- !u!65 &929644528
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 929644526}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.029120535, y: 0.057646234, z: 0.14444548}
+  m_Center: {x: 0, y: 0.00012387894, z: 0}
 --- !u!1 &929672078
 GameObject:
   m_ObjectHideFlags: 0

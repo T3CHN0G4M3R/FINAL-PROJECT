@@ -10,6 +10,8 @@ public sealed class VideoIntroController : MonoBehaviour
     [SerializeField] private UIAlphaFadeEffect _fadeEffect;
     [SerializeField] private UnityEngine.UI.Image _fadeImagePrefab;
     [SerializeField, Min(1f)] private float _prepareTimeout = 20f;
+    [Header("Direct Playback Route")]
+    [SerializeField] private string _gameplayScene = "Assets/Scenes/Neighborhood Scene.unity";
     private VideoPlayer _player;
     public bool Ready { get; private set; }
     public bool Completed { get; private set; }
@@ -33,7 +35,7 @@ public sealed class VideoIntroController : MonoBehaviour
     private IEnumerator Start()
     {
         if (!NewGameSceneSequence.IntroActive)
-            NewGameSceneSequence.BeginDirectIntro(_fadeEffect, _fadeImagePrefab);
+            NewGameSceneSequence.BeginDirectIntro(_fadeEffect, _fadeImagePrefab, gameObject.scene.path, _gameplayScene);
         if (_player.clip == null || _player.targetTexture == null || _display == null)
         { Error = "Intro video is missing its clip, texture or display."; yield break; }
         _player.Prepare();

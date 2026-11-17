@@ -30,13 +30,40 @@ public class NewGameSceneSequence : MonoBehaviour
         GameSettings.Save();
         StartIntro(false);
     }
-    public static void BeginDirectIntro(UIAlphaFadeEffect effect, UnityEngine.UI.Image image)
+    public static bool BeginGameplayCinematic(UIAlphaFadeEffect effect, UnityEngine.UI.Image image,
+        string cinematic, string destination, float fadeOut, float fadeIn, float blackHold, out string error)
+    {
+        error = null;
+        var root = new GameObject("Gameplay Cinematic Sequence");
+        var sequence = root.AddComponent<NewGameSceneSequence>();
+        sequence._fadeEffect = effect;
+        sequence._fadeImagePrefab = image;
+        sequence._introScene = cinematic;
+        sequence._gameplayScene = destination;
+        sequence._fadeOutSeconds = Mathf.Max(0, fadeOut);
+        sequence._fadeInSeconds = Mathf.Max(0, fadeIn);
+        sequence._blackHoldSeconds = Mathf.Max(0, blackHold);
+        if (!sequence.Validate()) { error = "Cinematic destinations, fade or operation state are invalid."; Destroy(root); return false; }
+        if (!GameSaveManager.Instance.BeginGameplayCinematic(cinematic, destination, out error)) { Destroy(root); return false; }
+        try { GameSettings.Save(); sequence.StartIntro(false); return true; }
+        catch (System.Exception e)
+        {
+            error = e.Message;
+            GameSaveManager.Instance.EndIntroTransition();
+            Destroy(root);
+            return false;
+        }
+    }
+    public static void BeginDirectIntro(UIAlphaFadeEffect effect, UnityEngine.UI.Image image,
+        string cinematic = "Assets/Scenes/VideoIntro.unity", string destination = "Assets/Scenes/Neighborhood Scene.unity")
     {
         if (IntroActive) return;
         var root = new GameObject("Direct Video Intro Sequence");
         var sequence = root.AddComponent<NewGameSceneSequence>();
         sequence._fadeEffect = effect;
         sequence._fadeImagePrefab = image;
+        sequence._introScene = cinematic;
+        sequence._gameplayScene = destination;
         if (!sequence.Validate()) { Destroy(root); return; }
         sequence.StartIntro(true);
     }
@@ -60,7 +87,7 @@ public class NewGameSceneSequence : MonoBehaviour
         GameplaySaveAdapter.SceneReady += OnGameplayReady;
         var root = new GameObject("Intro Fade Overlay");
         _overlay = root.AddComponent<DeathRetryTransition>();
-        _overlay.Initialize((UIAlphaFadeEffect)_fadeEffect, _fadeImagePrefab, _fadeOutSeconds, _fadeInSeconds, _blackHoldSeconds);
+        _overlay.Initialize((UIAlphaFadeEffect)_fadeEffect, _fadeImagePrefab, _fadeOutSeconds, _fadeInSeconds, _blackHoldSeconds, direct);
         StartCoroutine(PlaySequence(direct));
     }
     private void OnGameplayReady(GameplaySaveAdapter adapter)
@@ -78,13 +105,7 @@ public class NewGameSceneSequence : MonoBehaviour
     private IEnumerator PlaySequence(bool direct)
     {
         Time.timeScale = 1f;
-        if (direct)
-        {
-            // Zero-length blackening hides preparation without consuming the opening.
-            var image = _overlay.GetComponentInChildren<UnityEngine.UI.Image>();
-            if (image != null) image.color = Color.black;
-        }
-        else
+        if (!direct)
         {
             yield return _overlay.FadeOut();
             yield return Load(_introScene);
@@ -106,9 +127,9 @@ public class NewGameSceneSequence : MonoBehaviour
         yield return _overlay.FadeOut();
         yield return Load(_gameplayScene);
         deadline = Time.realtimeSinceStartup + _readinessTimeout;
-        while (_failure == null && _readyAdapter == null && Time.realtimeSinceStartup < deadline) yield return null;
-        if (_readyAdapter == null || !GameSaveManager.Instance.HasEntryCheckpoint(_gameplayScene))
-            _failure = _failure ?? "Gameplay initialization failed.";
+        while (_failure == null && (_readyAdapter == null || !GameSaveManager.Instance.IsCinematicGameplayReady(_readyAdapter)) && Time.realtimeSinceStartup < deadline) yield return null;
+        if (_readyAdapter == null || !GameSaveManager.Instance.IsCinematicGameplayReady(_readyAdapter))
+            _failure = _failure ?? "Gameplay initialization or world restoration failed.";
         if (_failure != null) { yield return Recover(); yield break; }
         yield return _overlay.FadeIn();
         Cursor.lockState = CursorLockMode.Locked;

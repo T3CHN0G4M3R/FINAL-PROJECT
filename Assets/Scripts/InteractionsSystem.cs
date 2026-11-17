@@ -47,6 +47,8 @@ public class InteractionSystem : MonoBehaviour
     public GameObject CurrentInteractable => currentInteractable;
 
     private bool _showPrompts;
+    [Header("Optional Cinematic Sign")]
+    [SerializeField] private SignSceneInteraction sceneSign;
     [Header("Optional Door Key")]
     [SerializeField] private DoorKeyPickup doorKeyPickup;
     [Header("Optional Radio Recovery")]
@@ -360,6 +362,12 @@ public class InteractionSystem : MonoBehaviour
     {
         if (!InteractionInputAllowed) { _fPending = false; return; }
         bool fPressed = IsFPressed();
+        if (fPressed && sceneSign != null && sceneSign.CanInteract(playerTransform, playerCamera, heldObject, interactDistance, interactableLayers))
+        {
+            bool started = sceneSign.TryTravel(playerTransform, playerCamera, heldObject, interactDistance, interactableLayers);
+            fPressed = false;
+            if (started) return;
+        }
         if (fPressed && doorKeyPickup != null && doorKeyPickup.TryPickUp(playerTransform, playerCamera))
             fPressed = false;
         var radio = fPressed ? ResolveRadio() : null;
@@ -480,6 +488,7 @@ public class InteractionSystem : MonoBehaviour
     public void PickUpObject(GameObject obj)
     {
         if (obj == null) return;
+        if (sceneSign != null && sceneSign.Owns(obj)) return;
         if (doorKeyPickup != null && doorKeyPickup.Owns(obj)) return;
         if (IsDoor(obj)) return; // Doors can never be picked up or carried
         if (handPoint == null)
@@ -601,6 +610,11 @@ public class InteractionSystem : MonoBehaviour
         if (!_showPrompts || !InteractionInputAllowed)
         {
             promptText.text = "";
+            return;
+        }
+        if (sceneSign != null && sceneSign.CanInteract(playerTransform, playerCamera, heldObject, interactDistance, interactableLayers))
+        {
+            promptText.text = sceneSign.Error == null ? "Press F" : sceneSign.Error;
             return;
         }
         if (doorKeyPickup != null && doorKeyPickup.CanInteract(playerTransform, playerCamera))

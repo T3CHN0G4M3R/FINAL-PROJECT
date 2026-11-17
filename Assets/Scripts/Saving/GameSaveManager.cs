@@ -76,7 +76,25 @@ public sealed class GameSaveManager : MonoBehaviour
         }
     }
     public bool IntroTransitionInProgress { get; private set; }
-    public void BeginIntroTransition() { IntroTransitionInProgress = true; Busy = true; }
+    private GameplaySaveAdapter _cinematicReadyAdapter;
+    public bool IsCinematicGameplayReady(GameplaySaveAdapter adapter) => adapter != null && adapter == _cinematicReadyAdapter;
+    public bool BeginGameplayCinematic(string cinematic, string destination, out string error)
+    {
+        error = null;
+        if (Busy || EncounterInProgress || PauseMenuManager.IsGamePaused || _adapter == null || !_adapter.Ready ||
+            !SaveGameData.SupportedScene(destination) || !Application.CanStreamedLevelBeLoaded(cinematic) || !Application.CanStreamedLevelBeLoaded(destination))
+        { error = "Gameplay cinematic is unavailable or another operation is active."; return false; }
+        try
+        {
+            var snapshot = _adapter.Capture();
+            _visited[_adapter.ScenePath] = snapshot;
+            BeginIntroTransition();
+            _adapter.BlockInput(true);
+            return true;
+        }
+        catch (Exception e) { error = e.Message; EndIntroTransition(); return false; }
+    }
+    public void BeginIntroTransition() { _cinematicReadyAdapter = null; IntroTransitionInProgress = true; Busy = true; }
     public void EndIntroTransition()
     {
         IntroTransitionInProgress = false;
@@ -140,7 +158,12 @@ public sealed class GameSaveManager : MonoBehaviour
                 if (!IntroTransitionInProgress) adapter.BlockInput(false);
                 if (IntroTransitionInProgress) Busy = false;
                 Save(0, out _);
-                if (IntroTransitionInProgress) { Busy = true; adapter.BlockInput(true); }
+                if (IntroTransitionInProgress)
+                {
+                    Busy = true;
+                    adapter.BlockInput(true);
+                    _cinematicReadyAdapter = adapter;
+                }
             }
         }
         catch (Exception e)

@@ -1134,3 +1134,89 @@ Key/locked-door prompts respect ShowHUD, ToolTips and pause/capture visibility. 
 - Pause/save/Exit/Continue, Radio/interference, capture/retry fades, input/HUD/settings and other scenes remain functional. Lock reconciliation cannot reopen the door through visited-state restoration; acquiring key never auto-opens it. Verify frame/handle/collider alignment when closed and opening.
 - Actual Game View prompt and disappearance, repeated reloads, console/compiler checks and focused isolated data tests. Report standalone/all-resolutions/end-to-end travel as unverified unless performed; no destructive user-save cleanup, package/shared-imported edits, build-list or input-backend changes.
 
+# Letrero → NeighborHoodToGarden → GardenScene Amendment
+
+Only this amendment is pending approval for the current request. Preserve previous functionality; do not repeat earlier amendments.
+
+# Project Overview
+- Game Title: Existing FINAL-PROJECT; unchanged.
+- High-Level Concept: Existing first-person horror exploration. Looking at Letrero and pressing F transitions from Neighborhood to the supplied garden cinematic, then to Garden gameplay after real video completion.
+- Players: Single player.
+- Inspiration / Reference Games: Existing project; no new references.
+- Tone / Art Direction: Preserve existing scenery, sign, cinematic, HUD and established black alpha fades.
+- Target Platform: Windows StandaloneWindows64.
+- Screen Orientation / Resolution: Existing landscape UI; full-screen fade and aspect-fit video at different window sizes.
+- Render Pipeline: URP PC_RPAsset, Unity 6000.3.8f1.
+
+## Approach and Scope
+User selected **Look at sign**, not proximity-only use. Use the canonical InteractionSystem's one event-driven F path and existing actual interaction range (currently 3.5 m). This deliberate interaction fits the existing exploration dynamics (MDA); the prompt communicates the action without adding a new input owner.
+
+Two implementation approaches: parameterize/reuse the existing persistent cinematic sequence, or create an independent garden-only sequencer. Reuse is recommended because it already supports video first-frame readiness, retained final frame, restoration-aware UI fades and operation locking. An independent sequence isolates changes but duplicates lifecycle/transition code and risks competing with VideoIntroController's bootstrap. Use narrow backwards-compatible extensions of the existing sequence/controller and a scene-owned sign component; do not use BeginNewGame for this travel or reset the run.
+
+# Game Mechanics
+## Core Gameplay Loop
+Explore Neighborhood → aim at unobstructed Letrero within interaction range → Press F → outgoing scene fades to fully black → load Assets/Scenes/NeighborHoodToGarden.unity under black → prepare/hold first decoded frame → fade in → play complete supplied video with embedded audio → actual loopPointReached completion → retain final frame and fade out → load Assets/Scenes/GardenScene.unity under black → finish gameplay initialization and any visited-state restoration → fade in → release controls/HUD/enemy/save locks.
+
+Preserve the current run ID, DoorKey ownership, manual saves and previously visited world states. Capture Neighborhood before unloading through the save coordinator. Garden uses its existing ordinary-entry restoration/checkpoint/one-entry-autosave policy; the cinematic is not a supported save scene and creates no cinematic autosave. Existing Garden authored spawn or valid visited snapshot determines player placement; no new arrival teleport is requested.
+
+## Controls and Input Methods
+- Read-only settings inspection confirms activeInputHandler = 2 (Both); canonical PlayerFollowCamera InteractionSystem uses the event-driven Keyboard F action, Main Camera (1), Player and 3.5 m range.
+- Add no second input action/listener or legacy polling. Optional sign integration is null by default in other scenes.
+- Use a central camera ray/small spherecast consistent with existing targeting, but require unobstructed sign selection; do not inherit the door-priority scan's ability to find candidates past walls. Use identical selection for prompt and action; revalidate on F.
+- Eligible targeted sign consumes F before Radio/pickup/drop. Never pick up the sign or drop a held flashlight; reject sign objects from generic PickUpObject. If sign activation succeeds, stop processing remaining E/right-click input that frame.
+- Pause, focus loss, restoration, capture, interference retry and active intro/travel suppress sign use. Guard duplicate presses and competing transition owners atomically before capture/fade.
+
+# UI
+Reuse UICanvas/InteractionPrompt, its existing styling and ShowHUD/ToolTips/pause visibility rules. No new menu, skip button, EventSystem or post-processing fade.
+
+```text
+Looking at Letrero in range: Press F
+Neighborhood → gradual black → black/loading → cinematic reveal
+Video plays once → final frame fades to black → Garden loads/restores → reveal
+```
+
+Use existing UIAlphaFade.asset / UIFadeImage.prefab / UIFadeMaterial.mat with per-operation cloned effect/material and existing DeathRetryTransition overlay. Inspector defaults: Fade Out 1 s, Fade In 1 s, Black Hold 0.2 s, matching established fades; loading/preparation adds to black duration. Overlay stays above all UI and survives unload, with exact opaque/transparent endpoints. Do not edit shared fade assets globally or death-retry behavior. Failures report visible status and recover usable input/cursor/UI without unexplained permanent black; never claim playback completed on decode error.
+
+# Key Asset & Context
+## Verified context
+- Loaded Neighborhood is clean. Letrero is the root object at approximately (24.56, 1.26, 5.86), untagged on Default, containing Transform/MeshFilter/MeshRenderer only. Renderer extents approximately (0.23, 0.23, 0.58). Add a fitted scene-instance collider; keep imported Assets/Imported/Kiara/Letrero.fbx and appearance unchanged.
+- All three requested scenes are enabled in EditorBuildSettings; no build-list edit needed.
+- NeighborHoodToGarden already contains Canvas/VideoPlayer/VideoIntroController, VideoDisplay RawImage, aspect fitter and black background. Its controller has assigned display/fade/image references; video is non-looping with autoplay disabled and a target RenderTexture.
+- Supplied garden clip is Assets/Videos/copy_CAA80AEF-5BCA-47A2-88C9-6911CCBB1D37.mov; target is existing Assets/Videos/VideoIntro.renderTexture. Inspect clip dimensions/audio during implementation, preserving source/import settings and avoiding a redundant VideoPlayer. Existing preparation/completion/error and audio mute logic can be reused.
+- VideoIntroController.Start currently calls BeginDirectIntro with no scene arguments. NewGameSceneSequence defaults to VideoIntro → Neighborhood; uncoordinated direct garden cinematic play therefore targets the wrong route. Add scene-aware optional configuration with legacy defaults preserving VideoIntro/MainMenu behavior.
+- NewGameSceneSequence.BeginNewGame calls BeginFreshRun; never call it from Letrero. Existing BeginIntroTransition/EndIntroTransition preserve run state and gate readiness but do not capture outgoing state themselves.
+- GameSaveManager.TravelToGameplay captures the outgoing adapter but synchronously loads only supported gameplay destinations without fades. Do not use raw scene loading or this method to load the cinematic without a coordinated capture boundary.
+- AssetDatabase dependency/dependent checks performed because the dedicated dependency tool is unavailable. InteractionSystem is shared with Garden/Car/Test/recovery scenes; VideoIntroController is used by both cinematics; NewGameSceneSequence is referenced by MainMenu/recovery assets. Runtime save manager references require code impact review, not just serialized dependencies.
+- Current retrieved Console error entries are empty; this is not runtime verification.
+
+## Existing files to modify
+- Assets/Scripts/InteractionsSystem.cs: optional sign reference, unobstructed targeting/resolution, F consumption and prompt precedence; protect generic pickup and preserve existing key/Radio/door/held-item semantics elsewhere.
+- Assets/Scripts/NewGameSceneSequence.cs: reusable explicit gameplay-cinematic entry (exact cinematic/gameplay paths and fade settings), persistent lifecycle, readiness checks and guarded cleanup. Keep BeginNewGame signature/confirmation/fresh-run semantics and default main-menu route unchanged.
+- Assets/Scripts/VideoIntroController.cs: scene-aware direct-play bootstrap configuration with existing default route, use correct configured cinematic identity/destination; preserve controlled first-frame readiness, real completion, final frame/audio and cleanup.
+- Assets/Scripts/Saving/GameSaveManager.cs: narrow validated begin/end gameplay-cinematic boundary, capture outgoing world state before destruction and acquire transition lock without BeginFreshRun. Reuse current readiness/autosave semantics without weakening save validation or resetting key ownership. Validate both destinations and fade prerequisites before mutation. Keep death retry, explicit save load and ordinary TravelToGameplay behavior compatible.
+- Assets/Scenes/Neighborhood Scene.unity: scene-owned Letrero component/collider and canonical InteractionSystem binding, explicit destination/fade references. No sign save-ID registration or environment changes.
+- Assets/Scenes/NeighborHoodToGarden.unity: configure exact current cinematic path and Garden destination/direct-play mode. Repair video wiring only if inspection shows a defect.
+- GardenScene is read-only by default: use existing adapter/checkpoint readiness; if missing destination wiring prevents safe reveal, report and revise scope rather than disable validation.
+
+## New asset
+- Assets/Scripts/SignSceneInteraction.cs: scene-owned configuration/target eligibility/guarded start API for the explicitly assigned sign. No Update input polling or independent prompt writer. Add optional focused tests only within compatible installed test infrastructure.
+- Existing transition/image/material/RenderTexture assets are reused unchanged; no packages, generated defines or imported prefab/source changes.
+
+# Implementation Steps
+1. **Recheck exact ownership and impact.** Dependency: approval. Reinspect live dirty state, incoming sign/scene references and every existing script's callers/dependents, coordinator readiness/events, interference/capture/HUD gates and video dimensions/audio. Preserve Editor scene setup and any newly dirty work; do not reload/revert or save unrelated changes without confirmation.
+2. **Add save-safe cinematic boundary.** Dependency: Step 1. Validate destination availability, supported Garden path, current gameplay readiness and exclusive operation/fade ownership. Capture immutable outgoing Neighborhood snapshot before acquiring block state/unload; preserve run/key/visited data. Acquire Busy/transition/input/HUD ownership synchronously so another capture/blackout cannot win afterward. Expose a narrowly scoped coordinated entry/cleanup path; do not bypass strict adapter validation or write autosave just for leaving Neighborhood.
+3. **Parameterize/reuse sequence and direct bootstrap.** Dependency: Step 2. Add explicit travel entry separate from BeginNewGame; bind exact requested paths, configured timing and one video instance. Keep persistent owner/overlay, check overlay usability and load failures, wait for first frame under black, reveal then begin audible playback, await real completion, fade retained final frame, load Garden, await successful validated initialization/checkpoint/restoration before reveal. Do not interpret Ready alone or a stale checkpoint from a prior scene as successful current restoration. Keep locks until fade-in completes, then restore input/HUD/cursor ownership and dispose cloned resources. Configure direct NeighborHoodToGarden play to Garden without fresh-run reset; preserve original VideoIntro direct-play defaults.
+4. **Implement aimed sign/F integration.** Dependency: Steps 1–3. Add SignSceneInteraction/fitted collider to Letrero only, target at canonical camera/range with solid obstruction checks. Wire optional sign reference on existing InteractionSystem. Share eligibility for Press F/action, prioritize targeted sign F, consume once, prevent held-item drop/sign pickup and suppress subsequent input after accepted travel. No new tags/listeners or prompt writer.
+5. **Wire intended scenes and recover errors.** Dependency: Steps 3–4. Configure NeighborHoodToGarden's existing controller/output for correct route; retain clip/texture/aspect/audio. On pre-unload validation failure leave Neighborhood usable and report visibly. On post-unload failure keep saves/run data intact, clear only owned overlay/locks and provide existing usable menu/status recovery; no silent cinematic skip. Handle destroyed owner/video, preparation timeout/error, missing fade/load failure and restoration failure without duplicate overlays or stale Busy flags.
+6. **Focused verification and save.** Dependency: Steps 2–5. Compile after shared-script changes, inspect serialized references and one F owner, perform actual Game View sign/video/fade tests with isolated save storage. Save only intended two scenes/scripts, restore original Editor scene setup, remove temporary diagnostics without deferred cleanup. Avoid prior long forced-domain-reload workflows and distinguish unperformed standalone checks.
+
+# Verification & Testing
+- Looking at unobstructed Letrero within actual 3.5 m range displays Press F; looking away/out of range/behind solid wall does not. Hidden HUD/tooltips hides prompt but allows valid interaction. Pause/focus loss/capture/load block it.
+- F with held flashlight starts exactly one transition without dropping/toggling it, Radio reset or generic sign pickup. Held F/rapid repeat/combined keys cannot start multiple operations; other scene F key/Radio/pickups and E doors remain unchanged.
+- Exact route Neighborhood → NeighborHoodToGarden → GardenScene, never VideoIntro/MainMenu intro route/Neighborhood replay. Direct garden cinematic Play Mode also reaches Garden without resetting run.
+- Actual rendered evidence shows partial darkening, full black across both loads and video preparation/Garden restoration, then partial reveal and exact transparent endpoint. No first-frame flash, hidden opening/audio consumption or missing final-frame hold; clip completes through loopPointReached, not a guessed timer.
+- Preserve current run/key/manual-save files; outgoing Neighborhood doors/items/player snapshot is retained for an ordinary later revisit. Garden receives its own entry checkpoint and exactly one ordinary-entry autosave after valid readiness, not a cinematic save or premature retry/load reconstruction save.
+- Garden movement/look/HUD/pause/save/enemy/interference remain blocked until reveal completes and work afterward. Existing main-menu New Game confirmation/fresh-run route, Continue/Load and physical/interference retry fades unchanged.
+- Missing/invalid clip/texture/fade/destination, decode timeout, interrupted playback and failed adapter restoration recover visibly without stuck black/Busy/input locks, parallel loads or unintended save reset. Guards remain valid when death or blackout competes with sign use.
+- Test menu-launched versus directly opened Neighborhood, repeated travel/direct cinematic play and different window sizes. Check Console against baseline. Preserve user save files in isolated testing; Windows .mov decoding/audio/build and alternate-resolution checks remain unverified unless performed.
+
