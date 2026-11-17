@@ -47,6 +47,16 @@ public class InteractionSystem : MonoBehaviour
     public GameObject CurrentInteractable => currentInteractable;
 
     private bool _showPrompts;
+    [Header("Optional Radio Recovery")]
+    [SerializeField] private RadioInteraction radioInteraction;
+    private bool _fPending;
+    private bool _hasFocus = true;
+#if ENABLE_INPUT_SYSTEM
+    private UnityEngine.InputSystem.InputAction _fAction;
+#endif
+
+    private bool InteractionInputAllowed => _hasFocus && !PauseMenuManager.IsGamePaused && !PersistenceInputBlocked &&
+        (GameSaveManager.Instance == null || (!GameSaveManager.Instance.Busy && !GameSaveManager.Instance.EncounterInProgress));
 
     private void Awake()
     {
@@ -55,12 +65,40 @@ public class InteractionSystem : MonoBehaviour
 
     private void OnEnable()
     {
+        _fPending = false;
+        _hasFocus = true;
+#if ENABLE_INPUT_SYSTEM
+        _fAction = new UnityEngine.InputSystem.InputAction("WorldInteractionF", UnityEngine.InputSystem.InputActionType.Button, "<Keyboard>/f");
+        _fAction.performed += OnFPerformed;
+        _fAction.Enable();
+#endif
         GameSettings.Changed -= RefreshPromptSettings;
         GameSettings.Changed += RefreshPromptSettings;
         RefreshPromptSettings();
     }
 
-    private void OnDisable() => GameSettings.Changed -= RefreshPromptSettings;
+    private void OnDisable()
+    {
+        GameSettings.Changed -= RefreshPromptSettings;
+        _fPending = false;
+#if ENABLE_INPUT_SYSTEM
+        if (_fAction != null)
+        {
+            _fAction.performed -= OnFPerformed;
+            _fAction.Disable();
+            _fAction.Dispose();
+            _fAction = null;
+        }
+#endif
+    }
+
+#if ENABLE_INPUT_SYSTEM
+    private void OnFPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+        if (InteractionInputAllowed) _fPending = true;
+    }
+#endif
+    private void OnApplicationFocus(bool focus) { _hasFocus = focus; _fPending = false; }
 
     private void RefreshPromptSettings()
     {
@@ -291,8 +329,10 @@ public class InteractionSystem : MonoBehaviour
 
     private void HandleInput()
     {
-        if (PauseMenuManager.IsGamePaused || PersistenceInputBlocked) return;
+        if (!InteractionInputAllowed) { _fPending = false; return; }
         bool fPressed = IsFPressed();
+        if (fPressed && radioInteraction != null && radioInteraction.TryResetInterference(playerTransform, playerCamera))
+            fPressed = false;
         bool ePressed = IsEPressed();
         bool rightClickPressed = IsRightClickPressed();
 
@@ -378,18 +418,14 @@ public class InteractionSystem : MonoBehaviour
     private bool IsFPressed()
     {
 #if ENABLE_INPUT_SYSTEM
-        if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
-        {
-            return true;
-        }
-#endif
-#if ENABLE_LEGACY_INPUT_MANAGER
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            return true;
-        }
-#endif
+        bool pressed = _fPending;
+        _fPending = false;
+        return pressed;
+#elif ENABLE_LEGACY_INPUT_MANAGER
+        return Input.GetKeyDown(KeyCode.F);
+#else
         return false;
+#endif
     }
 
     private bool IsRightClickPressed()
@@ -529,9 +565,14 @@ public class InteractionSystem : MonoBehaviour
     private void UpdateUI()
     {
         if (promptText == null) return;
-        if (!_showPrompts || PauseMenuManager.IsGamePaused || PersistenceInputBlocked)
+        if (!_showPrompts || !InteractionInputAllowed)
         {
             promptText.text = "";
+            return;
+        }
+        if (radioInteraction != null && radioInteraction.CanInteract(playerTransform, playerCamera))
+        {
+            promptText.text = "Press F";
             return;
         }
 

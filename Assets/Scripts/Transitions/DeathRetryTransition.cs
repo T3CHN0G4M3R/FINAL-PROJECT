@@ -11,7 +11,7 @@ public sealed class DeathRetryTransition : MonoBehaviour
     private UIAlphaFadeEffect _effect;
     private UnityEngine.UI.Image _image;
     private Material _material;
-    public void Initialize(UIAlphaFadeEffect effect, UnityEngine.UI.Image imagePrefab, float fadeOut, float fadeIn, float blackHold)
+    public void Initialize(UIAlphaFadeEffect effect, UnityEngine.UI.Image imagePrefab, float fadeOut, float fadeIn, float blackHold, bool alreadyBlack = false)
     {
         DontDestroyOnLoad(gameObject);
         _effect = Instantiate(effect);
@@ -31,7 +31,8 @@ public sealed class DeathRetryTransition : MonoBehaviour
         _image.rectTransform.anchorMax = Vector2.one;
         _image.rectTransform.sizeDelta = Vector2.zero;
         _image.rectTransform.anchoredPosition = Vector2.zero;
-        _image.color = new Color(0, 0, 0, 0);
+        _image.color = new Color(0, 0, 0, alreadyBlack ? 1 : 0);
+        Phase = alreadyBlack ? TransitionPhase.LoadingBlack : TransitionPhase.FadeOut;
         _image.raycastTarget = true;
         _material = new Material(effect.transitionMaterial);
         _image.material = _material;

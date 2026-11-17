@@ -222,8 +222,9 @@ public sealed class GameSaveManager : MonoBehaviour
     public bool RetrySceneEntry(out string error) => RetrySceneEntry(null, null, 0, 0, 0, out error);
 
     public bool RetrySceneEntry(UIAlphaFadeEffect effect, UnityEngine.UI.Image imagePrefab,
-        float fadeOut, float fadeIn, float blackHold, out string error)
+        float fadeOut, float fadeIn, float blackHold, out string error, bool alreadyBlack = false)
     {
+        if (alreadyBlack && effect == null) { error = "An opaque checkpoint handoff requires a fade effect"; return false; }
         if (!EncounterInProgress || _retryPending || _retryTransition != null || _adapter == null || !HasEntryCheckpoint(_adapter.ScenePath))
         { error = "No current scene-entry checkpoint is available"; return false; }
         if (PixeLadder.EasyTransition.SceneTransitioner.Instance != null && PixeLadder.EasyTransition.SceneTransitioner.Instance.IsTransitioning)
@@ -238,7 +239,7 @@ public sealed class GameSaveManager : MonoBehaviour
         {
             var overlay = new GameObject("DeathRetryTransition");
             _retryTransition = overlay.AddComponent<DeathRetryTransition>();
-            try { _retryTransition.Initialize(effect, imagePrefab, fadeOut, fadeIn, blackHold); }
+            try { _retryTransition.Initialize(effect, imagePrefab, fadeOut, fadeIn, blackHold, alreadyBlack); }
             catch (Exception e)
             {
                 _retryTransition.Dispose(); _retryTransition = null;
@@ -246,13 +247,15 @@ public sealed class GameSaveManager : MonoBehaviour
             }
         }
         _retryPending = true; _retryRestored = false; _retryError = null;
-        StartCoroutine(RetryEntryRoutine(_entryScene));
+        _adapter.BlockInput(true);
+        StartCoroutine(RetryEntryRoutine(_entryScene, alreadyBlack));
         return true;
     }
-    private IEnumerator RetryEntryRoutine(string path)
+    private IEnumerator RetryEntryRoutine(string path, bool alreadyBlack)
     {
         bool hasFade = _retryTransition != null;
-        if (hasFade) yield return _retryTransition.FadeOut();
+        if (hasFade && !alreadyBlack) yield return _retryTransition.FadeOut();
+        else if (alreadyBlack) yield return null; // Render exact opaque cover before loading.
         string failure = hasFade && (_retryTransition == null || !_retryTransition.IsUsable) ? "Death fade was interrupted" : null;
         AsyncOperation operation = null;
         if (failure == null)

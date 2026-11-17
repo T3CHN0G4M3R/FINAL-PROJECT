@@ -852,3 +852,109 @@ Keep settings visibility rules and readable modal captions; Exit autosaves befor
 - Night sky actually renders and behaves as configured in URP; trees/grass render without magenta, floating placements or road obstruction. Compare dense scenery performance and LOD transitions; do not claim FPS improvements without measurement.
 - Compile/console checks, direct CarScene play and menu-load checks; report whole-route traversal, Windows build, alternate resolutions and performance measurements as unverified unless performed.
 
+# Siren Head Interference and Radio Reset Amendment
+
+Only this amendment is pending approval for the current request. Preserve earlier work; do not repeat other amendments or transfer this feature to other scenes.
+
+# Project Overview
+- Game Title: Existing FINAL-PROJECT; unchanged.
+- High-Level Concept: First-person horror exploration in Neighborhood. Time spent near Siren Head accumulates audible interference; maximum interference distorts the view and starts a cancellable blackout. Reach and use the Radio before full black to recover.
+- Players: Existing single player.
+- Inspiration / Reference Games: Existing Siren Head threat; no additional references supplied.
+- Tone / Art Direction: Preserve existing horror environment, supplied interference audio and both supplied Volume profiles.
+- Target Platform: Windows StandaloneWindows64.
+- Screen Orientation / Resolution: Existing landscape UI; verify 1920x1080 and a smaller/different-aspect window.
+- Render Pipeline: Verified URP PC_RPAsset, Unity 6000.3.8f1; HDR and renderer PostProcessData already enabled/present.
+
+## Decisions and Selected Approach
+- User selected **Keep accumulated level**: outside the enemy radius, accumulated interference holds rather than decays. Only Radio resets it during active play.
+- User selected **Scene-entry checkpoint**: full blackout uses the existing save-safe entry retry; never reload through ordinary scene-load/visited-state logic or overwrite saves.
+- User approved saving Neighborhood with current unsaved edits preserved. Do not reload/revert the dirty scene; seek confirmation if additional unrelated changes appear later.
+- Use a project-owned proximity accumulator plus narrow integration with the existing InteractionSystem and retry coordinator. An independent Radio F listener/prompt was considered but risks duplicate F handling, dropping a held flashlight, and competing prompt writers. The selected integration gives one input owner and one prompt writer while preserving other interactions. This supports horror tension (MDA) and a clear recovery action/player agency (SDT).
+- Use a standard UI black alpha overlay, not post-exposure alone: it guarantees fully black output even with bright geometry and HUD. Reuse existing fade assets for the restoration-aware reveal. Do not edit shared Volume profile assets, imported prefabs, package source or pipeline defaults.
+
+# Game Mechanics
+## Core Gameplay Loop
+Explore with quiet continuous static → enter adjustable Siren Head radius → accumulate volume over time → leave radius to stop accumulation, without lowering it → maximum volume switches to danger Volume and begins gradual darkening → approach Radio and press F to restore quiet audio, normal Volume and clear view → otherwise full black retries the scene-entry checkpoint and resets interference.
+
+### Rules and Tuning
+- Dedicated looping 2D AudioSource on a new Player child, using `Assets/Imported/Radio interference Sounds/AMB_Continuous_Static_Loop_02.wav`. Do not reuse Player footstep/landing audio or either enemy sound source. Keep music settings from controlling this source; no global AudioListener volume changes.
+- Inspector values: baseline volume (proposed 0.08), maximum volume (0.8, adjustable 0–1 with baseline strictly below maximum), enemy influence radius (20 m), accumulated time from baseline to maximum (30 s), blackout duration (5 s), Radio interaction radius (3 m), retry fade-in (1 s), black hold (0.2 s), obstruction mask and explicit references. These are editable initial tuning, not guaranteed final balance. Validate finite values and enforce meaningful positive durations/radii and ordered volume bounds without divide-by-zero.
+- Track normalized exposure independently of audible volume: `exposure = Clamp01(exposure + deltaTime / timeToMaximum)` only inside the radius; `source.volume = Lerp(baseline, maximum, exposure)`. Threshold uses clamped exposure == 1, not fragile audio float equality. Use player/enemy body/root positions and 3D distance. Radius is exposure distance, not the enemy's detection/capture radius. No FOV/line-of-sight requirement for interference; walls do not silently alter this distance-based request.
+- Below maximum: original `Global Volume` enabled/weight 1, danger `Global Volume (1)` disabled/weight 0; blackout alpha exactly 0.
+- At maximum: original Volume disabled/weight 0, danger Volume enabled/weight 1, and black alpha progresses 0→1 over blackout duration. Once maximum is reached, leaving Siren Head does not stop blackout. Player retains movement/look and Radio access until full black; no premature encounter/input lock.
+- Radio use before committed retry immediately clears exposure/blackout progress and alpha, returns source to baseline (not silence), and restores the original Volume. If still near Siren Head, accumulation resumes from baseline on the following gameplay update; no unrequested permanent immunity/cooldown.
+- Ordinary pause freezes exposure and blackout with scaled gameplay time; the audio remains looping at its current level. Pause/load/intro/capture operations suppress Radio input and exposure advancement. Resume continues remaining progress. Background focus loss must not advance progress unexpectedly.
+- At alpha == 1, claim the existing encounter guard, block player/input/interactions through GameplaySaveAdapter, hide HUD, and request entry retry once. No player/creature death animation is triggered by interference. Keep opaque coverage through unload/restore, then fade in only after restored readiness; release input/HUD/enemy after reveal.
+- Before claiming the retry, retry/capture contention must be resolved with the existing Busy/EncounterInProgress guards. If physical enemy capture wins first, suspend and remove only this feature's blackout overlay so capture owns its existing death/fade sequence. Never cancel another system's encounter, clear its locks, or start a second reload/fade.
+- Exposure/blackout are transient scene-session state, not a new save schema field. Fresh scene entry, explicit saved-game load and successful retry initialize at baseline/normal view. Pause/manual save alone does not reset exposure. Preserve user save bytes, IDs and existing autosave policy; retry must not create an autosave.
+
+## Controls and Input Methods
+- Verified activeInputHandler = 2 (Both). Player uses PlayerInput SendMessages with StarterAssets.inputactions; current maps contain Move, Look, Jump and Sprint, no interaction action. Menus use InputSystemUIInputModule.
+- Current InteractionSystem polls F for pickup/drop. Introduce a lifecycle-managed event-driven InputAction bound to `<Keyboard>/f` for this existing F path, without editing shared StarterAssets actions, changing backend, or adding duplicate callbacks. Record a one-shot press for the existing interaction processing phase; do not mutate physics/scene state directly inside input callbacks. Disable/unsubscribe/dispose safely and clear stale presses on pause/block/focus changes.
+- Add an optional explicitly assigned RadioInteraction reference to InteractionSystem (null retains other-scene behavior). Process an eligible Radio F action before pickup/drop; consume that press so held items stay held and Radio is never picked up. Keep existing E/right-click semantics outside this narrow change.
+- Radio eligibility is proximity to its actual collider, independent of aiming, with a body/view-to-Radio obstruction check so no prompt/use through solid walls or floors. Ignore player/held-item/Radio endpoint colliders and triggers consistently. Use the same eligibility result for prompt and action, recomputed when consuming F. Only the configured Player can use it.
+
+# UI
+Reuse `UICanvas/InteractionPrompt`, its font/layout and HUD/tooltips visibility rules. Radio prompt takes precedence when eligible, including while holding a flashlight; normal door/item prompt returns after leaving range. No second EventSystem or prompt Update writer.
+
+```text
+Normal view: existing crosshair + existing interaction help
+Near Radio:  Press F
+Maximum:    danger Volume + progressively darker view
+Radio F:    normal Volume + clear view + baseline static
+Full black: opaque persistent loading cover → restored level fade-in
+```
+
+- Add one scene-owned full-viewport black Image/Canvas dedicated to cancellable interference blackout. Use screen-space overlay, responsive anchors and sorting above ordinary gameplay UI, black alpha 0 initially. Raycast Target is false during reversible blackout so it cannot block Radio or pause UI.
+- Persistent committed retry cover uses the established retry overlay at exact alpha 1 before scene unload. Never introduce a transparent handoff frame or a second fade-out from zero.
+- Respect ShowHUD/ToolTips and pause/capture visibility. Hidden tooltip does not disable Radio interaction. Failures use existing coordinator status plus visible project-style error feedback if that status is not currently displayed; never leave an unexplained opaque screen or only log a recoverable failure.
+
+# Key Asset & Context
+## Confirmed live configuration
+- Neighborhood is dirty and loaded. Scene roots `Player`, `SirenHeadEnemy`, `Radio`, `Global Volume`, `Global Volume (1)` are present and active.
+- `Main Camera (1)` is the active Base camera; post-processing is enabled and mask includes Default layer. Both Volumes are global on Default, weight 1, priority 0: presently both influence the view.
+- Original profile: `Assets/Settings/SampleSceneProfile.asset` (Tonemapping, Bloom, Vignette; MotionBlur inactive). Also referenced by PC/Mobile pipeline assets and other scenes; do not modify it globally.
+- Danger profile: `Assets/TestScene/Global Volume (1) Profile.asset` (active Vignette, DepthOfField, ChromaticAberration with overridden parameters). Despite its path, this is the supplied danger profile. Preserve authored values and profile persistence.
+- Radio is an untagged prefab instance from `Assets/Imported/AK STUDIO ART/Radio/Prefabs/Radio.prefab`, with enabled non-trigger MeshCollider and no interaction/audio component. Add only scene-instance components; leave imported prefab unchanged and do not register Radio as a pickup/save object.
+- InteractionSystem lives on `PlayerFollowCamera`, has assigned Player/hand/Animator/InteractionPrompt, but playerCamera is unassigned and falls back to Camera.main. Bind the actual `Main Camera (1)` locally for deterministic interaction behavior.
+- `GameplaySaveAdapter.BlockInput` controls controller, PlayerInput and InteractionSystem.PersistenceInputBlocked. `GameSaveManager.BeginEncounter`, `HasEntryCheckpoint`, `RetrySceneEntry` already provide immutable checkpoint and retry ownership. Its retry coroutine restores under black and releases after FadeIn.
+- `DeathRetryTransition.Initialize` currently sets alpha 0 and RetryEntryRoutine always calls FadeOut: a small backwards-compatible already-black entry is necessary to avoid double fade/flash after progressive blackout.
+- Current Console has no errors in the retrieved entries, but existing negative-scale house BoxCollider warnings. Record as baseline; fixing unrelated house colliders is outside this feature.
+- Dependency/dependent checks were performed via read-only AssetDatabase.GetDependencies and asset scans because no dedicated dependency tool is available. InteractionSystem is shared with CarScene/Garden/Test/recovery scenes. Changes must be optional/backwards-compatible; do not edit those scenes.
+
+## New assets
+- `Assets/Scripts/Enemies/PlayerInterferenceController.cs`: dedicated AudioSource ownership, validated exposure/blackout state, explicit Player/enemy/Volume/UI/save references, readiness/pause/capture gates, reset and guarded already-black retry.
+- `Assets/Scripts/RadioInteraction.cs`: scene-instance proximity/obstruction eligibility and reset API; no separate input polling or prompt writer. Proposed API `CanInteract(Transform player, Camera view)` and `TryResetInterference(...)`, revalidated at action time.
+- Neighborhood scene-owned `Player/InterferenceAudio` AudioSource and `InterferenceBlackout` Canvas/Image; reuse existing fade image/material asset where suitable without changing the asset globally.
+- Optional focused tests under `Assets/Tests/Interference/` using installed compatible test support; no additional packages solely for this task.
+
+## Existing assets to modify
+- `Assets/Scenes/Neighborhood Scene.unity`: new components/UI/audio, Radio scene override, explicit camera/interaction references, initial mutually exclusive Volume state. Save current authorized unsaved edits intact.
+- `Assets/Scripts/InteractionsSystem.cs`: optional Radio reference, unified F event processing/consumption, prompt precedence and shared pause/block gates. Preserve public pickup/drop/held-item APIs.
+- `Assets/Scripts/Saving/GameSaveManager.cs`: add explicit already-black retry API or backwards-compatible overload routed through existing checkpoint routine. Validate prior to load, acquire input lock under existing encounter guard, skip only outgoing fade for this entry, retain opaque loading/restore/FadeIn and failure cleanup. Existing physical-capture overloads retain behavior.
+- `Assets/Scripts/Transitions/DeathRetryTransition.cs`: optional initial alpha/already-black initialization and correct LoadingBlack phase; old callers still start at 0. Retain material/effect lifecycle and existing reveal/black hold.
+- Other assets are read-only by default: PlayerCaptureSequence, SirenHeadAI, GameplaySettingsApplier, pause/settings/save DTOs, original/danger profiles, supplied wav/import settings, imported Radio prefab, shared fade assets and PlayerInput asset. If an additional integration edit proves necessary, inspect impact and revise scope before making it.
+
+# Implementation Steps
+1. **Recheck impact and current wiring.** Dependency: approval of this amendment. Reinspect all existing edit targets/dependents and live references before edits, preserve dirty Neighborhood, snapshot Volume enabled/weight states and AudioSource configuration, inspect overlay sorting and runtime readiness. Confirm no previous interference system exists or stale automated cleanup is armed. Verify actual Radio collider occlusion and camera mask/profile override persistence; no global pipeline changes.
+2. **Implement accumulator and dedicated audio.** Dependency: Step 1. Create PlayerInterferenceController with normalized exposure, Inspector bounds/tooltips, grouped references/runtime diagnostics, baseline initialization and a separate looped 2D source. Gate scaled timers on readiness/pause/block/capture, handle missing references without exception spam, and implement atomic Radio reset with no stale blackout coroutine.
+3. **Implement reversible view state.** Dependency: Steps 1–2. Wire exclusive Volume enabled/weight switching without editing profile assets. Create the full-screen non-intercepting black overlay, ramp alpha only at maximum, exact reset/endpoints, restore only controller-owned state on disable/failure. Process Radio reset before blackout commitment in a deterministic frame phase so one accepted press can cancel a pending full-black transition.
+4. **Integrate Radio and F ownership.** Dependency: Steps 1–3. Add RadioInteraction to the existing Radio instance, calculate bounded proximity/occlusion eligibility, wire optional Radio reference and actual camera on InteractionSystem. Replace F polling with a managed event-driven InputAction, consume Radio press before pickup/drop, add exact `Press F` prompt precedence while respecting HUD/tooltips/pause/block. Never reparent/pick up Radio or drop held items on Radio use; no persistent-ID changes.
+5. **Implement opaque checkpoint handoff.** Dependency: Steps 1–4. Add backwards-compatible initial-alpha support and an already-black retry entry to the persistent coordinator. At full black validate checkpoint/destination, claim encounter once, block input/HUD, initialize persistent cover at alpha 1 before releasing scene cover, skip redundant FadeOut and use existing restore/hold/FadeIn completion. Keep opacity through outgoing destruction and restoration; suppress retry autosave as before. Recover without clearing another encounter's locks or modifying saves if validation/load/restore/overlay fails.
+6. **Wire Neighborhood and preserve other systems.** Dependency: Steps 2–5. Assign the supplied clip, two Volumes, Player/enemy/Radio/collider, interaction/prompt/camera/save adapter and established fade assets. Serialize tuning defaults and normal initial Volume state. Verify physical capture wins contention cleanly, direct scene play and menu/save load bootstrap correctly, and partial blackout still allows Radio and ordinary pause.
+7. **Focused tests and save.** Dependency: Steps 2–6. Compile incrementally, run bounded isolated state/input/retry tests and actual Game View audio/Volume/partial-black/full-black checks. Protect user saves with an isolated test directory; never delete them or introduce deferred cleanup hooks. Save intended assets and authorized scene edits, remove temporary diagnostics safely and report evidence versus unperformed checks.
+
+# Verification & Testing
+- On fresh entry, static loops continuously at baseline, original Volume exclusively active, danger inactive and alpha 0. Existing footsteps, chase music, enemy effects and pause/menu audio remain unaffected; music slider does not scale static.
+- Stay inside radius for half configured time: exposure approximately 0.5 and volume halfway between baseline/max. Leave radius: exposure holds. Reenter: accumulation resumes. Test boundary/vertical separation and 30/60/120 FPS where available; no distance-based instant jump or decay.
+- Maximum is Inspector-adjustable. Invalid/NaN/negative settings, baseline >= maximum, zero time/radius and missing references fail safely/clamp with clear diagnostics, no divide-by-zero or repeated logs. Inspector changes do not produce an unintended retry.
+- Just below maximum: normal Volume and no darkening. At maximum: danger Volume applied and gradual alpha begins in the same frame. Game View confirms actual effect and alpha near 0.5, then exact 1; bright sky/HUD cannot remain visible at full black. Shared profile assets/default pipeline settings remain unchanged.
+- Near Radio with view looking away: prompt appears if within range/unobstructed. Outside range/behind solid wall/floor: no prompt or reset. HUD/tooltips off hides prompt but F still works when otherwise eligible. Pause/load/capture suppress action and clear buffered presses.
+- Radio F during accumulation or partial blackout resets baseline, normal Volume and exact transparent alpha immediately. Held flashlight stays held/on/off as before; no pickup, drop, door toggle or second action from the same F. Hold F generates one press, repeated presses and repeated enable/disable do not duplicate listeners.
+- Radio use on the final reversible blackout frame wins if accepted before retry commitment. After commitment input is blocked and exactly one retry occurs; physical capture/intro/load never run a second competing blackout or scene load.
+- Pause mid-accumulation/mid-blackout freezes timers; audio remains looping. Resume continues, focus loss cannot accumulate time or replay stale F. Disable/destroy/missing enemy or Radio recovers owned visual/audio state without altering external inactive objects or capture ownership.
+- Full black restores scene-entry player pose/pitch/doors/items/held-light state, not latest manual-save or death pose; exposure is baseline afterward. Persistent opaque cover prevents flashes; reveal completes before HUD/input/AI unlock. Manual/autosave bytes, persistent IDs/counts and other visited scenes remain unchanged; no retry-entry autosave.
+- Repeated interference retries and physical-capture retries, direct Neighborhood play, Continue/selected save load, New Game and menu return show no duplicate AudioSources/overlays/listeners, stuck Busy/Encounter state or changed death-fade semantics. Other scenes have no new Radio UI/feature by default and existing F pickup/drop remains functional.
+- Test two window sizes for full coverage/readability, capture actual rendered evidence and check Console against existing collider warnings. Do not claim standalone/audio perceptual quality/all-FPS checks passed unless performed; avoid the previous forced-domain-reload/long-test timeout workflow.
+
