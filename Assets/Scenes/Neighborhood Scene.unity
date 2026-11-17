@@ -1907,6 +1907,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &3282381
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3195,6 +3196,7 @@ MonoBehaviour:
   isOpen: 1
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &5455876
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4103,6 +4105,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &6993032 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 9022828524908094553, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -8967,6 +8970,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &14398405 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 4478725221023404705, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -11412,6 +11416,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &19240542 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8166552965807704360, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -12046,6 +12051,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &20233678 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 5500663415762314275, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -15642,6 +15648,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &25319040
 GameObject:
   m_ObjectHideFlags: 0
@@ -16736,6 +16743,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &26699814 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2972151383279987965, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -23240,6 +23248,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1001 &36353912
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26280,6 +26289,7 @@ MonoBehaviour:
   isOpen: 1
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &40680283
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -32134,6 +32144,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &49908499
 GameObject:
   m_ObjectHideFlags: 0
@@ -32268,6 +32279,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &49917149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32303,6 +32315,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &49953449
 GameObject:
   m_ObjectHideFlags: 0
@@ -33804,6 +33817,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &52004884 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7517512641853973701, guid: 26d160590c290d6479ff3ef9ccfa6ab8, type: 3}
@@ -34829,6 +34843,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &53722855
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -39260,6 +39275,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &59248436
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -40549,6 +40565,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &61275726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40940,6 +40957,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &62012934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49778,6 +49796,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &76281096
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -51199,6 +51218,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &78111393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61307,6 +61327,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &91783746
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -66580,6 +66601,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &97925121
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -66783,6 +66805,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &97979252
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77870,6 +77893,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &112357281
 GameObject:
   m_ObjectHideFlags: 0
@@ -79893,6 +79917,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &115859324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87417,6 +87442,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &125277831
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -88180,6 +88206,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &126113990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89250,6 +89277,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &127551694
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -90951,6 +90979,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &129610367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90994,6 +91023,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &129711825 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 9165279605203688797, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -97887,6 +97917,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &140405486
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -99564,6 +99595,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &142144049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101007,6 +101039,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &143768105
 GameObject:
   m_ObjectHideFlags: 0
@@ -103031,6 +103064,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &145775910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105261,6 +105295,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &147751402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110878,6 +110913,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &156211758
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -112073,6 +112109,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &157428866
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -114869,6 +114906,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &161667474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119681,6 +119719,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &168173917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124968,6 +125007,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &175384165 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8817421645360299846, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -129520,6 +129560,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &182055130
 GameObject:
   m_ObjectHideFlags: 0
@@ -129822,6 +129863,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &182480477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130379,6 +130421,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &183330132
 GameObject:
   m_ObjectHideFlags: 0
@@ -130568,6 +130611,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &183693798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135228,6 +135272,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &189819320 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7302379567893309633, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -135255,6 +135300,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &189919732 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 406538501381722172, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -136368,6 +136414,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &191385221
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -138254,6 +138301,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &193915642
 GameObject:
   m_ObjectHideFlags: 0
@@ -140312,6 +140360,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &196595907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141223,43 +141272,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 197527410}
   m_Mesh: {fileID: -6428837087573045711, guid: e0147f4678533444ca8209554a9ead22, type: 3}
---- !u!84 &197537387
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 6
-  m_Width: 128
-  m_Height: 128
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 94
-  m_ColorFormat: 48
-  m_MipMap: 1
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_UseDynamicScaleExplicit: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!23 &197551581 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 318959961704365387, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -145248,6 +145260,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &204525872 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 9022828526578170406, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -151490,6 +151503,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &211177120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153450,6 +153464,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &214596183
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -163229,6 +163244,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &227917066
 GameObject:
   m_ObjectHideFlags: 0
@@ -164532,6 +164548,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &229481423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164627,6 +164644,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &229662062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170253,6 +170271,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &238453102
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -170771,6 +170790,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &239435969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -172282,6 +172302,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &242305545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175212,6 +175233,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &245607098
 GameObject:
   m_ObjectHideFlags: 0
@@ -182385,6 +182407,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &254756671
 GameObject:
   m_ObjectHideFlags: 0
@@ -182844,6 +182867,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &255440463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184116,6 +184140,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &257398709
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -188268,6 +188293,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &263768990 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 4478725219876025845, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -191925,6 +191951,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &268598627
 GameObject:
   m_ObjectHideFlags: 0
@@ -192086,6 +192113,7 @@ MonoBehaviour:
   isOpen: 1
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &268902629
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -194885,6 +194913,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &272472025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195486,6 +195515,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &273357545
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -199122,6 +199152,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &277985857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199304,6 +199335,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &278342685 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3491840785971477003, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -203662,6 +203694,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &284886121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204102,6 +204135,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &285805175
 GameObject:
   m_ObjectHideFlags: 0
@@ -204792,6 +204826,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1001 &286791187
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -205898,6 +205933,7 @@ MonoBehaviour:
   isOpen: 1
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &288734938
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -207381,6 +207417,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &290969761
 GameObject:
   m_ObjectHideFlags: 0
@@ -209880,6 +209917,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &294035311 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 816525954977324305, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -211251,6 +211289,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &296340493
 GameObject:
   m_ObjectHideFlags: 0
@@ -212780,6 +212819,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &298502940
 GameObject:
   m_ObjectHideFlags: 0
@@ -214594,6 +214634,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &300915030
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -218468,6 +218509,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &306371215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -220787,6 +220829,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &308190847
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -222739,6 +222782,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &310430170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -222977,6 +223021,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &311132803
 GameObject:
   m_ObjectHideFlags: 0
@@ -224989,6 +225034,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &314162457
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -226435,6 +226481,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &315905783
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -228580,6 +228627,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &318127218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232449,6 +232497,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &324046466 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3957469275823738455, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -235057,6 +235106,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &327599465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -235908,6 +235958,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &328802517
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -240353,6 +240404,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &335586647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242540,6 +242592,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &337883887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -248088,6 +248141,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &346196407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251771,6 +251825,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &351383019
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -256455,6 +256510,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &358107558
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -264192,6 +264248,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &369710820
 GameObject:
   m_ObjectHideFlags: 0
@@ -264464,6 +264521,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &370258738 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 5798211551801932507, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -264658,6 +264716,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &370597008
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -271625,6 +271684,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &378979234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277184,6 +277244,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &388597814
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -277940,6 +278001,44 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
+--- !u!84 &389518007
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 6
+  m_Width: 128
+  m_Height: 128
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 94
+  m_ColorFormat: 48
+  m_MipMap: 1
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_UseDynamicScaleExplicit: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &389554230
 GameObject:
   m_ObjectHideFlags: 0
@@ -283466,6 +283565,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &397448269 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 606948547028830970, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -285693,6 +285793,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &400349653
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -289041,43 +289142,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 405153842}
   m_Mesh: {fileID: 3733811609290154684, guid: e0147f4678533444ca8209554a9ead22, type: 3}
---- !u!84 &405305180
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 6
-  m_Width: 128
-  m_Height: 128
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 94
-  m_ColorFormat: 48
-  m_MipMap: 1
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_UseDynamicScaleExplicit: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1001 &405312728
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -290326,6 +290390,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &407217186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -290569,6 +290634,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &407868554
 GameObject:
   m_ObjectHideFlags: 0
@@ -292437,6 +292503,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &410169570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -299465,6 +299532,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &419458456
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303015,6 +303083,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &424216831
 GameObject:
   m_ObjectHideFlags: 0
@@ -305772,6 +305841,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &427386304 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2821791298081994960, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -306172,6 +306242,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &427915193
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -310213,6 +310284,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &432636634
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -311394,6 +311466,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &433731451
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -313752,6 +313825,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &436595061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315607,6 +315681,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &438331833
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -316843,6 +316918,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &439412387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -319690,6 +319766,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &441534042
 GameObject:
   m_ObjectHideFlags: 0
@@ -333550,6 +333627,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &460968879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343360,6 +343438,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &473914511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343495,6 +343574,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &474248691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -346753,6 +346833,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &477434800
 GameObject:
   m_ObjectHideFlags: 0
@@ -348746,6 +348827,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &480103989 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1136735138599842425, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -349026,6 +349108,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &480628481
 GameObject:
   m_ObjectHideFlags: 0
@@ -349655,6 +349738,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &481317216 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 4152361363580878857, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -351119,6 +351203,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &482436958
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -351286,6 +351371,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &482601638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351443,6 +351529,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &483099406
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -364185,6 +364272,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &502052837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -365568,6 +365656,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &504048289
 GameObject:
   m_ObjectHideFlags: 0
@@ -368388,6 +368477,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &507329286
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -380017,6 +380107,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &520962231
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -383576,6 +383667,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &525806918 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8906522320632082897, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -387779,6 +387871,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &532536076
 GameObject:
   m_ObjectHideFlags: 0
@@ -396495,6 +396588,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &545354017 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4627336813564018222, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -397265,6 +397359,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &545735434
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397779,6 +397874,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &546628367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397863,6 +397959,7 @@ MonoBehaviour:
   isOpen: 1
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &546832683
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -399738,6 +399835,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &549616344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -412266,6 +412364,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &566206885
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -420217,6 +420316,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &576633730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -423177,6 +423277,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &581047538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -424300,6 +424401,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &582404767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -429049,6 +429151,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &588925285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -430433,6 +430536,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &591147989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -435818,6 +435922,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &598540199
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -442465,6 +442570,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &606859710
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -448554,6 +448660,7 @@ MonoBehaviour:
   isOpen: 1
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &615431291
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -450110,6 +450217,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &616624193
 GameObject:
   m_ObjectHideFlags: 0
@@ -453396,6 +453504,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &620663234
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -455026,6 +455135,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &623419516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -464413,6 +464523,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &636822523 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 114300640932267085, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -465560,6 +465671,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &637879965
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -466048,6 +466160,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &638415039
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -473975,6 +474088,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &647474972
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -474408,6 +474522,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &648162990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -475346,6 +475461,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &649632895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476188,7 +476304,9 @@ MonoBehaviour:
   animator: {fileID: 1116793966}
   playerCamera: {fileID: 2081317053}
   promptText: {fileID: 852171978}
+  doorKeyPickup: {fileID: 0}
   radioInteraction: {fileID: 591457078}
+  additionalRadios: []
 --- !u!23 &650808830 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1049327857775589762, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -492540,6 +492658,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &674102346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -493557,6 +493676,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &675750767
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -494142,6 +494262,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &676323576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -495190,6 +495311,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &678489592
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -501895,6 +502017,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &690537462
 GameObject:
   m_ObjectHideFlags: 0
@@ -502068,6 +502191,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &690774259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -505904,6 +506028,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &695742468
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -506017,6 +506142,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &695784154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -510456,6 +510582,43 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 700917711}
   m_Mesh: {fileID: 4803645095775272474, guid: e0147f4678533444ca8209554a9ead22, type: 3}
+--- !u!84 &701059168
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 6
+  m_Width: 128
+  m_Height: 128
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 94
+  m_ColorFormat: 48
+  m_MipMap: 1
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_UseDynamicScaleExplicit: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &701067573
 GameObject:
   m_ObjectHideFlags: 0
@@ -511512,6 +511675,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &702458445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -513564,6 +513728,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &705372887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -518076,6 +518241,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &712588262 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 895009857956947894, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -519728,6 +519894,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &715114867 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1493000167400940652, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -527741,6 +527908,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &727741423
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -530055,6 +530223,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &730844139 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 9034276545166701551, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -531490,6 +531659,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &732751598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -534520,6 +534690,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &737083027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -536886,6 +537057,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &739932551 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8941196769770272592, guid: 2f31c755d56a1f04c99079c171333c33, type: 3}
@@ -544179,6 +544351,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &748902057
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -555418,6 +555591,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &765423218
 GameObject:
   m_ObjectHideFlags: 0
@@ -558677,6 +558851,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &769173104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -561410,6 +561585,7 @@ MonoBehaviour:
   isOpen: 1
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &772431909
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -562935,6 +563111,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &773745534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -567523,6 +567700,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &780782025 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7657820249608447347, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -569755,6 +569933,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &783683344 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1737754186267151624, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -571473,6 +571652,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &785253236
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -573116,6 +573296,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &787290040
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -575790,6 +575971,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &791080787 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1745111946471003141, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -577535,6 +577717,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &792602378
 GameObject:
   m_ObjectHideFlags: 0
@@ -578711,6 +578894,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &793541253
 GameObject:
   m_ObjectHideFlags: 0
@@ -579046,6 +579230,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &793715494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -580515,6 +580700,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &795680381
 GameObject:
   m_ObjectHideFlags: 0
@@ -582904,6 +583090,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &799087250 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8296445972503996290, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -588038,6 +588225,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &805849302
 GameObject:
   m_ObjectHideFlags: 0
@@ -588324,6 +588512,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &806477242 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 5678725053138152779, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -590251,6 +590440,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &808568106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -597259,6 +597449,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &817839642
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -600910,6 +601101,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &821554601
 GameObject:
   m_ObjectHideFlags: 0
@@ -602625,6 +602817,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &823380954 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7867704216467423083, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -605404,6 +605597,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &826632487
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -606253,6 +606447,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &827932457 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6552275708969368975, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -608652,6 +608847,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &831372279
 GameObject:
   m_ObjectHideFlags: 0
@@ -610613,6 +610809,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &833070813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -616136,6 +616333,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &841056661 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2460025229315588436, guid: c15d410319a3fc449a637a9f52b8bc82, type: 3}
@@ -617813,6 +618011,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &843753803
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -622321,6 +622520,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &850093829
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -633254,6 +633454,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &866519090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -635176,6 +635377,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &869629691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -635416,6 +635618,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &870371030
 GameObject:
   m_ObjectHideFlags: 0
@@ -637155,6 +637358,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &872659191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -637208,6 +637412,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &873283295
 GameObject:
   m_ObjectHideFlags: 0
@@ -637477,6 +637682,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &873462541
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -638481,6 +638687,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &874810574
 GameObject:
   m_ObjectHideFlags: 0
@@ -638818,6 +639025,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &874919468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -650824,6 +651032,7 @@ MonoBehaviour:
   isOpen: 1
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &891879528
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -660447,6 +660656,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &906939763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -661895,6 +662105,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &908975458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -668093,6 +668304,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &918103778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -673573,6 +673785,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &926544112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -678204,6 +678417,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &931657903
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -683921,6 +684135,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &937843932
 GameObject:
   m_ObjectHideFlags: 0
@@ -686090,6 +686305,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &940493208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -687245,6 +687461,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &942563908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -688480,6 +688697,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &944124925 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2075933864400427928, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -690823,6 +691041,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &947489752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -697798,6 +698017,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &955738296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -707707,6 +707927,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &969007019
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -709058,6 +709279,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &970630813
 GameObject:
   m_ObjectHideFlags: 0
@@ -719794,6 +720016,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &985343219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -720769,6 +720992,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &987122435
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -728338,6 +728562,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &996174290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -753860,6 +754085,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1029134165
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -755520,6 +755746,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1031638328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -768261,6 +768488,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1049235780
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -772033,6 +772261,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1055539585 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2569340746182773912, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -777968,6 +778197,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1063258174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -780791,6 +781021,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1067488903 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1347987148966354858, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -783986,6 +784217,7 @@ MonoBehaviour:
   isOpen: 1
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1072185879
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -784311,6 +784543,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &1072419813
 GameObject:
   m_ObjectHideFlags: 0
@@ -790732,6 +790965,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1080499594
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -805010,6 +805244,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1102576273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -810637,6 +810872,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1109493165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -815641,6 +815877,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1116480653 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7559524551984621372, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -821384,6 +821621,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1123316266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -824798,6 +825036,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1127855889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -825056,6 +825295,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &1128521805
 GameObject:
   m_ObjectHideFlags: 0
@@ -825299,6 +825539,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &1129095062
 GameObject:
   m_ObjectHideFlags: 0
@@ -825704,6 +825945,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1129363944 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 271824676086945192, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -826494,6 +826736,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1131319409
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -830636,6 +830879,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1136417459
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -831349,6 +831593,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1137483446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -831684,6 +831929,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1138154387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -839502,6 +839748,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1149216100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -840734,6 +840981,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1151217091
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -841595,6 +841843,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1151885744
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -844488,6 +844737,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1155742417
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -845561,6 +845811,7 @@ MonoBehaviour:
   isOpen: 1
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1156859726
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -845892,6 +846143,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1157194878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -854665,6 +854917,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1170375121
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -861464,6 +861717,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &1178084832
 GameObject:
   m_ObjectHideFlags: 0
@@ -865134,6 +865388,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1183505742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -865707,6 +865962,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1184849194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -873258,6 +873514,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1197107398
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -874442,6 +874699,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1198638607 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 4692371250684766990, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -882769,6 +883027,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1209595660
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -883978,6 +884237,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1210628363
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -884013,6 +884273,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1210721656 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 4374124948105020833, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -885154,6 +885415,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1212268930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -887693,6 +887955,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1215894383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -891573,6 +891836,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1222270532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -896751,6 +897015,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1230373033
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -896864,6 +897129,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1230373083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -900796,6 +901062,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1235827169 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 414737100943594133, guid: 26d160590c290d6479ff3ef9ccfa6ab8, type: 3}
@@ -905674,6 +905941,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &1241774627
 GameObject:
   m_ObjectHideFlags: 0
@@ -914295,6 +914563,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1251367206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -915568,6 +915837,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1252942558
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -918303,6 +918573,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &1255858797 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4129265837137250423, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -924224,6 +924495,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1262016558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -925823,6 +926095,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1263362671
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -928664,6 +928937,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1267477181 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 406538501498621467, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -935403,6 +935677,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1276349958 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7657820249253082583, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -935766,6 +936041,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1277149300
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -948529,6 +948805,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1293880096 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 5892391350986957897, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -949895,6 +950172,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1296095914
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -951787,6 +952065,7 @@ MonoBehaviour:
   isOpen: 1
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1298803894
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -952245,6 +952524,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1299753897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -956197,6 +956477,7 @@ MonoBehaviour:
   isOpen: 1
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1305415875
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -959913,6 +960194,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1310811431
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -966075,6 +966357,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1319515607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -966739,6 +967022,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1320622634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -971714,6 +971998,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1327846057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -972702,6 +972987,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1329157252
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -975795,6 +976081,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1332901536 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8486015412927646072, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -978465,6 +978752,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1336668093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -981853,6 +982141,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1342708718
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -982574,6 +982863,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1343702725
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -982811,6 +983101,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1343800790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -985440,6 +985731,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1347409695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -986407,6 +986699,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1348718774
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -986709,6 +987002,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1349229829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -990234,6 +990528,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1355223679
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -991233,6 +991528,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1356470793
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -992486,6 +992782,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1358531736 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1892776106809533287, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -993729,6 +994026,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1362112631 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 5926327799594363650, guid: 26d160590c290d6479ff3ef9ccfa6ab8, type: 3}
@@ -999473,6 +999771,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1370814120
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1000474,6 +1000773,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1372460567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1002275,6 +1002575,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1374771535
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1002498,6 +1002799,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1375076135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1003436,6 +1003738,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &1375763808
 GameObject:
   m_ObjectHideFlags: 0
@@ -1005836,6 +1006139,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1379001825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1020062,6 +1020366,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1397769895
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1023011,6 +1023316,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1401555172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1025170,6 +1025476,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1405019656
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1033062,6 +1033369,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1413670050
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1034163,6 +1034471,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1414956909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1045469,6 +1045778,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1432673865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1046884,6 +1047194,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1434724640
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1048483,6 +1048794,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1436581311
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1073146,6 +1073458,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1444385150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1078767,6 +1079080,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1451653891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1083966,6 +1084280,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1460163336
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1085870,6 +1086185,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1462633834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1086747,6 +1087063,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1463690994 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7510869484074330306, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -1087452,6 +1087769,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1463825269
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1092806,6 +1093124,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1473068741
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1095971,6 +1096290,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1477833075 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2395050710816839654, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -1100551,6 +1100871,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1483494499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1103133,6 +1103454,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1487400083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1105381,6 +1105703,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1490037508 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2978617232077520271, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -1109550,6 +1109873,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1495665382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1119853,6 +1120177,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1511765430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1120696,6 +1121021,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1513067521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1122213,6 +1122539,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1516094374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1123655,6 +1123982,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &1518276164
 GameObject:
   m_ObjectHideFlags: 0
@@ -1124628,6 +1124956,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1519454564
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1125459,6 +1125788,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1521111060
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1129970,6 +1130300,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1527906506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1137808,6 +1138139,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1537373622
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1140439,6 +1140771,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1540739895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1150181,6 +1150514,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1555641960
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1152463,6 +1152797,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1557379169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1159166,6 +1159501,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1566067882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1160690,6 +1161026,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1567928105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1160954,6 +1161291,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1568090926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1160989,6 +1161327,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1568134599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1164917,6 +1165256,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1573338598 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1497219424813210336, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -1168656,6 +1168996,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1578270961
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1172311,6 +1172652,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1582873294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1175396,6 +1175738,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &1587636524
 GameObject:
   m_ObjectHideFlags: 0
@@ -1178373,6 +1178716,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1593332901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1182824,6 +1183168,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1600340895
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1184420,6 +1184765,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1602090293
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1192751,6 +1193097,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1612914642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1198761,6 +1199108,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &1621034902
 GameObject:
   m_ObjectHideFlags: 0
@@ -1199284,6 +1199632,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 1
 --- !u!114 &1621555471
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1199442,6 +1199791,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1621752268 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 5500663415918249043, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -1204793,6 +1205143,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1627846292
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1204890,6 +1205241,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1627936574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1212718,6 +1213070,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1639085053 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 9022828526126346317, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -1218118,6 +1218471,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1644438587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1237332,6 +1237686,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1668496731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1238859,6 +1239214,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1670996024 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1704208852523485217, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -1242098,6 +1242454,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1675826571 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1683379546531460567, guid: 4777a8928b5c97d4598964909c8a1223, type: 3}
@@ -1247440,6 +1247797,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1683957207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1248838,6 +1249196,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1685359692
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1254255,6 +1254614,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1691850073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1260526,6 +1260886,7 @@ MonoBehaviour:
   isOpen: 1
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1701145598
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1271505,6 +1271866,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1715443099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1272272,6 +1272634,7 @@ MonoBehaviour:
   isOpen: 1
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1716315729
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1274422,6 +1274785,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1719763098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1278351,6 +1278715,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1723456336
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1283712,6 +1284077,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1729077234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1284838,6 +1285204,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1731196170
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1285963,6 +1286330,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1732522806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1297958,6 +1298326,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1747489877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1301463,6 +1301832,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1752745121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1304535,6 +1304905,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1757663028 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1168581452326979228, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -1304795,6 +1305166,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1757839354
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1311752,6 +1312124,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1768485161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1317976,6 +1318349,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &1776911610
 GameObject:
   m_ObjectHideFlags: 0
@@ -1327052,6 +1327426,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1787161185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1334525,6 +1334900,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1796952226 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 4539778305486020432, guid: 4d7c3441f36ad314eac2f1f4517aca7d, type: 3}
@@ -1337972,6 +1338348,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1801601221
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1340354,6 +1340731,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1804511245
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1342554,6 +1342932,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1807591184
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1345412,6 +1345791,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1811162159 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3314043728401861637, guid: 71adca0decb8bcc49aacf03ce0eba097, type: 3}
@@ -1347157,6 +1347537,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!1 &1814575973
 GameObject:
   m_ObjectHideFlags: 0
@@ -1347730,6 +1348111,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1815792001
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1350107,6 +1350489,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1820170808
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1353279,6 +1353662,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1825099599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1363128,6 +1363512,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1838767697
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1365845,6 +1366230,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1842447419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1365880,6 +1366266,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1842473652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1376642,6 +1377029,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1856106253
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1379989,6 +1380377,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1860379573
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1385678,6 +1386067,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1869672122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1397114,6 +1397504,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1885414190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1400262,6 +1400653,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1889948257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1401546,6 +1401938,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1891229266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1403320,6 +1403713,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1893229946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1405093,6 +1405487,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1896188810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1406154,6 +1406549,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1897253977
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1407790,6 +1408186,7 @@ MonoBehaviour:
   isOpen: 1
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1899980685
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1408285,6 +1408682,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1901743531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1411318,6 +1411716,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1905968880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1416314,6 +1416713,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1914394095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1419685,6 +1420085,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1919051639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1427466,6 +1427867,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1929235990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1432152,6 +1432554,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1935239657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1432633,6 +1433036,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1936088204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1433544,6 +1433948,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1937562184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1434736,6 +1435141,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1939778313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1435162,6 +1435568,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1940352041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1436675,6 +1437082,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1942263156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1447478,6 +1447886,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1954019107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1450007,6 +1450416,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1957487321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1465196,6 +1465606,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1981303897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1474106,6 +1474517,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &1993402356
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1474291,6 +1474703,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &1993646011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1478832,6 +1479245,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &1998458033
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1481558,6 +1481972,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &2003193257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1485546,6 +1485961,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &2009541514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1491751,6 +1492167,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &2016439990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1494144,6 +1494561,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &2020240562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1496743,6 +1497161,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &2022916459
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1498615,6 +1499034,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &2025027612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1507792,6 +1508212,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &2037828378
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1517502,6 +1517923,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &2051091611
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1527769,6 +1528191,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &2064432121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1531767,6 +1532190,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &2069392464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1535389,6 +1535813,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &2074351482
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1536192,6 +1536617,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &2076349505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1540030,8 +1540456,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2081317049}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.554836, z: -0, w: -0.8319598}
-  m_LocalPosition: {x: 46.017406, y: 1.5162542, z: 50.434067}
+  m_LocalRotation: {x: 0, y: -0.5548358, z: 0, w: -0.83195984}
+  m_LocalPosition: {x: 46.017403, y: 1.5162542, z: 50.434055}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1543405,6 +1543831,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &2085733468
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1544527,6 +1544954,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &2087541319
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1554914,6 +1555342,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &2100730613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1555624,6 +1556053,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &2101856695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1558715,6 +1559145,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &2105612814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1561834,6 +1562265,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!23 &2110189249
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1572901,6 +1573333,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &2126559352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1583962,6 +1584395,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &2142086862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1584031,6 +1584465,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!65 &2142144361
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1585742,6 +1586177,7 @@ MonoBehaviour:
   isOpen: 0
   interactionDistance: 3
   doorName: Puerta
+  requiresDoorKey: 0
 --- !u!114 &2144369270
 MonoBehaviour:
   m_ObjectHideFlags: 0

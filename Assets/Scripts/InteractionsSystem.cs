@@ -47,8 +47,37 @@ public class InteractionSystem : MonoBehaviour
     public GameObject CurrentInteractable => currentInteractable;
 
     private bool _showPrompts;
+    [Header("Optional Door Key")]
+    [SerializeField] private DoorKeyPickup doorKeyPickup;
     [Header("Optional Radio Recovery")]
     [SerializeField] private RadioInteraction radioInteraction;
+    [Tooltip("Additional recovery stations for this Player. No scene search or extra input listener is used.")]
+    [SerializeField] private RadioInteraction[] additionalRadios;
+
+    private RadioInteraction ResolveRadio()
+    {
+        if (playerTransform == null || playerCamera == null) return null;
+        RadioInteraction selected = null;
+        float nearestDistance = float.PositiveInfinity;
+        if (radioInteraction != null && radioInteraction.CanInteract(playerTransform, playerCamera))
+        {
+            selected = radioInteraction;
+            nearestDistance = (radioInteraction.transform.position - playerTransform.position).sqrMagnitude;
+        }
+        if (additionalRadios != null)
+        {
+            foreach (var radio in additionalRadios)
+            {
+                if (radio == null || radio == radioInteraction || !radio.CanInteract(playerTransform, playerCamera)) continue;
+                float distance = (radio.transform.position - playerTransform.position).sqrMagnitude;
+                if (distance >= nearestDistance) continue;
+                selected = radio;
+                nearestDistance = distance;
+            }
+        }
+        return selected;
+    }
+
     private bool _fPending;
     private bool _hasFocus = true;
 #if ENABLE_INPUT_SYSTEM
@@ -331,7 +360,10 @@ public class InteractionSystem : MonoBehaviour
     {
         if (!InteractionInputAllowed) { _fPending = false; return; }
         bool fPressed = IsFPressed();
-        if (fPressed && radioInteraction != null && radioInteraction.TryResetInterference(playerTransform, playerCamera))
+        if (fPressed && doorKeyPickup != null && doorKeyPickup.TryPickUp(playerTransform, playerCamera))
+            fPressed = false;
+        var radio = fPressed ? ResolveRadio() : null;
+        if (radio != null && radio.TryResetInterference(playerTransform, playerCamera))
             fPressed = false;
         bool ePressed = IsEPressed();
         bool rightClickPressed = IsRightClickPressed();
@@ -448,6 +480,7 @@ public class InteractionSystem : MonoBehaviour
     public void PickUpObject(GameObject obj)
     {
         if (obj == null) return;
+        if (doorKeyPickup != null && doorKeyPickup.Owns(obj)) return;
         if (IsDoor(obj)) return; // Doors can never be picked up or carried
         if (handPoint == null)
         {
@@ -570,10 +603,26 @@ public class InteractionSystem : MonoBehaviour
             promptText.text = "";
             return;
         }
-        if (radioInteraction != null && radioInteraction.CanInteract(playerTransform, playerCamera))
+        if (doorKeyPickup != null && doorKeyPickup.CanInteract(playerTransform, playerCamera))
         {
             promptText.text = "Press F";
             return;
+        }
+        if (ResolveRadio() != null)
+        {
+            promptText.text = "Press F";
+            return;
+        }
+
+        if (currentInteractable != null)
+        {
+            var lockedDoor = currentInteractable.GetComponent<InteractiveDoor>();
+            if (lockedDoor == null) lockedDoor = currentInteractable.GetComponentInChildren<InteractiveDoor>();
+            if (lockedDoor != null && lockedDoor.IsLocked)
+            {
+                promptText.text = "Locked — DoorKey required";
+                return;
+            }
         }
 
         if (heldObject != null)

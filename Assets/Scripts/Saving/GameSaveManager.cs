@@ -13,6 +13,24 @@ public sealed class GameSaveManager : MonoBehaviour
     public bool Busy { get; private set; }
     public string Status { get; private set; }
     public event Action Changed;
+    public static event Action DoorKeyChanged;
+    public bool HasDoorKey { get; private set; }
+    private bool _entryHasDoorKey;
+
+    private void SetDoorKey(bool owned)
+    {
+        if (HasDoorKey == owned) return;
+        HasDoorKey = owned;
+        DoorKeyChanged?.Invoke();
+    }
+    public bool TryAcquireDoorKey()
+    {
+        if (Busy || EncounterInProgress || HasDoorKey || _adapter == null || !_adapter.Ready ||
+            _adapter.ScenePath != "Assets/Scenes/CarScene.unity" || PauseMenuManager.IsGamePaused) return false;
+        SetDoorKey(true);
+        return true;
+    }
+
     private GameplaySaveAdapter _adapter;
     private string _runId;
     private readonly Dictionary<string, SavedSceneState> _visited = new Dictionary<string, SavedSceneState>();
@@ -21,7 +39,7 @@ public sealed class GameSaveManager : MonoBehaviour
     private Coroutine _loadRoutine;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    private static void ResetStatic() => Instance = null;
+    private static void ResetStatic() { Instance = null; DoorKeyChanged = null; }
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Bootstrap()
     {
@@ -80,7 +98,13 @@ public sealed class GameSaveManager : MonoBehaviour
             {
                 if (!HasEntryCheckpoint(adapter.ScenePath)) throw new InvalidOperationException("Retry loaded the wrong level");
                 var checkpoint = JsonUtility.FromJson<SavedSceneState>(_entryCheckpointJson);
+                string worldError = adapter.ValidateObjects(checkpoint);
+                if (worldError != null) throw new InvalidOperationException(worldError);
+                bool retryKey = adapter.ScenePath == "Assets/Scenes/CarScene.unity" ? false : _entryHasDoorKey;
+                // Door restoration must use the same ownership as the restored checkpoint.
+                SetDoorKey(retryKey);
                 adapter.Restore(checkpoint);
+                _entryHasDoorKey = retryKey;
                 _visited[adapter.ScenePath] = JsonUtility.FromJson<SavedSceneState>(_entryCheckpointJson);
                 _retryPending = false;
                 _retryRestored = true;
@@ -90,12 +114,16 @@ public sealed class GameSaveManager : MonoBehaviour
             {
                 var state = _pending.scenes.FirstOrDefault(s => s.path == adapter.ScenePath);
                 if (_pending.currentScene != adapter.ScenePath || state == null) throw new InvalidOperationException("Wrong scene loaded");
+                string worldError = adapter.ValidateObjects(state);
+                if (worldError != null) throw new InvalidOperationException(worldError);
+                SetDoorKey(_pending.hasDoorKey);
                 adapter.Restore(state);
                 _runId = _pending.runId;
                 _visited.Clear();
                 foreach (var visited in _pending.scenes) _visited.Add(visited.path, visited);
                 _pending = null;
                 _entryScene = adapter.ScenePath;
+                _entryHasDoorKey = HasDoorKey;
                 _entryCheckpointJson = JsonUtility.ToJson(adapter.Capture());
                 Busy = false;
                 Report("Game loaded");
@@ -107,6 +135,7 @@ public sealed class GameSaveManager : MonoBehaviour
             {
                 if (_visited.TryGetValue(adapter.ScenePath, out var previous)) adapter.Restore(previous);
                 _entryScene = adapter.ScenePath;
+                _entryHasDoorKey = HasDoorKey;
                 _entryCheckpointJson = JsonUtility.ToJson(adapter.Capture());
                 if (!IntroTransitionInProgress) adapter.BlockInput(false);
                 if (IntroTransitionInProgress) Busy = false;
@@ -129,7 +158,7 @@ public sealed class GameSaveManager : MonoBehaviour
         {
             Report("Saving...");
             _visited[_adapter.ScenePath] = _adapter.Capture();
-            var data = new SaveGameData { runId = _runId, slot = slot, currentScene = _adapter.ScenePath, scenes = _visited.Values.ToList() };
+            var data = new SaveGameData { runId = _runId, slot = slot, currentScene = _adapter.ScenePath, hasDoorKey = HasDoorKey, scenes = _visited.Values.ToList() };
             bool success = Repository.Commit(data, out error);
             Report(success ? (slot == 0 ? "Autosaved" : "Game saved to slot " + slot) : "Save failed: " + error);
             return success;
@@ -143,6 +172,8 @@ public sealed class GameSaveManager : MonoBehaviour
         if (!Repository.ResetAutosave(out error)) { Report("Could not reset autosave: " + error); return false; }
         _runId = Guid.NewGuid().ToString("N");
         _visited.Clear(); _pending = null; _adapter = null;
+        SetDoorKey(false);
+        _entryHasDoorKey = false;
         Report("Starting new game");
         return true;
     }

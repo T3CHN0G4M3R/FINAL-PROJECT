@@ -11,6 +11,9 @@ public class InteractiveDoor : MonoBehaviour, IUsable
     [SerializeField] private bool isOpen = false;
     [SerializeField] private float interactionDistance = 3.0f;
     [SerializeField] private string doorName = "Puerta";
+    [Tooltip("This scene door requires the logical DoorKey collected in CarScene.")]
+    [SerializeField] private bool requiresDoorKey;
+    public bool IsLocked => requiresDoorKey && (GameSaveManager.Instance == null || !GameSaveManager.Instance.HasDoorKey);
 
     private Quaternion closedLocalRot;
     private Quaternion openLocalRot;
@@ -37,6 +40,20 @@ public class InteractiveDoor : MonoBehaviour, IUsable
             closedLocalRot = transform.localRotation;
             openLocalRot = Quaternion.Euler(transform.localEulerAngles.x, openAngle, transform.localEulerAngles.z);
         }
+        ReconcileLock();
+    }
+
+    private void OnEnable()
+    {
+        if (requiresDoorKey) GameSaveManager.DoorKeyChanged += ReconcileLock;
+        ReconcileLock();
+    }
+    private void OnDisable() => GameSaveManager.DoorKeyChanged -= ReconcileLock;
+    private void ReconcileLock()
+    {
+        if (!IsLocked) return;
+        isOpen = false;
+        transform.localRotation = closedLocalRot;
     }
 
     private void Start()
@@ -107,17 +124,19 @@ public class InteractiveDoor : MonoBehaviour, IUsable
 
     public void RestoreSavedState(bool open)
     {
-        isOpen = open;
+        isOpen = open && !IsLocked;
         transform.localRotation = isOpen ? openLocalRot : closedLocalRot;
     }
 
     public void ToggleDoor()
     {
+        if (IsLocked) { ReconcileLock(); return; }
         isOpen = !isOpen;
     }
 
     public void Open()
     {
+        if (IsLocked) { ReconcileLock(); return; }
         isOpen = true;
     }
 
