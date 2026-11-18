@@ -51,6 +51,10 @@ public class InteractionSystem : MonoBehaviour
     [SerializeField] private SignSceneInteraction sceneSign;
     [Header("Optional Door Key")]
     [SerializeField] private DoorKeyPickup doorKeyPickup;
+    [Header("Optional Baguette")]
+    [SerializeField] private BaguettePickup baguettePickup;
+    [Header("Optional Vehicle")]
+    [SerializeField] private VehicleInteraction vehicleInteraction;
     [Header("Optional Radio Recovery")]
     [SerializeField] private RadioInteraction radioInteraction;
     [Tooltip("Additional recovery stations for this Player. No scene search or extra input listener is used.")]
@@ -370,6 +374,18 @@ public class InteractionSystem : MonoBehaviour
         }
         if (fPressed && doorKeyPickup != null && doorKeyPickup.TryPickUp(playerTransform, playerCamera))
             fPressed = false;
+        if (fPressed && baguettePickup != null && baguettePickup.CanInteract(playerTransform, playerCamera))
+        {
+            bool started = baguettePickup.TryPickUp(playerTransform, playerCamera);
+            fPressed = false;
+            if (started) return;
+        }
+        if (fPressed && vehicleInteraction != null && vehicleInteraction.CanInteract(playerTransform, playerCamera))
+        {
+            bool started = vehicleInteraction.TryInteract(playerTransform, playerCamera);
+            fPressed = false;
+            if (started) return;
+        }
         var radio = fPressed ? ResolveRadio() : null;
         if (radio != null && radio.TryResetInterference(playerTransform, playerCamera))
             fPressed = false;
@@ -490,6 +506,7 @@ public class InteractionSystem : MonoBehaviour
         if (obj == null) return;
         if (sceneSign != null && sceneSign.Owns(obj)) return;
         if (doorKeyPickup != null && doorKeyPickup.Owns(obj)) return;
+        if (baguettePickup != null && baguettePickup.Owns(obj)) return;
         if (IsDoor(obj)) return; // Doors can never be picked up or carried
         if (handPoint == null)
         {
@@ -620,6 +637,16 @@ public class InteractionSystem : MonoBehaviour
         if (doorKeyPickup != null && doorKeyPickup.CanInteract(playerTransform, playerCamera))
         {
             promptText.text = "Press F";
+            return;
+        }
+        if (baguettePickup != null && baguettePickup.CanInteract(playerTransform, playerCamera))
+        {
+            promptText.text = baguettePickup.Error ?? "Press F to pick it up";
+            return;
+        }
+        if (vehicleInteraction != null && vehicleInteraction.CanInteract(playerTransform, playerCamera))
+        {
+            promptText.text = vehicleInteraction.PromptMessage;
             return;
         }
         if (ResolveRadio() != null)

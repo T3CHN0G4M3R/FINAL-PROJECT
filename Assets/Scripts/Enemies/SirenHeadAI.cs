@@ -58,10 +58,12 @@ public sealed class SirenHeadAI : MonoBehaviour
     [Min(0)] [SerializeField] private float _animationBlend = 0.15f;
     [Header("Protected Interiors")]
     public BoxCollider[] _protectedInteriors;
+    private DevCodeFlyMode _playerDevCode;
     public bool IsPlayerProtected
     {
         get
         {
+            if (_playerDevCode != null && _playerDevCode.isActiveAndEnabled && _playerDevCode.isDevCodeUnlocked) return true;
             if (_player == null || _protectedInteriors == null) return false;
             foreach (var volume in _protectedInteriors)
             {
@@ -111,6 +113,7 @@ public sealed class SirenHeadAI : MonoBehaviour
     }
     private void Start()
     {
+        if (_player != null) _playerDevCode = _player.GetComponent<DevCodeFlyMode>();
         if (_player == null || _playerBody == null || _animator == null || _sightOrigin == null || _captureOrigin == null || _saveAdapter == null)
         {
             Debug.LogError("Siren Head requires explicit player, body, Animator, sight, capture and save references.", this);

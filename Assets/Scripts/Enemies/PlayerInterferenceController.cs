@@ -44,6 +44,14 @@ public sealed class PlayerInterferenceController : MonoBehaviour
     public string Failure { get; private set; }
     public bool CanUseRadio => isActiveAndEnabled && _initialized && !_retryCommitted && Failure == null && GameplayAvailable;
 
+    private DevCodeFlyMode _playerDevCode;
+    private bool DevCodeProtected => _playerDevCode != null && _playerDevCode.isActiveAndEnabled && _playerDevCode.isDevCodeUnlocked;
+
+    private void Awake()
+    {
+        if (_player != null) _playerDevCode = _player.GetComponent<DevCodeFlyMode>();
+    }
+
     private float _exposure;
     private float _blackoutElapsed;
     private int _resetFrame = -1;
@@ -106,6 +114,14 @@ public sealed class PlayerInterferenceController : MonoBehaviour
             return;
         }
         if (_retryCommitted) return;
+        if (DevCodeProtected)
+        {
+            _exposure = 0;
+            _blackoutElapsed = 0;
+            if (_audioSource != null) _audioSource.volume = _baselineVolume;
+            ApplyView(false, 0);
+            return;
+        }
         if (manager != null && (manager.EncounterInProgress || manager.IntroTransitionInProgress))
         {
             // Another sequence owns the screen. Do not cancel its encounter or input lock.
@@ -130,6 +146,7 @@ public sealed class PlayerInterferenceController : MonoBehaviour
 
     private void CommitRetry()
     {
+        if (DevCodeProtected) return;
         var manager = GameSaveManager.Instance;
         if (manager == null || !manager.BeginEncounter(gameObject.scene.path)) return;
         bool accepted = false;

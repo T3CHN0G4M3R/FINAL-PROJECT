@@ -627593,6 +627593,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4165688122224303468, guid: b884e0aa9ae878044a34a229704b248e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 422999503}
+    - targetCorrespondingSourceObject: {fileID: 4165688122224303468, guid: b884e0aa9ae878044a34a229704b248e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 422999505}
   m_SourcePrefab: {fileID: 100100000, guid: b884e0aa9ae878044a34a229704b248e, type: 3}
 --- !u!1 &422999502 stripped
 GameObject:
@@ -627648,6 +627651,26 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 967b20954b2eabf4a9c5de21e6e3bfb4, type: 2}
+--- !u!114 &422999505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 422999502}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d12cf15e87b69894794bdb0f3200da2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SignSceneInteraction
+  _signCollider: {fileID: 422999504}
+  _cinematicScene: Assets/Scenes/Neighborhood Scene.unity
+  _gameplayScene: Assets/Scenes/GardenScene.unity
+  _fadeEffect: {fileID: 11400000, guid: 1097a28e540a9b3419106892e20f72d1, type: 2}
+  _fadeImagePrefab: {fileID: 2175856970961285118, guid: c116f2243760eb449bb4383d68f5c5ea, type: 3}
+  _fadeOutSeconds: 1
+  _fadeInSeconds: 1
+  _blackHoldSeconds: 0.2
 --- !u!1 &423038008
 GameObject:
   m_ObjectHideFlags: 0
@@ -720019,6 +720042,43 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 486958864}
   m_Mesh: {fileID: 4300000, guid: 1e1f41f3ca8b99c4ab8c534e2dcf5839, type: 2}
+--- !u!84 &487125358
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 6
+  m_Width: 128
+  m_Height: 128
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 94
+  m_ColorFormat: 48
+  m_MipMap: 1
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_UseDynamicScaleExplicit: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &487130843
 GameObject:
   m_ObjectHideFlags: 0
@@ -828351,43 +828411,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 557732420}
   m_Mesh: {fileID: 4300000, guid: 1e1f41f3ca8b99c4ab8c534e2dcf5839, type: 2}
---- !u!84 &557843729
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 6
-  m_Width: 128
-  m_Height: 128
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 94
-  m_ColorFormat: 48
-  m_MipMap: 1
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_UseDynamicScaleExplicit: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &557882813
 GameObject:
   m_ObjectHideFlags: 0
@@ -1273495,6 +1273518,8 @@ MonoBehaviour:
   promptText: {fileID: 280889466}
   sceneSign: {fileID: 0}
   doorKeyPickup: {fileID: 0}
+  baguettePickup: {fileID: 1940687249}
+  vehicleInteraction: {fileID: 0}
   radioInteraction: {fileID: 1250248069}
   additionalRadios: []
 --- !u!1 &850586558
@@ -1594941,7 +1594966,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Save Game
+  m_text: SAVE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9d24e6b3ecd1d2b479a31d3d0e7b1f9e, type: 2}
   m_sharedMaterial: {fileID: 21148088844906328, guid: 9d24e6b3ecd1d2b479a31d3d0e7b1f9e, type: 2}
@@ -2872576,43 +2872601,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1915618116}
   m_Mesh: {fileID: 4300000, guid: 1e1f41f3ca8b99c4ab8c534e2dcf5839, type: 2}
---- !u!84 &1915755931
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 6
-  m_Width: 128
-  m_Height: 128
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 94
-  m_ColorFormat: 48
-  m_MipMap: 1
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_UseDynamicScaleExplicit: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &1915836540
 GameObject:
   m_ObjectHideFlags: 0
@@ -2910850,6 +2910838,64 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1940634018}
   m_Mesh: {fileID: 4300000, guid: 1e1f41f3ca8b99c4ab8c534e2dcf5839, type: 2}
+--- !u!1 &1940687248
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1940687250}
+  - component: {fileID: 1940687249}
+  m_Layer: 0
+  m_Name: Baguette Pickup Controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1940687249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1940687248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de5cfa9305215d548b006767651e93e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaguettePickup
+  _baguetteObject: {fileID: 422999502}
+  _baguetteCollider: {fileID: 422999504}
+  _player: {fileID: 1098287612}
+  _playerBody: {fileID: 1098287620}
+  _interactions: {fileID: 850549217}
+  _interactionRadius: 3
+  _obstructionMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  _fadeEffect: {fileID: 11400000, guid: 1097a28e540a9b3419106892e20f72d1, type: 2}
+  _fadeImagePrefab: {fileID: 2175856970961285118, guid: c116f2243760eb449bb4383d68f5c5ea, type: 3}
+  _fadeOutSeconds: 1
+  _fadeInSeconds: 1
+  _blackHoldSeconds: 0.2
+--- !u!4 &1940687250
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1940687248}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1940814539
 GameObject:
   m_ObjectHideFlags: 0
@@ -3224433,6 +3224479,43 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2146224831}
   m_Mesh: {fileID: 4300000, guid: 1e1f41f3ca8b99c4ab8c534e2dcf5839, type: 2}
+--- !u!84 &2146231487
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 6
+  m_Width: 128
+  m_Height: 128
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 94
+  m_ColorFormat: 48
+  m_MipMap: 1
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_UseDynamicScaleExplicit: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &2146244386
 GameObject:
   m_ObjectHideFlags: 0
@@ -3226441,3 +3226524,4 @@ SceneRoots:
   - {fileID: 365148151}
   - {fileID: 20503627}
   - {fileID: 422999501}
+  - {fileID: 1940687250}

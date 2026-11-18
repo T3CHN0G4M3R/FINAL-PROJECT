@@ -14,8 +14,34 @@ public sealed class GameSaveManager : MonoBehaviour
     public string Status { get; private set; }
     public event Action Changed;
     public static event Action DoorKeyChanged;
+    public static event Action BaguetteChanged;
     public bool HasDoorKey { get; private set; }
+    public bool HasBaguette { get; private set; }
+    public bool BaguetteUsedOnCar { get; private set; }
+    private bool _entryBaguetteUsedOnCar;
     private bool _entryHasDoorKey;
+    private bool _entryHasBaguette;
+
+    public void RestoreBaguetteTravelState(bool acquired, bool used)
+    {
+        BaguetteUsedOnCar = acquired && used;
+        HasBaguette = acquired;
+        BaguetteChanged?.Invoke();
+    }
+
+    public bool BeginBaguetteTravel(string destination, bool pickup, out string error)
+    {
+        error = null;
+        if (_adapter == null || !_adapter.Ready || Busy || EncounterInProgress || PauseMenuManager.IsGamePaused ||
+            (pickup ? HasBaguette || _adapter.ScenePath != "Assets/Scenes/GardenScene.unity" :
+                !HasBaguette || _adapter.ScenePath != "Assets/Scenes/Neighborhood Scene.unity"))
+        { error = "Baguette interaction is unavailable."; return false; }
+        if (!BeginGameplayCinematic(destination, destination, out error)) return false;
+        if (pickup) RestoreBaguetteTravelState(true, false);
+        return true;
+    }
+
+    public void CommitBaguetteCarUse() => RestoreBaguetteTravelState(HasBaguette, true);
 
     private void SetDoorKey(bool owned)
     {
@@ -23,11 +49,27 @@ public sealed class GameSaveManager : MonoBehaviour
         HasDoorKey = owned;
         DoorKeyChanged?.Invoke();
     }
+
+    private void SetBaguette(bool owned)
+    {
+        if (HasBaguette == owned) return;
+        HasBaguette = owned;
+        BaguetteChanged?.Invoke();
+    }
+
     public bool TryAcquireDoorKey()
     {
         if (Busy || EncounterInProgress || HasDoorKey || _adapter == null || !_adapter.Ready ||
             _adapter.ScenePath != "Assets/Scenes/CarScene.unity" || PauseMenuManager.IsGamePaused) return false;
         SetDoorKey(true);
+        return true;
+    }
+
+    public bool TryAcquireBaguette()
+    {
+        if (Busy || EncounterInProgress || HasBaguette || _adapter == null || !_adapter.Ready ||
+            _adapter.ScenePath != "Assets/Scenes/GardenScene.unity" || PauseMenuManager.IsGamePaused) return false;
+        SetBaguette(true);
         return true;
     }
 
@@ -39,7 +81,7 @@ public sealed class GameSaveManager : MonoBehaviour
     private Coroutine _loadRoutine;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    private static void ResetStatic() { Instance = null; DoorKeyChanged = null; }
+    private static void ResetStatic() { Instance = null; DoorKeyChanged = null; BaguetteChanged = null; }
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Bootstrap()
     {
@@ -119,10 +161,14 @@ public sealed class GameSaveManager : MonoBehaviour
                 string worldError = adapter.ValidateObjects(checkpoint);
                 if (worldError != null) throw new InvalidOperationException(worldError);
                 bool retryKey = adapter.ScenePath == "Assets/Scenes/CarScene.unity" ? false : _entryHasDoorKey;
+                bool retryBaguette = adapter.ScenePath == "Assets/Scenes/GardenScene.unity" ? false : _entryHasBaguette;
                 // Door restoration must use the same ownership as the restored checkpoint.
                 SetDoorKey(retryKey);
+                RestoreBaguetteTravelState(retryBaguette, adapter.ScenePath == "Assets/Scenes/GardenScene.unity" ? false : _entryBaguetteUsedOnCar);
                 adapter.Restore(checkpoint);
                 _entryHasDoorKey = retryKey;
+                _entryHasBaguette = retryBaguette;
+                _entryBaguetteUsedOnCar = BaguetteUsedOnCar;
                 _visited[adapter.ScenePath] = JsonUtility.FromJson<SavedSceneState>(_entryCheckpointJson);
                 _retryPending = false;
                 _retryRestored = true;
@@ -135,6 +181,7 @@ public sealed class GameSaveManager : MonoBehaviour
                 string worldError = adapter.ValidateObjects(state);
                 if (worldError != null) throw new InvalidOperationException(worldError);
                 SetDoorKey(_pending.hasDoorKey);
+                RestoreBaguetteTravelState(_pending.hasBaguette, _pending.baguetteUsedOnCar);
                 adapter.Restore(state);
                 _runId = _pending.runId;
                 _visited.Clear();
@@ -142,6 +189,8 @@ public sealed class GameSaveManager : MonoBehaviour
                 _pending = null;
                 _entryScene = adapter.ScenePath;
                 _entryHasDoorKey = HasDoorKey;
+                _entryHasBaguette = HasBaguette;
+                _entryBaguetteUsedOnCar = BaguetteUsedOnCar;
                 _entryCheckpointJson = JsonUtility.ToJson(adapter.Capture());
                 Busy = false;
                 Report("Game loaded");
@@ -154,6 +203,8 @@ public sealed class GameSaveManager : MonoBehaviour
                 if (_visited.TryGetValue(adapter.ScenePath, out var previous)) adapter.Restore(previous);
                 _entryScene = adapter.ScenePath;
                 _entryHasDoorKey = HasDoorKey;
+                _entryHasBaguette = HasBaguette;
+                _entryBaguetteUsedOnCar = BaguetteUsedOnCar;
                 _entryCheckpointJson = JsonUtility.ToJson(adapter.Capture());
                 if (!IntroTransitionInProgress) adapter.BlockInput(false);
                 if (IntroTransitionInProgress) Busy = false;
@@ -181,7 +232,7 @@ public sealed class GameSaveManager : MonoBehaviour
         {
             Report("Saving...");
             _visited[_adapter.ScenePath] = _adapter.Capture();
-            var data = new SaveGameData { runId = _runId, slot = slot, currentScene = _adapter.ScenePath, hasDoorKey = HasDoorKey, scenes = _visited.Values.ToList() };
+            var data = new SaveGameData { runId = _runId, slot = slot, currentScene = _adapter.ScenePath, hasDoorKey = HasDoorKey, hasBaguette = HasBaguette, baguetteUsedOnCar = BaguetteUsedOnCar, scenes = _visited.Values.ToList() };
             bool success = Repository.Commit(data, out error);
             Report(success ? (slot == 0 ? "Autosaved" : "Game saved to slot " + slot) : "Save failed: " + error);
             return success;
@@ -196,7 +247,10 @@ public sealed class GameSaveManager : MonoBehaviour
         _runId = Guid.NewGuid().ToString("N");
         _visited.Clear(); _pending = null; _adapter = null;
         SetDoorKey(false);
+        RestoreBaguetteTravelState(false, false);
         _entryHasDoorKey = false;
+        _entryHasBaguette = false;
+        _entryBaguetteUsedOnCar = false;
         Report("Starting new game");
         return true;
     }

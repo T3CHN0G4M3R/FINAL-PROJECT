@@ -1220,3 +1220,90 @@ Use existing UIAlphaFade.asset / UIFadeImage.prefab / UIFadeMaterial.mat with pe
 - Missing/invalid clip/texture/fade/destination, decode timeout, interrupted playback and failed adapter restoration recover visibly without stuck black/Busy/input locks, parallel loads or unintended save reset. Guards remain valid when death or blackout competes with sign use.
 - Test menu-launched versus directly opened Neighborhood, repeated travel/direct cinematic play and different window sizes. Check Console against baseline. Preserve user save files in isolated testing; Windows .mov decoding/audio/build and alternate-resolution checks remain unverified unless performed.
 
+# Baguette Pickup, Hand Presentation and Car Travel — Recovery Amendment
+
+Only this amendment is pending approval for the current request. Preserve completed features and earlier scene edits; do not repeat unrelated amendments.
+
+# Project Overview
+- Game Title: Existing FINAL-PROJECT; unchanged.
+- High-Level Concept: First-person horror exploration with a Baguette-gated car interaction. Pick up the Garden Baguette to return to Neighborhood, visibly carry it until using the car, then enter CarScene without the hand visual.
+- Players: Existing single player.
+- Inspiration / Reference Games: Existing project; no new references.
+- Tone / Art Direction: Preserve the existing bread mesh, player and horror environment.
+- Target Platform: Windows StandaloneWindows64.
+- Screen Orientation / Resolution: Existing landscape HUD; verify 1920x1080 and a smaller window when possible.
+- Render Pipeline: URP PC_RPAsset, Unity 6000.3.8f1.
+
+## Confirmed Decisions and Recovery Evidence
+- User selected **Pick up and return**: F on the Garden Baguette acquires it and starts travel directly to Assets/Scenes/Neighborhood Scene.unity. No intermediate video or new arrival teleport is requested.
+- User clarified that the Baguette stays visibly in hand until car interaction; when CarScene loads it is no longer in hand.
+- Current scripts compile and retrieved Console error entries are empty. This is not proof of working runtime interaction.
+- Garden's Baguette still has Transform/MeshFilter/MeshRenderer/MeshCollider/Rigidbody/SignSceneInteraction; no BaguettePickup is attached. Canonical PlayerFollowCamera InteractionSystem has null baguettePickup and sceneSign references, with valid Player, Main Camera (1), HandPoint and InteractionPrompt bindings.
+- BaguettePickup.cs now has an unobstructed camera-ray eligibility check from the interrupted edit. Its tooltip still incorrectly says aiming is unnecessary. The prompt edit and all scene wiring must be rechecked before implementation.
+- The Garden bread is greatly enlarged: local scale approximately (16.65,14.54,16.65), visual bounds approximately 4.14 × 0.96 × 9.98 world units. Preserve this world prop, but use separately fitted hand-visual scale rather than copying this scale into the player's hand.
+- GameSaveManager already contains saved HasBaguette acquisition/load/new-run/Garden-retry logic. ResetStatic currently clears DoorKeyChanged but not BaguetteChanged; repair this lifecycle omission.
+- VehicleInteraction.cs currently runs its fade coroutine on the outgoing car object and waits a fixed 0.5 seconds after synchronous loading. Scene destruction can stop that coroutine before reveal. Replace only this travel orchestration with a persistent, restoration-aware owner.
+- Garden, Neighborhood and CarScene are already enabled build scenes. Do not change the build list.
+
+## Implementation Approach
+Use logical quest ownership plus a scene-owned, non-droppable hand visual rather than making the Baguette an ordinary InteractionSystem.HeldObject. This preserves existing flashlight physics, callbacks and strict save-object registrations, and avoids an unregistered-held-item save failure. Reusing ordinary single-item holding was considered, but would require extra drop, replacement and save semantics that conflict with carrying the Baguette until the car.
+
+Fit a project-owned render-only Baguette visual to Neighborhood's HandPoint using the supplied mesh/material. It must be visible in first person without obstructing the view or colliding with the player; keep ordinary held-item behavior intact and verify there is no overlap with the flashlight. Do not invent a Baguette drop/use control or new animation asset.
+
+Keep acquisition separate from use at the car: retain HasBaguette as acquired ownership, add an additive saved baguetteUsedOnCar flag to record the end of hand presentation. This prevents ordinary revisits from respawning the acquired Garden bread or re-showing it after car use. Existing version-1 records default the new flag to false. Car eligibility continues to use HasBaguette; no extra one-use car restriction is requested. New Game and successful Garden death/blackout retry reset both Baguette flags. Do not consume ownership or change DoorKey rules.
+
+# Game Mechanics
+## Core Gameplay Loop
+Look at an unobstructed Garden Baguette within configured pickup range → show Press F to pick it up → F accepted once → logical possession true and world Baguette disappears → fade out → load Neighborhood under black → restore/init gameplay and fit/show hand Baguette → fade in and release controls. In Neighborhood, the acquired and not-yet-used Baguette remains visible in hand. Near SM_asset_04, show locked feedback without acquisition or Press F to break the window with acquisition. Accepted car F → fade/load CarScene → commit used-on-car state and remove hand presentation before reveal → normal CarScene gameplay.
+
+## Controls and Input Methods
+- Preserve Both backend and the current event-driven Keyboard F InputAction on InteractionSystem. No second input listener, polling loop or backend change.
+- Use the same aimed eligibility check for Garden prompt and F action; ignore player/held colliders, respect solid occlusion, range, pause/focus, save/capture and transition locks.
+- Consume pickup/car F exactly once, with no flashlight drop, Radio reset or generic bread pickup; stop other input processing after accepted travel.
+- Transition validation must precede state mutation. If travel cannot start, leave the player usable and report an error; do not hide the only bread and silently strand progress. Roll back acquisition/use only where this operation owns the uncommitted change.
+
+# UI
+Reuse UICanvas/InteractionPrompt, existing font/layout and HUD/ToolTips visibility settings; no new Canvas, inventory panel or EventSystem.
+
+```text
+Garden, aimed Baguette:    Press F to pick it up
+Neighborhood, no bread:    Locked until Baguette is obtained
+Neighborhood, has bread:   Press F to break the window
+Hand in Neighborhood:      Baguette visible until car use
+CarScene:                  No Baguette hand visual
+Travel:                    fade out → opaque loading/restore → fade in
+```
+
+Reuse UIAlphaFade.asset/UIFadeImage.prefab/DeathRetryTransition with operation-local cloned resources, proposed timings 1 second out/in and 0.2 second black hold. Keep input/HUD/AI/save locks through reveal. No shared fade asset or URP post-processing changes.
+
+# Key Asset & Context
+- Modify Assets/Scenes/GardenScene.unity: add an active external Baguette Pickup Controller, wire the existing bread/collider/player/body/InteractionSystem and fade route. Disable or remove only the obsolete Baguette SignSceneInteraction after incoming-reference inspection; do not use a video-sign route for this pickup. Keep controller active while hiding bread so reset/load events can restore it.
+- Modify Assets/Scenes/Neighborhood Scene.unity: attach/configure render-only hand presentation to the existing HandPoint, bind SM_asset_04/Model's valid collider and existing canonical InteractionSystem. Preserve car proximity behavior and player arrival pose from existing visited-state rules.
+- Modify Assets/Scripts/BaguettePickup.cs: exact aimed prompt/eligibility, cached original transform, safe acquisition plus direct fade travel request, error state and reset visibility.
+- Modify Assets/Scripts/InteractionsSystem.cs: exact pickup prompt, safe single-F consumption and generic-pickup protection; optional references remain null-compatible elsewhere.
+- Modify Assets/Scripts/VehicleInteraction.cs: delegate car travel to persistent coordinator, retain messages/proximity and acquisition gate, validate prerequisites, record successful car-use state.
+- Modify Assets/Scripts/Saving/GameSaveManager.cs and SaveGameData.cs: saved used-on-car state and new-run/load/retry lifecycle; persistent direct-gameplay travel guard/capture/restoration readiness as needed. Preserve world-ID validation, manual saves, ordinary entry autosave and retry suppression.
+- Create Assets/Scripts/BaguetteHandPresentation.cs and Assets/Items/Baguette/BaguetteHandVisual.prefab using the existing Assets/Imported/Yodah_the_Cat/Stylized bread serving mesh/material references. Visual only; no Rigidbody/Collider/input/save registration.
+- Create Assets/Scripts/Transitions/GameplayFadeTravel.cs only if necessary as the persistent direct-gameplay fade owner; reuse existing overlay, not a second global fade singleton or cinematic sequencer.
+- GameplaySaveAdapter.cs is read-only by default; narrowly extend only if a verified restoration-success signal cannot be obtained from the manager, with impact analysis first. CarScene is read-only by default; absence of Neighborhood's hand presenter should naturally remove the visual on unload.
+- No package/imported source or prefab edits, mesh generation, character rig replacement, persistent-ID changes or destructive user-save cleanup.
+
+# Implementation Steps
+1. **Recheck recovery and impact.** Inspect dependencies/dependents and live references for every edit target, dirty scene state, obsolete sign component, HandPoint/Animator/camera, prompt text and repository flag serialization. Preserve unsaved work; obtain confirmation before saving unrelated newly discovered edits. Dependency: approval of this amendment.
+2. **Repair inventory lifecycle.** Add backward-compatible used-on-car state and change notifications, clear static events safely, reset both flags on accepted fresh run/successful Garden retry and restore each loaded record before visual reconciliation. No disk save on pickup itself. Dependency: Step 1.
+3. **Implement persistent direct fade travel.** Validate destination/fade/gameplay readiness and exclusive transition ownership; capture outgoing world before unload, acquire locks synchronously, fade under a persistent owner, load asynchronously, wait for successful destination restoration/checkpoint initialization, commit operation state before destination checkpoint/autosave capture, reveal, then release/dispose. Add bounded failure recovery, no guessed 0.5-second readiness wait or coroutine hosted on destroyed source. Dependency: Steps 1–2.
+4. **Finish Garden pickup wiring.** Place controller outside hidden world item, use aimed range/occlusion and exact prompt, cache authored transform, hide immediately on successful acquisition, route F to Neighborhood, reject generic pickup and consume one action. Ensure retry/load reconciliation can reactivate bread. Dependency: Steps 2–3.
+5. **Implement Neighborhood hand presentation.** Build render-only prefab from supplied bread, fit hand-local position/rotation/scale to actual first-person view, show for acquired and not-used ownership, reconcile after save restoration and before reveal. Preserve flashlight state and save registrations; inspect real rendered overlap/camera clipping. Dependency: Steps 1–4.
+6. **Repair car transition.** Keep existing SM_asset_04 collider/proximity/prompt binding, delegate accepted F to shared persistent travel, end Baguette presentation on successful CarScene entry before reveal. Failed validation/travel must not mark bread used. Dependency: Steps 2–5.
+7. **Focused validation and cleanup.** Compile incrementally, inspect references, verify aim/F/hide/travel/hand/car/retry/load behavior and actual Game View fade/hand rendering. Use manual or compatible bounded tests; avoid previously failing forced-domain-reload loops. Isolate test saves, never delete user data. Save only intended scripts/scenes/assets and remove temporary diagnostics without deferred cleanup. Dependency: Steps 2–6.
+
+# Verification & Testing
+- Garden aimed/in-range/unobstructed bread shows exactly Press F to pick it up; looking away, walls, out of range and blocked gameplay suppress prompt/action. HUD hidden does not disable an otherwise allowed interaction.
+- F performs one pickup, hides all world bread visuals/collision and loads exact Neighborhood Scene path with full opaque coverage and visible fade-in; no unintended video, duplicate acquisition, Radio action or held-item drop.
+- Neighborhood shows a reasonably sized bread in the actual player's hand before reveal and while walking/looking; no world-scale giant mesh, clipping/occlusion or flashlight overlap. Visual is not registered as an ordinary HeldObject.
+- No bread → locked car text/no travel; acquired bread → Press F to break the window and one safe CarScene transition. CarScene has no hand bread; normal revisits do not re-show a used bread or respawn the Garden prop.
+- Successful Garden physical death and blackout retries reset bread ownership/use and restore original Garden transform/availability; failed pre-load retry does not clear ownership. Other scenes retain existing checkpoint semantics.
+- Save/load before acquisition, after Neighborhood acquisition and after car use restores the corresponding flags/visuals; legacy records default missing used flag to false. No held-object registration exception or unchanged-world-ID mismatch introduced.
+- New Game resets both flags; cancellation and failed transitions preserve progress. Repeated scene entry/load/no-domain-reload play has no stale event handlers, duplicate visuals, stuck Busy locks or orphan overlays.
+- Preserve DoorKey, flashlight use/drop, pause/settings, save/Exit, Siren Head, interference and existing intro/cinematic/retry flows. Report actual tests separately from unperformed standalone/alternate-resolution checks.
+

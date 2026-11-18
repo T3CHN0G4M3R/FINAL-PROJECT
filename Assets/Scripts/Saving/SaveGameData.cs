@@ -12,6 +12,8 @@ public sealed class SaveGameData
     public long commitOrder;
     public string currentScene;
     public bool hasDoorKey;
+    public bool hasBaguette;
+    public bool baguetteUsedOnCar;
     public List<SavedSceneState> scenes = new List<SavedSceneState>();
 
     public static bool SupportedScene(string path) => path == "Assets/Scenes/Neighborhood Scene.unity" || path == "Assets/Scenes/FarmScene.unity" || path == "Assets/Scenes/CarScene.unity" || path == "Assets/Scenes/GardenScene.unity";

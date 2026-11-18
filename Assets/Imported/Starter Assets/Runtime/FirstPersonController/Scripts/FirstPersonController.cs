@@ -218,6 +218,19 @@ namespace StarterAssets
 
 		private void Update()
 		{
+			if (_controller == null || !_controller.enabled)
+			{
+				_speed = _verticalVelocity = _animationBlend = 0f;
+				_airborneTimer = _stepDistanceCounter = 0f;
+				if (_input != null) _input.jump = false;
+				if (_hasAnimator)
+				{
+					_animator.SetFloat(_animIDSpeed, 0f);
+					_animator.SetBool(_animIDJump, false);
+					_animator.SetBool(_animIDFreeFall, false);
+				}
+				return;
+			}
 			_hasAnimator = TryGetComponent(out _animator);
 
 			GroundedCheck();
