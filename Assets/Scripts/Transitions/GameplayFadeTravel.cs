@@ -8,6 +8,8 @@ public sealed class GameplayFadeTravel : MonoBehaviour
     private DeathRetryTransition _overlay;
     private string _destination;
     private bool _pickup;
+    private bool _keyPickup;
+    private bool _loaded;
     private bool _previousAcquired;
     private bool _previousUsed;
     private bool _finished;
@@ -15,6 +17,15 @@ public sealed class GameplayFadeTravel : MonoBehaviour
     private const float ReadinessTimeout = 30f;
 
     public static bool Begin(string destination, bool pickup, UIAlphaFadeEffect effect,
+        UnityEngine.UI.Image image, float fadeOut, float fadeIn, float blackHold, out string error) =>
+        BeginTravel(destination, pickup, false, effect, image, fadeOut, fadeIn, blackHold, out error);
+
+    public static bool BeginKey(UIAlphaFadeEffect effect, UnityEngine.UI.Image image,
+        float fadeOut, float fadeIn, float blackHold, out string error) =>
+        BeginTravel("Assets/Scenes/Neighborhood Scene.unity", false, true, effect, image,
+            fadeOut, fadeIn, blackHold, out error);
+
+    private static bool BeginTravel(string destination, bool pickup, bool keyPickup, UIAlphaFadeEffect effect,
         UnityEngine.UI.Image image, float fadeOut, float fadeIn, float blackHold, out string error)
     {
         error = null;
@@ -24,18 +35,21 @@ public sealed class GameplayFadeTravel : MonoBehaviour
             (transitioner != null && transitioner.IsTransitioning) || effect == null || effect.transitionMaterial == null ||
             image == null || !Application.CanStreamedLevelBeLoaded(destination) || !SaveGameData.SupportedScene(destination))
         { error = "Travel is unavailable or fade references are missing."; return false; }
-        var root = new GameObject("Baguette Gameplay Travel");
+        var root = new GameObject("Gameplay Travel");
         var travel = root.AddComponent<GameplayFadeTravel>();
         travel._destination = destination;
         travel._pickup = pickup;
+        travel._keyPickup = keyPickup;
         travel._previousAcquired = manager.HasBaguette;
         travel._previousUsed = manager.BaguetteUsedOnCar;
         try
         {
             DontDestroyOnLoad(root);
-            travel._overlay = new GameObject("Baguette Travel Fade").AddComponent<DeathRetryTransition>();
+            travel._overlay = new GameObject("Gameplay Travel Fade").AddComponent<DeathRetryTransition>();
             travel._overlay.Initialize(effect, image, fadeOut, fadeIn, blackHold);
-            if (!manager.BeginBaguetteTravel(destination, pickup, out error))
+            bool accepted = keyPickup ? manager.BeginDoorKeyTravel(destination, out error) :
+                manager.BeginBaguetteTravel(destination, pickup, out error);
+            if (!accepted)
             { travel._finished = true; travel._overlay.Dispose(); Destroy(root); return false; }
             GameplaySaveAdapter.SceneReady += travel.OnReady;
             travel.StartCoroutine(travel.Travel());
@@ -48,7 +62,7 @@ public sealed class GameplayFadeTravel : MonoBehaviour
             if (travel._overlay != null) travel._overlay.Dispose();
             if (manager.IntroTransitionInProgress)
             {
-                manager.RestoreBaguetteTravelState(travel._previousAcquired, travel._previousUsed);
+                travel.Rollback();
                 manager.EndIntroTransition();
             }
             Destroy(root);
@@ -61,6 +75,13 @@ public sealed class GameplayFadeTravel : MonoBehaviour
         if (adapter.ScenePath == _destination) _readyAdapter = adapter;
     }
 
+    private void Rollback()
+    {
+        if (_loaded || GameSaveManager.Instance == null) return;
+        if (_keyPickup) GameSaveManager.Instance.RollbackDoorKeyTravel();
+        else GameSaveManager.Instance.RestoreBaguetteTravelState(_previousAcquired, _previousUsed);
+    }
+
     private IEnumerator Travel()
     {
         yield return _overlay.FadeOut();
@@ -70,11 +91,15 @@ public sealed class GameplayFadeTravel : MonoBehaviour
         {
             try
             {
-                if (!_pickup) GameSaveManager.Instance.CommitBaguetteCarUse();
+                if (!_pickup && !_keyPickup) GameSaveManager.Instance.CommitBaguetteCarUse();
                 operation = SceneManager.LoadSceneAsync(_destination);
             }
             catch (System.Exception e) { failure = e.Message; }
-            if (operation != null) yield return operation;
+            if (operation != null)
+            {
+                yield return operation;
+                _loaded = true;
+            }
             else failure = failure ?? "Scene load could not start.";
         }
         float deadline = Time.realtimeSinceStartup + ReadinessTimeout;
@@ -82,13 +107,25 @@ public sealed class GameplayFadeTravel : MonoBehaviour
             Time.realtimeSinceStartup < deadline) yield return null;
         if (failure == null && (_readyAdapter == null || !GameSaveManager.Instance.IsCinematicGameplayReady(_readyAdapter)))
             failure = "Destination restoration did not complete.";
+        if (failure == null && _overlay != null && _overlay.IsUsable)
+        {
+            yield return _overlay.FadeIn();
+            if (_overlay == null || !_overlay.IsUsable) failure = "Reveal interrupted.";
+        }
+        else if (failure == null) failure = "Fade interrupted before reveal.";
         if (failure != null)
         {
-            GameSaveManager.Instance.RestoreBaguetteTravelState(_previousAcquired, _previousUsed);
+            Rollback();
+            // An invalid reconstructed destination is not safe to resume.
+            if (_loaded && Application.CanStreamedLevelBeLoaded("MainMenu"))
+            {
+                operation = SceneManager.LoadSceneAsync("MainMenu");
+                if (operation != null) yield return operation;
+            }
+            if (_overlay != null && _overlay.IsUsable) yield return _overlay.FadeIn();
             GameSaveManager.Instance.Report("Travel failed: " + failure);
-            Debug.LogError("Baguette travel failed: " + failure, this);
+            Debug.LogError("Gameplay travel failed: " + failure, this);
         }
-        if (_overlay != null && _overlay.IsUsable) yield return _overlay.FadeIn();
         Finish();
     }
 
@@ -108,9 +145,9 @@ public sealed class GameplayFadeTravel : MonoBehaviour
         if (_overlay != null) _overlay.Dispose();
         if (GameSaveManager.Instance != null)
         {
-            GameSaveManager.Instance.RestoreBaguetteTravelState(_previousAcquired, _previousUsed);
+            Rollback();
             GameSaveManager.Instance.EndIntroTransition();
-            GameSaveManager.Instance.Report("Baguette travel was interrupted.");
+            GameSaveManager.Instance.Report("Gameplay travel was interrupted.");
         }
     }
 }

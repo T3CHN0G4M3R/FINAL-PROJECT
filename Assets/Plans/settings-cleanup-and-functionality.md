@@ -1307,3 +1307,119 @@ Reuse UIAlphaFade.asset/UIFadeImage.prefab/DeathRetryTransition with operation-l
 - New Game resets both flags; cancellation and failed transitions preserve progress. Repeated scene entry/load/no-domain-reload play has no stale event handlers, duplicate visuals, stuck Busy locks or orphan overlays.
 - Preserve DoorKey, flashlight use/drop, pause/settings, save/Exit, Siren Head, interference and existing intro/cinematic/retry flows. Report actual tests separately from unperformed standalone/alternate-resolution checks.
 
+# DoorKey Return → Neighborhood Door → Mom Video → House Amendment
+
+Only this amendment is pending approval for the current request. Preserve completed systems; do not repeat earlier work. The final clarified route supersedes both immediate key-to-Mom travel and direct door-to-House travel.
+
+# Project Overview
+- Game Title: Existing FINAL-PROJECT; unchanged.
+- High-Level Concept: Single-player first-person horror exploration. Collect the key in CarScene, resume Neighborhood progress, open the previously locked door, watch the supplied Mom cinematic, then enter a basic playable HouseScene.
+- Players: Single player.
+- Inspiration / Reference Games: Existing project; Baguette travel and existing cinematic transitions are the behavior references.
+- Tone / Art Direction: Preserve existing horror scenery, key, player and UI. House is a minimal safe placeholder play area, not finished house artwork.
+- Target Platform: Windows StandaloneWindows64.
+- Screen Orientation / Resolution: Existing landscape UI; cinematic aspect-fit 16:9 with black bars where needed.
+- Render Pipeline: URP PC_RPAsset, Unity 6000.3.8f1.
+
+## Confirmed User Decisions and Recovery State
+- Exact route: **DoorKey pickup → Neighborhood Scene → player opens previously blocked door → MomScene video → HouseScene**. The video is not triggered by pickup alone.
+- Last checkpoint means **last captured per-scene state** from departure or the explicitly loaded save, matching Baguette travel. It does not mean the death-entry checkpoint or newest save file across unrelated slots. First visit uses authored defaults.
+- User selected **Add basic playable setup** for House: reuse existing first-person player/camera, pause/settings/save UI and simple safe floor/spawn. No finished house art, enemy, Radio, interference or navigation is requested there.
+- Optional returns use **F interaction with the corresponding existing object**, not new pause-menu return buttons or new travel markers. Preserve sign/car routes and collected-item visibility; do not respawn acquired quest props just to provide return controls.
+- Reconnected state: CarScene loaded and clean; DoorKey Pickup exists but has no return-fade configuration. MomScene does not exist. HouseScene currently contains only Main Camera and Directional Light. No implementation of this new route is confirmed, and the earlier interrupted plan append was not saved.
+- Verified clip: `Assets/Videos/Escena_final_mama.mp4`, GUID `77777474b830fbd4791a501198e63a96`, 1920×1080, 81.92 seconds, one audio track. Use real playback completion, not an 81.92-second timer.
+
+# Game Mechanics
+## Core Gameplay Loop
+1. Existing Neighborhood F sign/cinematic travel → Garden; visited Garden resumes its latest captured player/world state.
+2. Garden Baguette F → existing acquisition/hand-presentation behavior → fade/load Neighborhood with its latest captured player/world state.
+3. Neighborhood Baguette-gated car F → fade/load CarScene with its latest captured state if visited.
+4. CarScene DoorKey F → validate/accept travel, acquire key once and hide it → fade out → Neighborhood loads/restores under black with current key ownership → fade in.
+5. Player intentionally opens the exact previously locked Neighborhood door via existing E interaction → start Mom cinematic travel once → fade out → Mom loads/prepares first frame under black → fade in → play complete video with embedded audio → hold final frame and fade out → House loads/initializes/restores under black → fade in → release gameplay locks.
+
+Capture outgoing world/player snapshots before unloading. Preserve run ID, DoorKey and Baguette flags, manual saves and other visited states throughout. Current global ownership governs destination door/key visibility; never replace it with stale destination-entry flags on ordinary travel. Key acquisition unlocks but never automatically opens the door and does not consume the key.
+
+Retain actual death/blackout retry behavior: current scene-entry checkpoint restoration, CarScene key reset, Garden Baguette reset and no retry autosave. Ordinary travel must not invoke those reset paths. Mom is cinematic-only and creates no gameplay autosave. House uses existing supported-gameplay entry/Exit/manual-save policy.
+
+## Controls and Input Methods
+- Verified activeInputHandler = 2 (Both). Reuse event-driven F InputAction, PlayerInput/StarterAssetsInputs and InputSystemUIInputModule. No new backend, polling or bindings.
+- Preserve DoorKey's proximity/obstruction eligibility; aiming is not newly required. Eligible key F consumes once; accepted travel immediately stops further same-frame E/right-click/Radio/drop processing. Failed eligible attempts consume F and show error without falling through to generic pickup.
+- Keep existing E door opening input. The transition is opt-in only on the selected door and triggered by an intentional closed-to-open request, never Awake, lock reconciliation, ownership change, saved-state restoration or Close.
+- Pause/focus loss/capture/load/intro/travel block quest actions. Guard duplicate input and overlapping fade/load owners synchronously.
+
+# UI
+Use existing uGUI HUD, prompts, pause/settings/save views and project black alpha fades. No inventory screen, skip button, new return menu or duplicate EventSystem.
+
+```text
+CarScene near key: Press F
+F → fade out → Neighborhood load/restore → fade in
+Neighborhood door without key: Locked — DoorKey required
+Neighborhood door with key: existing E opening prompt
+E → fade out → Mom first-frame preparation → fade in
+Mom: full-screen aspect-fit Escena_final_mama + embedded audio
+Actual video completion → final-frame fade out
+House initialization/restoration → fade in
+House pause: Resume | Save Game | Settings | Exit
+```
+
+Mom Canvas: black full-viewport background, centered RawImage with aspect-fit 16:9, one VideoPlayer/VideoIntroController, persistent fade overlay above all ordinary UI. Create an isolated 1920×1080 RenderTexture rather than modifying existing intro texture assets globally. Disable autoplay/looping and mute during first-frame preparation; reveal held first frame before audible full playback. Preserve final frame during outgoing fade. No playback skip/fixed duration substitute.
+
+Reuse UIAlphaFade.asset/UIFadeImage.prefab/UIFadeMaterial.mat unchanged with operation-local clones; source-equivalent 1-second out/in and 0.2-second black hold defaults. Loading adds to black time. Hold opacity across loading/restoration and locks through final reveal. Respect HUD/ToolTips settings. Failures must provide visible status and usable controlled recovery, not an unexplained black screen or Console-only message.
+
+# Key Asset & Context
+## Verified Existing Architecture
+- `DoorKeyPickup.TryPickUp` only acquires ownership; its active external owner correctly hides/reconciles the existing key. Real serialized reference inspection confirms key/collider/player/body/canonical interaction wiring; JSON instanceID placeholders were not missing-reference evidence.
+- `GameplayFadeTravel.Begin(destination, bool pickup, ...)` currently specializes true as Garden Baguette pickup and false as car use. Key travel cannot safely use false because it would mutate Baguette use state.
+- `GameSaveManager.BeginGameplayCinematic` captures outgoing `_visited` state and acquires transition/input locks. Ordinary OnSceneReady restores `_visited[destination]`, captures an entry checkpoint and autosaves. `IsCinematicGameplayReady(adapter)` signals validated restoration; Ready alone is insufficient.
+- NewGameSceneSequence already provides persistent gameplay → cinematic → gameplay orchestration. Its BeginGameplayCinematic entry preserves the run, unlike BeginNewGame/BeginFreshRun. Reuse this route for Mom rather than duplicate a sequencer.
+- VideoIntroController already supports first-frame hold, loopPointReached completion, embedded Direct audio muting, final-frame hold, error events and configured direct-play destination. Configure Mom direct play to House without fresh-run reset; preserve VideoIntro and NeighborHoodToGarden defaults.
+- Selected door identity: Neighborhood `PersistentSaveId 04f129cafbe5426cb18a4aedd53b606f`, approximately (51.34, 2.14, 49.45), NewNeighborhood/House6/Floor_0/Doors/Door_1B/Exterior_Door. Re-resolve by scene plus ID, not duplicated hierarchy name or transient instance ID. InteractiveDoor has ownership guards but no cinematic opening hook.
+- Existing player has valid Humanoid Avatar, skinned renderers and NeighborhoodPlayer controller. Reuse verified mesh/rig/controller/clips and FirstPersonController architecture; no generation, rerigging, new animations or controller rewrite.
+- Supported save scenes currently Neighborhood/Farm/Car/Garden, maximum four snapshots. House requires exact allowlist and consistent five-snapshot limit; Mom remains unsupported cinematic-only. Retain version-1 legacy record validity.
+- Build list enables MainMenu, VideoIntro, Neighborhood, NeighborHoodToGarden, Garden, Car; Test disabled. Mom/House absent. Enable only Mom and House; do not enable Farm/Test or change New Game destination.
+- AssetDatabase dependency/dependent inspections were used because dedicated dependency tool unavailable; shared scripts affect other scenes/recovery assets. Recheck impact before each implementation edit. VideoIntroController dependencies confirmed in both existing cinematic scenes, NewGameSceneSequence in MainMenu.
+
+## Existing Assets to Modify
+- `Assets/Scripts/DoorKeyPickup.cs`: return route/fade references/timings/Error, validated acquisition plus persistent direct travel, active-owner visibility/reset reconciliation.
+- `Assets/Scripts/Transitions/GameplayFadeTravel.cs`: explicit travel intent or separate generic/key entry alongside backward-compatible Baguette wrapper. Key intent must not alter Baguette flags. Preserve persistent overlay/readiness and owned cleanup; verify overlay completion rather than guessed waits.
+- `Assets/Scripts/Saving/GameSaveManager.cs`: narrow operation-owned key travel boundary; validate/capture/block before acquisition, preserve quest flags through destination restoration/checkpoint/autosave, expose coherent success/failure. Keep cinematic/retry/load semantics and strict object validation intact. Ensure failed restoration never signals success or releases gameplay behind a running fade.
+- `Assets/Scripts/InteractionsSystem.cs`: eligible key F consumes once and returns on accepted travel; display errors and prevent generic pickup fallthrough/same-frame extra input. Stop processing after accepted door travel while ordinary doors remain compatible.
+- `Assets/Scripts/InteractiveDoor.cs`: optional intentional-opening transition hook/reference, null default. Unify ToggleDoor/Open/Use closed-to-open path; validate/start Mom route once, never from RestoreSavedState/Awake/Close/reconciliation. Recover door logical/visual state on failed pre-unload acceptance as appropriate.
+- `Assets/Scripts/Saving/SaveGameData.cs`: House exact supported path and five-scene bound; unchanged fields/version/legacy flags. Inspect repository/other consumers for duplicated limits before editing.
+- `Assets/Scripts/NewGameSceneSequence.cs`, `Assets/Scripts/VideoIntroController.cs`: read/reuse existing explicit route APIs; edit only for verified compatibility, operation-owned cleanup, scene identity/readiness or visible-error gaps. No hard-coded rerouting of existing cinematics or BeginFreshRun on Mom travel.
+- `Assets/Scenes/CarScene.unity`: configure existing key return destination/fades without moving key or rebuilding gameplay.
+- `Assets/Scenes/Neighborhood Scene.unity`: configure only the exact keyed door for MomScene → HouseScene, preserving its ID/lock/hinge and other doors. Audit existing sign/car revisit wiring.
+- `Assets/Scenes/HouseScene.unity`: minimal safe floor/play area/spawn plus reused verified player/camera/head/hand/input/interaction, HUD/pause/settings/save adapter and real local registrations. Remap every reference and omit source enemy/interference/Radio/quest/optimization owners. One player/camera/listener/EventSystem, preserve original light unless readability requires a minimal local adjustment.
+- `ProjectSettings/EditorBuildSettings.asset`: enable Mom and House only, preserve other inclusions and intro route.
+- GardenScene, BaguettePickup, VehicleInteraction and GameplaySaveAdapter are read-only by default; shared travel changes should provide revisit consistency. Any necessary additional narrow wiring/API correction requires impact inspection and documented scope, never bypassing save validation.
+
+## New Assets / Reuse
+- `Assets/Scenes/MomScene.unity`: cinematic-only scene with existing VideoIntroController pattern, supplied clip, full-screen Canvas/RawImage/background, one audio-capable VideoPlayer and explicit House direct-play destination.
+- `Assets/Videos/MomScene.renderTexture`: 1920×1080 dedicated output, suitable video settings.
+- Optional `Assets/Scripts/DoorSceneTransition.cs`: scene-owned exact cinematic/destination/fade configuration and guarded intentional-open API, no new input/prompt Update writer.
+- House primitive/material assets only if needed under `Assets/Environment/HouseScene/`. Reuse current player model/Avatar/controller/clips and UI styles unchanged; no universal prefab redesign.
+- Existing shared fade assets, supplied video/import settings, imported models/controllers and original cinematic scene assets are read-only except narrowly scoped explicit fixes above. No packages, rendering symbol workarounds or global material/lighting edits.
+
+# Implementation Steps
+1. **Recheck recovered state and impact.** Dependency: approval. Confirm dirty scenes, actual key/door ID and incoming references, current route APIs, clip/player rig/controller and House emptiness, save bounds/autosave timing and absence of stale cleanup hooks. Inspect dependencies/dependents before each existing edit. Preserve unsaved edits; ask before saving unrelated changes. Do not repeat already-completed Baguette work.
+2. **Prepare basic playable House destination.** Dependency: Step 1. Reuse validated existing player and approved animation/input setup, safe floor/spawn, camera and HUD/pause/settings/save wiring. No new character generation or imported controller changes. Remove inapplicable copied dependencies after reference checks, register actual local saveables only, never copy Neighborhood's registration array. Extend supported scenes/bounds consistently and enable House. Verify direct movement/look/pause/save initialization before door route is activated.
+3. **Create Mom cinematic.** Dependency: Steps 1–2. Create scene/RenderTexture/Canvas/background/aspect-fit display and single VideoPlayer/controller, assign Escena_final_mama and one embedded Direct audio track, disable autoplay/looping, configure House direct-play destination and established fade refs. Enable Mom in build list. Validate prepare/first frame/audio/completion wiring without changing supplied importer/source video. Do not classify cinematic as saveable gameplay.
+4. **Implement guarded key-return travel.** Dependency: Steps 1–3. Generalize/add key intent to persistent direct travel; validate source/destination/fade/exclusive ownership before quest mutation. Capture outgoing Car state and block synchronously, acquire/hide key once, fade/load Neighborhood, wait for successful restored readiness/checkpoint/autosave with key true, reveal and release. Retain Baguette flags. Roll back only operation-owned uncommitted changes on failure; do not blindly revert a state after it was committed to a destination autosave or overwrite newer state.
+5. **Integrate single-F key behavior and revisits.** Dependency: Step 4. Wire key route/fades, consume eligible F once and stop subsequent input on success, report errors. Audit Garden Baguette, Neighborhood car and sign/cinematic routes for capture-before-unload and latest `_visited` restoration. Preserve current run flags, first-visit defaults and held-item semantics; no new pause return controls/markers or collected-prop respawn. Actual death/blackout resets stay separate.
+6. **Wire intentional door → Mom → House.** Dependency: Steps 2–5. Add opt-in door transition hook and bind exact door ID. Only unlocked intentional closed-to-open interaction starts the existing persistent BeginGameplayCinematic route. Start fade immediately on acceptance, without waiting for full door swing; capture consistent logical door state. Do not travel on key acquisition/load/restoration. Preserve key/run/visited snapshots, prepare Mom first frame under black, reveal/play entire video, hold final frame/fade, load/restore House under black and reveal only after validated readiness. No direct key-to-Mom route remains.
+7. **Strengthen scoped failure cleanup.** Dependency: Steps 4–6. Handle invalid refs/destinations, capture failure, async load null/exception, destroyed owner/video, decode/preparation timeout, playback interruption and failed gameplay restoration. No duplicate fades or broad external lock release. Visible status and controlled usable recovery; no silent cinematic skip, lost key, false completion or stuck black. Direct Mom play reaches House without fresh-run reset; existing main/garden cinematics remain unchanged.
+8. **Focused verification and save.** Dependency: Steps 2–7. Compile incrementally, inspect local reference/event integrity and preserved existing ID counts. Test key return, captured-state revisits, lock/opening, complete 81.92-second video and House save reconstruction in separate bounded sessions; no short timeout that cannot accommodate the whole clip. Capture actual Game View fade/video evidence. Isolate test saves outside Assets, never delete user records or create deferred cleanup/domain-reload loops. Save intended assets and restore original Editor scene setup; report unperformed Windows/build checks honestly.
+
+# Verification & Testing
+- Exact route Car key F → Neighborhood, no video yet → E opening of selected keyed door → MomScene → HouseScene. Other doors and existing sign/car/Baguette routes unchanged. Key remains owned, hidden and unconsumed.
+- Neighborhood departure pose/pitch/registered world/held-item state survives Garden Baguette return and Car key return. Visited Garden and Car resume their own latest captured states; first visits use defaults. No newest-slot auto-selection or stale destination-entry flag override.
+- Eligible key F grants once without dropping/toggling flashlight, resetting Radio or processing E/right-click the same frame. Pause/focus/restoration/capture block action, obstruction/range and HUD settings respected; failed valid attempts report error without generic pickup fallthrough.
+- Selected door locked rejects normal opening and saved-open restoration. Acquired key does not auto-open/travel. Intentional Open/Toggle/Use closed-to-open starts one cinematic; restoring an open saved door never starts another scene load. Pre-load failure leaves coherent usable door/player state.
+- Mom renders supplied 1920×1080 clip in Canvas, audible embedded track, opening not lost during preparation, real loopPointReached completion after full playback, final frame retained through fade. No fixed-duration substitute, loop, automatic skip or accidental VideoIntro/Garden route.
+- Actual rendered partial fade-out, exact black during all three loads, partial reveal and transparent endpoints. House input/HUD/save remain blocked until final reveal, no flash/duplicate overlay/stuck Busy/cursor. Test directly opened versus menu-launched gameplay/Mom.
+- House has one working player/camera/listener/EventSystem and safe floor/spawn, readable pause/settings/save UI, valid local adapter/IDs, no source enemy/quest/Radio/interference references. Movement/look/jump/pause/manual-save/Exit/Continue/selected-slot loading work.
+- House records/five supported snapshots validate; older version-1 fewer-scene records remain valid. Mom creates no autosave. House ordinary entry autosaves once after valid restoration with current key/run flags; manual files preserved.
+- Actual Car death/blackout still resets key; Garden retry still resets Baguette; ordinary travel does neither. Preserve retry-autosave suppression, hand-visual rules and other visited states.
+- Double/held input and capture/blackout contention yield one owned operation. Missing clip/texture/fade/scene, decode errors, failed capture/restore, interrupted overlay or direct bootstrap failures recover visibly without falsely claiming video completion or clearing another owner's locks.
+- Windows video decode/audio/build, alternate resolutions and full-road traversal remain unverified unless performed. Preserve user saves and imported/shared assets; no package guards/defines/backend changes or unrelated scene edits.
+

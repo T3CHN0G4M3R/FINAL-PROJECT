@@ -57,6 +57,25 @@ public sealed class GameSaveManager : MonoBehaviour
         BaguetteChanged?.Invoke();
     }
 
+    public bool BeginDoorKeyTravel(string destination, out string error)
+    {
+        error = null;
+        if (HasDoorKey || _adapter == null || !_adapter.Ready ||
+            _adapter.ScenePath != "Assets/Scenes/CarScene.unity" ||
+            destination != "Assets/Scenes/Neighborhood Scene.unity")
+        { error = "Key return is unavailable."; return false; }
+        if (!BeginGameplayCinematic(destination, destination, out error)) return false;
+        SetDoorKey(true);
+        return true;
+    }
+
+    public void RollbackDoorKeyTravel()
+    {
+        // Only the active transition may undo acquisition before CarScene is unloaded.
+        if (IntroTransitionInProgress && _adapter != null &&
+            _adapter.ScenePath == "Assets/Scenes/CarScene.unity") SetDoorKey(false);
+    }
+
     public bool TryAcquireDoorKey()
     {
         if (Busy || EncounterInProgress || HasDoorKey || _adapter == null || !_adapter.Ready ||
@@ -221,7 +240,11 @@ public sealed class GameSaveManager : MonoBehaviour
         {
             if (_retryPending) { _retryError = e.Message; _retryPending = false; Report("Retry restore failed: " + e.Message); }
             else if (_pending != null) FailLoad(e.Message);
-            else { adapter.BlockInput(false); Report("Save unavailable: " + e.Message); }
+            else
+            {
+                adapter.BlockInput(IntroTransitionInProgress);
+                Report("Save unavailable: " + e.Message);
+            }
         }
     }
     public bool Save(int slot, out string error)

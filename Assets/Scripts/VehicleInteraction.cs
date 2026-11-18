@@ -16,7 +16,8 @@ public sealed class VehicleInteraction : MonoBehaviour
     [SerializeField] private LayerMask _interactableLayers = ~0;
 
     [Header("Transition")]
-    [SerializeField] private string _targetScene = "Assets/Scenes/CarScene.unity";
+    [SerializeField] private string _targetScene = "Assets/Scenes/NeighborhoodToCar.unity";
+    [SerializeField] private string _gameplayScene = "Assets/Scenes/CarScene.unity";
     [SerializeField] private UIAlphaFadeEffect _fadeEffect;
     [SerializeField] private UnityEngine.UI.Image _fadeImagePrefab;
     [SerializeField] private float _fadeOutSeconds = 1f;
@@ -53,9 +54,10 @@ public sealed class VehicleInteraction : MonoBehaviour
     public bool TryInteract(Transform player, Camera view)
     {
         if (!CanInteract(player, view) || GameSaveManager.Instance == null || !GameSaveManager.Instance.HasBaguette) return false;
-        bool started = GameplayFadeTravel.Begin(_targetScene, false, _fadeEffect, _fadeImagePrefab,
-            _fadeOutSeconds, _fadeInSeconds, _blackHoldSeconds, out string error);
+        bool started = NewGameSceneSequence.BeginGameplayCinematic(_fadeEffect, _fadeImagePrefab,
+            _targetScene, _gameplayScene, _fadeOutSeconds, _fadeInSeconds, _blackHoldSeconds, out string error);
         _isTransitioning = started;
+        if (started) GameSaveManager.Instance.CommitBaguetteCarUse();
         if (!started)
         {
             PromptMessage = error;

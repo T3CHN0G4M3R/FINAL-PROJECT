@@ -248,6 +248,7 @@ MonoBehaviour:
   _fadeEffect: {fileID: 11400000, guid: 1097a28e540a9b3419106892e20f72d1, type: 2}
   _fadeImagePrefab: {fileID: 2175856970961285118, guid: c116f2243760eb449bb4383d68f5c5ea, type: 3}
   _prepareTimeout: 20
+  _gameplayScene: Assets/Scenes/Neighborhood Scene.unity
 --- !u!328 &1605861022
 VideoPlayer:
   m_ObjectHideFlags: 0
@@ -256,7 +257,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1605861020}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 5987d1f4a97855c49b4a7c102c8082bb, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: b0be45d528068354099a065ec289c30b, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}

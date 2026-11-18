@@ -26,6 +26,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CarScene.unity
     guid: ae32a306409bff841a5297928437c967
+  - enabled: 1
+    path: Assets/Scenes/HouseScene.unity
+    guid: 5550b8e660584314f9d9c5d507c0268d
+  - enabled: 1
+    path: Assets/Scenes/MomScene.unity
+    guid: 845a7f552e40f9947a70054ec7f7d782
+  - enabled: 1
+    path: Assets/Scenes/NeighborhoodToCar.unity
+    guid: 07518fc610fbae949beb26b41aa2ed8e
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

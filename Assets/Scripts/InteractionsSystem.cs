@@ -372,8 +372,12 @@ public class InteractionSystem : MonoBehaviour
             fPressed = false;
             if (started) return;
         }
-        if (fPressed && doorKeyPickup != null && doorKeyPickup.TryPickUp(playerTransform, playerCamera))
+        if (fPressed && doorKeyPickup != null && doorKeyPickup.CanInteract(playerTransform, playerCamera))
+        {
+            bool started = doorKeyPickup.TryPickUp(playerTransform, playerCamera);
             fPressed = false;
+            if (started) return;
+        }
         if (fPressed && baguettePickup != null && baguettePickup.CanInteract(playerTransform, playerCamera))
         {
             bool started = baguettePickup.TryPickUp(playerTransform, playerCamera);
@@ -403,6 +407,7 @@ public class InteractionSystem : MonoBehaviour
                 if (door != null)
                 {
                     door.ToggleDoor();
+                    if (!InteractionInputAllowed) return;
                 }
                 else
                 {
@@ -636,7 +641,7 @@ public class InteractionSystem : MonoBehaviour
         }
         if (doorKeyPickup != null && doorKeyPickup.CanInteract(playerTransform, playerCamera))
         {
-            promptText.text = "Press F";
+            promptText.text = doorKeyPickup.Error ?? "Press F";
             return;
         }
         if (baguettePickup != null && baguettePickup.CanInteract(playerTransform, playerCamera))
@@ -662,6 +667,11 @@ public class InteractionSystem : MonoBehaviour
             if (lockedDoor != null && lockedDoor.IsLocked)
             {
                 promptText.text = "Locked — DoorKey required";
+                return;
+            }
+            if (lockedDoor != null && lockedDoor.TravelError != null)
+            {
+                promptText.text = lockedDoor.TravelError;
                 return;
             }
         }

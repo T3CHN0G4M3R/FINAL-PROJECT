@@ -13,6 +13,9 @@ public class InteractiveDoor : MonoBehaviour, IUsable
     [SerializeField] private string doorName = "Puerta";
     [Tooltip("This scene door requires the logical DoorKey collected in CarScene.")]
     [SerializeField] private bool requiresDoorKey;
+    [Tooltip("Optional cinematic route, used only by intentional opening, never save restoration.")]
+    [SerializeField] private DoorSceneTransition openingTransition;
+    public string TravelError => openingTransition == null ? null : openingTransition.Error;
     public bool IsLocked => requiresDoorKey && (GameSaveManager.Instance == null || !GameSaveManager.Instance.HasDoorKey);
 
     private Quaternion closedLocalRot;
@@ -131,13 +134,21 @@ public class InteractiveDoor : MonoBehaviour, IUsable
     public void ToggleDoor()
     {
         if (IsLocked) { ReconcileLock(); return; }
-        isOpen = !isOpen;
+        if (isOpen) Close();
+        else Open();
     }
 
     public void Open()
     {
         if (IsLocked) { ReconcileLock(); return; }
+        if (isOpen) return;
         isOpen = true;
+        // Capture the intended open state before the coordinator unloads this scene.
+        if (openingTransition != null && !openingTransition.TryBegin())
+        {
+            isOpen = false;
+            transform.localRotation = closedLocalRot;
+        }
     }
 
     public void Close()

@@ -102,36 +102,57 @@ public class NewGameSceneSequence : MonoBehaviour
         if (op == null) { _failure = _failure ?? "Scene loading could not start."; yield break; }
         yield return op;
     }
+    private IEnumerator Fade(bool outgoing)
+    {
+        if (_overlay == null || !_overlay.IsUsable) { _failure = "Cinematic fade is unavailable."; yield break; }
+        if (outgoing) yield return _overlay.FadeOut();
+        else yield return _overlay.FadeIn();
+        if (_overlay == null || !_overlay.IsUsable ||
+            (outgoing ? _overlay.Alpha < 0.999f : _overlay.Alpha > 0.001f))
+            _failure = "Cinematic fade was interrupted.";
+    }
+
     private IEnumerator PlaySequence(bool direct)
     {
         Time.timeScale = 1f;
         if (!direct)
         {
-            yield return _overlay.FadeOut();
+            yield return Fade(true);
+            if (_failure != null) { yield return Recover(); yield break; }
             yield return Load(_introScene);
         }
         float deadline = Time.realtimeSinceStartup + _readinessTimeout;
-        while (_failure == null && (VideoIntroController.Instance == null || !VideoIntroController.Instance.Ready) && Time.realtimeSinceStartup < deadline)
+        while (_failure == null && (VideoIntroController.Instance == null ||
+            VideoIntroController.Instance.gameObject.scene.path != _introScene || !VideoIntroController.Instance.Ready) &&
+            Time.realtimeSinceStartup < deadline)
         {
             if (VideoIntroController.Instance != null && VideoIntroController.Instance.Error != null) _failure = VideoIntroController.Instance.Error;
             yield return null;
         }
         var video = VideoIntroController.Instance;
-        if (_failure == null && (video == null || !video.Ready)) _failure = "Video did not become ready.";
+        if (_failure == null && (video == null || video.gameObject.scene.path != _introScene || !video.Ready)) _failure = "Video did not become ready.";
         if (_failure != null) { yield return Recover(); yield break; }
-        yield return _overlay.FadeIn();
+        yield return Fade(false);
+        if (_failure != null) { yield return Recover(); yield break; }
         video.PlayVideo();
-        // Hold the first frame during the reveal, then play the complete clip with audio.
-        while (video != null && !video.Completed && video.Error == null && SceneManager.GetActiveScene().path == _introScene) yield return null;
-        if (video == null || !video.Completed) { _failure = video != null ? video.Error : "Video playback was interrupted."; yield return Recover(); yield break; }
-        yield return _overlay.FadeOut();
+        // This is a diagnostic stall budget, never a substitute for loopPointReached.
+        var player = video.GetComponent<UnityEngine.Video.VideoPlayer>();
+        double budget = player.clip == null ? 120 : player.clip.length / Mathf.Max(.01f, player.playbackSpeed) + _readinessTimeout;
+        double playbackDeadline = Time.realtimeSinceStartupAsDouble + budget;
+        while (video != null && !video.Completed && video.Error == null && SceneManager.GetActiveScene().path == _introScene &&
+            Time.realtimeSinceStartupAsDouble < playbackDeadline) yield return null;
+        if (video == null || !video.Completed)
+        { _failure = video != null ? video.Error ?? "Video playback stalled or was interrupted." : "Video playback was interrupted."; yield return Recover(); yield break; }
+        yield return Fade(true);
+        if (_failure != null) { yield return Recover(); yield break; }
         yield return Load(_gameplayScene);
         deadline = Time.realtimeSinceStartup + _readinessTimeout;
         while (_failure == null && (_readyAdapter == null || !GameSaveManager.Instance.IsCinematicGameplayReady(_readyAdapter)) && Time.realtimeSinceStartup < deadline) yield return null;
         if (_readyAdapter == null || !GameSaveManager.Instance.IsCinematicGameplayReady(_readyAdapter))
             _failure = _failure ?? "Gameplay initialization or world restoration failed.";
         if (_failure != null) { yield return Recover(); yield break; }
-        yield return _overlay.FadeIn();
+        yield return Fade(false);
+        if (_failure != null) { yield return Recover(); yield break; }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         Finish();
@@ -141,7 +162,7 @@ public class NewGameSceneSequence : MonoBehaviour
         Debug.LogError("Intro failed: " + _failure, this);
         GameSaveManager.Instance.Report("Intro failed: " + _failure);
         if (Application.CanStreamedLevelBeLoaded("MainMenu")) yield return Load("MainMenu");
-        if (_overlay != null) yield return _overlay.FadeIn();
+        if (_overlay != null && _overlay.IsUsable) yield return _overlay.FadeIn();
         Cursor.lockState = CursorLockMode.None; Cursor.visible = true;
         Finish();
     }

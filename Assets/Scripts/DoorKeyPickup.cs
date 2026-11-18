@@ -13,6 +13,13 @@ public sealed class DoorKeyPickup : MonoBehaviour
     [Tooltip("Distance to the key collider. Aiming is not required.")]
     [Min(0.01f)] [SerializeField] private float _interactionRadius = 3f;
     [SerializeField] private LayerMask _obstructionMask = ~0;
+    [Header("Return to Neighborhood")]
+    [SerializeField] private UIAlphaFadeEffect _fadeEffect;
+    [SerializeField] private UnityEngine.UI.Image _fadeImagePrefab;
+    [SerializeField, Min(0f)] private float _fadeOutSeconds = 1f;
+    [SerializeField, Min(0f)] private float _fadeInSeconds = 1f;
+    [SerializeField, Min(0f)] private float _blackHoldSeconds = 0.2f;
+    public string Error { get; private set; }
 
     private readonly RaycastHit[] _hits = new RaycastHit[64];
     private Vector3 _originalPosition;
@@ -76,7 +83,15 @@ public sealed class DoorKeyPickup : MonoBehaviour
         }
         return true;
     }
-    public bool TryPickUp(Transform player, Camera view) => CanInteract(player, view) && GameSaveManager.Instance.TryAcquireDoorKey();
+    public bool TryPickUp(Transform player, Camera view)
+    {
+        if (!CanInteract(player, view)) return false;
+        bool started = GameplayFadeTravel.BeginKey(_fadeEffect, _fadeImagePrefab,
+            _fadeOutSeconds, _fadeInSeconds, _blackHoldSeconds, out string error);
+        Error = error;
+        if (!started && GameSaveManager.Instance != null) GameSaveManager.Instance.Report(error);
+        return started;
+    }
 
     private void OnValidate()
     {
