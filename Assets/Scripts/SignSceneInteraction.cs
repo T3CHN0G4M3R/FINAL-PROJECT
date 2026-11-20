@@ -6,6 +6,9 @@ public sealed class SignSceneInteraction : MonoBehaviour
     [Header("Sign")]
     [SerializeField] private Collider _signCollider;
     [Header("Cinematic Route")]
+    [SerializeField] private bool _directTravel;
+    [SerializeField] private string _promptMessage = "Press F";
+    public string PromptMessage => Error ?? _promptMessage;
     [SerializeField] private string _cinematicScene = "Assets/Scenes/NeighborHoodToGarden.unity";
     [SerializeField] private string _gameplayScene = "Assets/Scenes/GardenScene.unity";
     [SerializeField] private UIAlphaFadeEffect _fadeEffect;
@@ -43,8 +46,13 @@ public sealed class SignSceneInteraction : MonoBehaviour
     public bool TryTravel(Transform player, Camera view, GameObject held, float range, LayerMask mask)
     {
         if (!CanInteract(player, view, held, range, mask)) return false;
-        if (NewGameSceneSequence.BeginGameplayCinematic(_fadeEffect, _fadeImagePrefab, _cinematicScene,
-            _gameplayScene, _fadeOutSeconds, _fadeInSeconds, _blackHoldSeconds, out string error))
+        string error;
+        bool started = _directTravel
+            ? GameplayFadeTravel.BeginScene(_gameplayScene, _fadeEffect, _fadeImagePrefab,
+                _fadeOutSeconds, _fadeInSeconds, _blackHoldSeconds, out error)
+            : NewGameSceneSequence.BeginGameplayCinematic(_fadeEffect, _fadeImagePrefab, _cinematicScene,
+                _gameplayScene, _fadeOutSeconds, _fadeInSeconds, _blackHoldSeconds, out error);
+        if (started)
         { Error = null; return true; }
         Error = error ?? "Unable to start cinematic.";
         if (GameSaveManager.Instance != null) GameSaveManager.Instance.Report(Error);

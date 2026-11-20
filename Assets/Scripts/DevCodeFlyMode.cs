@@ -27,9 +27,34 @@ public class DevCodeFlyMode : MonoBehaviour
     private UnityEngine.InputSystem.InputAction toggleAction;
     private UnityEngine.InputSystem.InputAction riseAction;
     private UnityEngine.InputSystem.InputAction descendAction;
+    private static bool sessionUnlocked;
+    private static int videoSequenceIndex;
+    public static bool IsSessionUnlocked => sessionUnlocked;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetSession()
+    {
+        sessionUnlocked = false;
+        videoSequenceIndex = 0;
+    }
+
+    public static bool HandleVideoTextInput(char character)
+    {
+        if (character == '+') return sessionUnlocked;
+        if (char.IsControl(character)) return false;
+        if (character == CheatSequence[videoSequenceIndex]) videoSequenceIndex++;
+        else videoSequenceIndex = character == CheatSequence[0] ? 1 : 0;
+        if (videoSequenceIndex != CheatSequence.Length) return false;
+        videoSequenceIndex = 0;
+        sessionUnlocked = !sessionUnlocked;
+        Debug.Log("DevCode Desbloqueado: " + sessionUnlocked);
+        return false;
+    }
 
     private void Awake()
     {
+        isDevCodeUnlocked = isDevCodeUnlocked || sessionUnlocked;
+        sessionUnlocked = isDevCodeUnlocked;
         rb = GetComponent<Rigidbody>();
         playerColliders = GetComponentsInChildren<Collider>(true);
         colliderStates = new bool[playerColliders.Length];
@@ -86,6 +111,7 @@ public class DevCodeFlyMode : MonoBehaviour
         sequenceIndex = 0;
         lastSpaceTime = float.NegativeInfinity;
         isDevCodeUnlocked = !isDevCodeUnlocked;
+        sessionUnlocked = isDevCodeUnlocked;
         Debug.Log("DevCode Desbloqueado: " + isDevCodeUnlocked, this);
         if (!isDevCodeUnlocked && isFlyModeActive) ToggleFlyMode();
     }

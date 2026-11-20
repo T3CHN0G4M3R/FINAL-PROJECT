@@ -636,10 +636,10 @@ public class InteractionSystem : MonoBehaviour
         }
         if (sceneSign != null && sceneSign.CanInteract(playerTransform, playerCamera, heldObject, interactDistance, interactableLayers))
         {
-            promptText.text = sceneSign.Error == null ? "Press F" : sceneSign.Error;
+            promptText.text = sceneSign.PromptMessage;
             return;
         }
-        if (doorKeyPickup != null && doorKeyPickup.CanInteract(playerTransform, playerCamera))
+        if (doorKeyPickup != null&& doorKeyPickup.CanInteract(playerTransform, playerCamera))
         {
             promptText.text = doorKeyPickup.Error ?? "Press F";
             return;

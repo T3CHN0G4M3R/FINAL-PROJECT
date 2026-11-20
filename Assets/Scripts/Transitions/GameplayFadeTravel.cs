@@ -14,7 +14,12 @@ public sealed class GameplayFadeTravel : MonoBehaviour
     private bool _previousUsed;
     private bool _finished;
     private GameplaySaveAdapter _readyAdapter;
+    private bool _plainTravel;
     private const float ReadinessTimeout = 30f;
+
+    public static bool BeginScene(string destination, UIAlphaFadeEffect effect,
+        UnityEngine.UI.Image image, float fadeOut, float fadeIn, float blackHold, out string error) =>
+        BeginTravel(destination, false, false, effect, image, fadeOut, fadeIn, blackHold, out error, true);
 
     public static bool Begin(string destination, bool pickup, UIAlphaFadeEffect effect,
         UnityEngine.UI.Image image, float fadeOut, float fadeIn, float blackHold, out string error) =>
@@ -26,8 +31,8 @@ public sealed class GameplayFadeTravel : MonoBehaviour
             fadeOut, fadeIn, blackHold, out error);
 
     private static bool BeginTravel(string destination, bool pickup, bool keyPickup, UIAlphaFadeEffect effect,
-        UnityEngine.UI.Image image, float fadeOut, float fadeIn, float blackHold, out string error)
-    {
+        UnityEngine.UI.Image image, float fadeOut, float fadeIn, float blackHold, out string error, bool plainTravel = false)
+{
         error = null;
         var manager = GameSaveManager.Instance;
         var transitioner = PixeLadder.EasyTransition.SceneTransitioner.Instance;
@@ -40,6 +45,7 @@ public sealed class GameplayFadeTravel : MonoBehaviour
         travel._destination = destination;
         travel._pickup = pickup;
         travel._keyPickup = keyPickup;
+        travel._plainTravel = plainTravel;
         travel._previousAcquired = manager.HasBaguette;
         travel._previousUsed = manager.BaguetteUsedOnCar;
         try
@@ -47,7 +53,8 @@ public sealed class GameplayFadeTravel : MonoBehaviour
             DontDestroyOnLoad(root);
             travel._overlay = new GameObject("Gameplay Travel Fade").AddComponent<DeathRetryTransition>();
             travel._overlay.Initialize(effect, image, fadeOut, fadeIn, blackHold);
-            bool accepted = keyPickup ? manager.BeginDoorKeyTravel(destination, out error) :
+            bool accepted = plainTravel ? manager.BeginGameplayCinematic(destination, destination, out error) :
+                keyPickup ? manager.BeginDoorKeyTravel(destination, out error) :
                 manager.BeginBaguetteTravel(destination, pickup, out error);
             if (!accepted)
             { travel._finished = true; travel._overlay.Dispose(); Destroy(root); return false; }
@@ -77,7 +84,7 @@ public sealed class GameplayFadeTravel : MonoBehaviour
 
     private void Rollback()
     {
-        if (_loaded || GameSaveManager.Instance == null) return;
+        if (_plainTravel || _loaded || GameSaveManager.Instance == null) return;
         if (_keyPickup) GameSaveManager.Instance.RollbackDoorKeyTravel();
         else GameSaveManager.Instance.RestoreBaguetteTravelState(_previousAcquired, _previousUsed);
     }
@@ -91,7 +98,7 @@ public sealed class GameplayFadeTravel : MonoBehaviour
         {
             try
             {
-                if (!_pickup && !_keyPickup) GameSaveManager.Instance.CommitBaguetteCarUse();
+                if (!_plainTravel && !_pickup && !_keyPickup) GameSaveManager.Instance.CommitBaguetteCarUse();
                 operation = SceneManager.LoadSceneAsync(_destination);
             }
             catch (System.Exception e) { failure = e.Message; }
