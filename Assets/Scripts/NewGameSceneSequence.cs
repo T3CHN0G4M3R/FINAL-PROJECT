@@ -146,6 +146,30 @@ public class NewGameSceneSequence : MonoBehaviour
         yield return Fade(true);
         if (_failure != null) { yield return Recover(); yield break; }
         yield return Load(_gameplayScene);
+        if (_failure != null) { yield return Recover(); yield break; }
+        // An ending card is presentation-only; it has no GameplaySaveAdapter.
+        // Release our persistent fade before handing control to its own sequence.
+        var destinationScene = SceneManager.GetSceneByPath(_gameplayScene);
+        bool isEndingCard = false;
+        if (destinationScene.IsValid() && destinationScene.isLoaded)
+        {
+            foreach (var root in destinationScene.GetRootGameObjects())
+            {
+                var endingCard = root.GetComponentInChildren<HouseImageSequence>();
+                if (endingCard != null && endingCard.isActiveAndEnabled)
+                {
+                    isEndingCard = true;
+                    break;
+                }
+            }
+        }
+        if (isEndingCard)
+        {
+            yield return Fade(false);
+            if (_failure != null) { yield return Recover(); yield break; }
+            Finish();
+            yield break;
+        }
         deadline = Time.realtimeSinceStartup + _readinessTimeout;
         while (_failure == null && (_readyAdapter == null || !GameSaveManager.Instance.IsCinematicGameplayReady(_readyAdapter)) && Time.realtimeSinceStartup < deadline) yield return null;
         if (_readyAdapter == null || !GameSaveManager.Instance.IsCinematicGameplayReady(_readyAdapter))
