@@ -1423,3 +1423,84 @@ Reuse UIAlphaFade.asset/UIFadeImage.prefab/UIFadeMaterial.mat unchanged with ope
 - Double/held input and capture/blackout contention yield one owned operation. Missing clip/texture/fade/scene, decode errors, failed capture/restore, interrupted overlay or direct bootstrap failures recover visibly without falsely claiming video completion or clearing another owner's locks.
 - Windows video decode/audio/build, alternate resolutions and full-road traversal remain unverified unless performed. Preserve user saves and imported/shared assets; no package guards/defines/backend changes or unrelated scene edits.
 
+# Full-Height Scenery Fade and Background Sky — CarScene Amendment
+
+Only this amendment is pending approval for the current request. Preserve all previously completed gameplay and environment work. The user selected **Preserve dynamic sky**, rather than dense full-view overcast fog. This supersedes reliance on the previous lower-horizon colour match as the complete solution for giant scenery.
+
+# Project Overview
+- Game Title: Existing FINAL-PROJECT; unchanged.
+- High-Level Concept: Existing first-person horror exploration on an abandoned road with deliberately oversized cones and tyres. Make distant scenery appear/disappear smoothly at every height while retaining the animated night sky.
+- Players: Existing single player.
+- Inspiration / Reference Games: Existing project and Tenkoku atmosphere; no new references.
+- Tone / Art Direction: Preserve horror lighting, aurora, clouds, giant prop scale and existing blue-grey road fog.
+- Target Platform: Windows StandaloneWindows64.
+- Screen Orientation / Resolution: Existing landscape; validate ordinary and upward-looking first-person views at 1920x1080 and a smaller window when available.
+- Render Pipeline: Verified URP PC_RPAsset, Unity 6000.3.8f1. Last approved project context records URP 17.3.0; recheck installed version before authoring shaders.
+
+## Selected Approach and Trade-offs
+- **Selected:** Correct scene-local sky-background depth handling, then apply targeted whole-prop dither fading where necessary. Keeps dynamic sky detail and avoids transparent-object sorting problems, but requires consistent colour/depth/shadow passes and checking visible dither quality.
+- **Alternative considered:** Full-screen distance fog with an all-height matching background. Gives more uniform concealment, but substantially obscures the aurora and sky; the user did not choose this appearance.
+- Start with the verified finite-dome depth issue, not a blanket camera far-plane increase or enormous dome scaling. If correcting sky depth fully resolves a particular prop's clipping and appearance, avoid unnecessary material replacement on that prop. Add the targeted fade only to the audited oversized scenery that still needs it.
+- Preserve nearby silhouettes/readability and distant uncertainty: this supports the existing horror aesthetics (MDA) without changing collision, progression or enemy fairness. Do not scale down cones/tyres or deactivate their physical objects.
+
+# Game Mechanics
+## Core Gameplay Loop
+Movement, interaction, Siren Head, interference, Radio, pickups, capture, saves and scene travel remain unchanged. As the player approaches or retreats, affected distant prop visuals gradually reveal/conceal as one coherent object, independent of elevation. Clouds and aurora remain behind world geometry rather than acting like physical surfaces through the map.
+
+## Controls and Input Methods
+Preserve Both input backend, existing event-driven PlayerInput/StarterAssetsInputs, Cinemachine and capture camera ownership. No new input bindings or controller changes. Evaluate visibility against the final actual gameplay camera pose before rendering, including look-up, camera blends, save teleports and death framing; never use the shadow camera as the fade-distance origin.
+
+# UI
+No new HUD, menus, Volume profiles or screen-space overlays. Existing fade/blackout UI stays above gameplay and is unaffected.
+
+```text
+Player view: readable near road/props
+             distant whole prop → smooth fade → existing sky/background
+             upper sky: existing aurora/cloud animation, no dome intersection
+Inspector (only if targeted fading is needed):
+    Actual Camera | Explicit Prop Renderers | Fade Start | Fade End | Enabled
+```
+
+# Key Asset & Context
+## Verified current state
+- CarScene is loaded and clean. Recheck dirty state before changes; preserve newly discovered user edits without reload/revert or unapproved unrelated saves.
+- Main Camera (1) is active at approximately (277.42, 2.50, 333.14), Skybox clear mode, far clip 500. Earlier inspection found virtual-camera far clips 500 and 1500; recheck effective runtime lens before changing anything.
+- RenderSettings fog is ExponentialSquared, density 0.025, colour (0.18, 0.21, 0.24). Existing project-owned sky material is Assets/Environment/CarScene/CarSceneFogSky.mat, using Shaders/FogMatchedSky.shader. Its fragment matches only the lower sky via smoothstep(0.10, 0.45, rayDir.y); this alone cannot conceal tall silhouettes against upper sky.
+- Three traf_cone renderers use imported M_traf_cone.mat; approximate heights are 115, 214 and 150 world units. Three wheel_10 renderers use imported WheelMaterial.mat; bounds approximately 42 units wide, up to 42 tall. Their giant dimensions are intentional and must remain unchanged.
+- Tenkoku cloud sphere shader uses Queue Background+1605, Cull Front, Offset 1,80000, alpha blending, ordinary mesh clip-space vertex position and no explicit ZWrite Off. Aurora sphere uses Queue Background+1600, the same large Offset, additive blending and ordinary mesh clip-space position. These are actual finite mesh passes, separate from the true skybox; runtime code repeatedly rescales both relative to camera far clip, so one-time Transform enlargement is not a robust fix.
+- Cloud/aurora shader observations identify a plausible depth/intersection cause, not a completed runtime diagnosis. Establish it with baseline views/depth evidence before declaring the cut fixed.
+- URP pipeline at Assets/Settings/PC_RPAsset.asset uses PC_Renderer.asset. HDR and camera post-processing are enabled; renderer has PostProcessData and SSAO. Neither shared pipeline/renderer nor interference Volume profiles require changes for the selected targeted approach.
+- Imported cone material includes albedo, normal, metallic, emission and occlusion textures; preserve them. Imported tyre material references AtlasTexture.png. They are shared with imported prefabs: never edit these materials globally.
+- URP Lit forward pass calls MixFog after PBR lighting. Targeted fading must not merely dissolve an already solid fog-coloured upper silhouette; account for this interaction explicitly. Package shaders/includes were inspected read-only and must remain unmodified.
+- CameraSceneryVisibility.cs exists, but no attached controller was logged in current CarScene inspection. Recheck registration before attributing cuts to activation; do not modify unrelated optimization logic by default.
+- Dedicated dependency tools are not available in the current exposed tool set. Read-only AssetDatabase.GetDependencies and dependent asset scans were used for scene, sky, prop materials and renderer. Repeat impact and live serialized-reference checks before implementation edits; use a dedicated dependency query if available then.
+
+## Existing assets to modify locally
+- Assets/Scenes/CarScene.unity: assign project-owned sky material/shader copies to the existing Tenkoku cloud/aurora renderer instances and their actual material ownership references. Add a small explicitly wired fading owner only if residual oversized-prop transitions require it; retain all transforms/colliders/gameplay references.
+- Assets/Environment/CarScene/Shaders/FogMatchedSky.shader and CarSceneFogSky.mat: preserve existing horizon match by default; tune only if real visual evidence requires a complementary adjustment.
+
+## Proposed project-owned assets
+- Assets/Environment/CarScene/Shaders/BackgroundCloudSphere.shader and BackgroundAuroraSphere.shader: copies of the installed source shaders with unique names, preserved notices and corrected include paths. Explicit no depth writes, appropriate depth test, no large depth offset, and background-depth clip position while retaining projected direction, UVs, animation, blend order and sky appearance.
+- Assets/Environment/CarScene/Materials/BackgroundCloudSphere.mat and BackgroundAuroraSphere.mat: copies preserving source textures/properties, assigned only to CarScene instances. Inspect other visible sky meshes (galaxy/sun/moon) and extend this treatment only if they exhibit the same verified defect.
+- Conditional: Assets/Scripts/Environment/OversizedSceneryFade.cs, one scene-owned manager with explicit renderer references and safe cached MaterialPropertyBlocks; no per-frame scene scans, GameObject deactivation or global shader visibility changes.
+- Conditional: Assets/Environment/CarScene/Shaders/OversizedSceneryLit.shader and associated project-owned HLSL helpers, plus Materials/FadingCone.mat and FadingTyre.mat. Preserve source Lit textures, PBR shading, culling, instancing and applicable pipeline passes. Use installed compatible public shader includes; never change files under Packages.
+- Optional targeted tests in existing compatible infrastructure. Do not install packages, add TAA, alter renderer mode or change generated scripting symbols to mask dither quality/compatibility problems.
+
+# Implementation Steps
+1. **Recheck context and establish evidence.** Dependency: approval of this amendment. Inspect dependencies/dependents and exact live material ownership for Tenkoku cloud/aurora and all six oversized props, final camera lens/pose, shader render states, depth/shadow settings and any activation controller. Capture actual Game View at road level and looking up while near and far from each representative prop. Distinguish finite sky-dome occlusion from camera far clipping and fog/sky colour contrast; do not assume they are the same defect. Preserve original material assignments and current clean/dirty scene state.
+2. **Correct sky layers as backgrounds.** Dependency: Step 1. Create project-owned copies preserving source data/notices. Make cloud/aurora passes write no depth, remove the large depth offset, and project at the platform-correct far/background depth so world geometry remains in front regardless of dome size. Retain screen projection, view rays, transparency/additive blend ordering and animation. Correct include paths and handle reversed-Z through Unity's shader-provided conventions, not project scripting defines. Ensure Tenkoku's repeated material updates/reinitialization target the local copies rather than restoring imported materials. No shared imported source or prefab edits.
+3. **Validate the minimal sky-depth fix first.** Dependency: Step 2. Repeat baseline paths and upward views; verify aurora/cloud motion, sky coverage when turning, no background occlusion of cones/tyres, no sky depth interfering with SSAO/transparent world materials. Confirm local assignments survive Play Mode entry, scene reconstruction and current sky/weather initialization. If a prop now has acceptable transitions, do not replace its material unnecessarily. Record remaining problematic prop identities and actual distances.
+4. **Implement residual whole-prop fade if needed.** Dependency: Step 3. Use a finite-distance fade computed once per explicit prop from actual camera-to-world-bounds distance, not height or per-vertex screen depth, so tall upper/lower sections share a consistent fade. Begin with an adjustable broad range (proposed 45–100 units from the nearest bounds point); tune from measured views rather than treat it as guaranteed final balance. Guarantee full disappearance before any part of the prop reaches the effective camera far plane, using bounds and camera-space depth to account for giant geometry. Nearby props stay fully visible. Apply an ordered/blue-noise dither coverage clip with exact fully-visible/hidden endpoints and smooth monotonic coverage; evaluate shimmer without assuming temporal AA is enabled. For affected giant materials, use this fade as the primary concealment instead of the existing constant-colour fog at upper silhouettes; preserve normal fog for road and other scenery. Retain PBR features and consistently clip forward/depth/depth-normal/shadow passes to avoid invisible occluders or detached shadows. Shadow visibility must use the same player-camera fade value, never shadow-camera distance. Check active renderer path; implement the required passes without globally changing renderer settings.
+5. **Integrate safely and expose tuning.** Dependency: Step 4 if needed. Create scene-specific cone/tyre material copies, assign only audited giant instances, and bind a single explicit manager outside controlled visual roots. Preserve and merge existing per-renderer/per-material property blocks rather than overwriting another feature. Update after final camera movement and before render; disabling/missing camera restores only owned fade values, no new material instances each frame or revived externally inactive objects. Fade does not change physics, navmesh, enemy sight, save object identity or activeSelf. Recheck compatibility with reflection/secondary views; use conservative behavior if their visibility cannot be safely handled.
+6. **Focused verification, save and cleanup.** Dependency: Steps 2–5 as applicable. Compile incrementally and compare fresh Game View evidence to baseline while approaching/retreating, looking above cone tops and moving around tilted tyres. At most three visual capture/fix rounds before asking for user feedback. Verify pause, capture camera changes, reconstruction and source-compatible sky behavior without modifying user saves. Prefer manual or compatible bounded Play Mode tests; do not repeat historical stalled forced-domain-reload loops or destructive deferred cleanup. Save only intended CarScene/project-owned rendering assets after rechecking dirty state. Remove temporary diagnostics safely and report whether targeted fading was necessary and what was actually verified.
+
+# Verification & Testing
+- All giant cone/tyre scales, positions, colliders, object identities and gameplay behavior remain unchanged. Other scenes and shared imported assets/pipeline/renderer/Volume profiles remain unchanged.
+- World silhouettes at every height are in front of cloud/aurora backgrounds; no dome-shaped intersection, planar sky cut or sky occlusion of nearby geometry. Sky effects keep their existing animation and upper-sky appearance.
+- Approach/retreat and look up/down/sideways around each giant prop: smooth appearance/disappearance, no sudden far-plane slice, no upper/lower mismatch or solid grey silhouette dissolving against a dark upper sky.
+- If fading is used: visibility 1 nearby, smooth intermediate coverage, exact 0 beyond end; repeat at wide capture FOV and camera teleport. Depth/SSAO/shadow outputs match visual coverage; no invisible prop depth or floating shadow remains.
+- Preserve normal road fog and nearby lighting/textures/emission/normal detail. Inspect dither grain and shimmer in movement at current anti-aliasing settings; do not silently add TAA or change global rendering to hide a poor fade.
+- Material assignments survive runtime Tenkoku updates, Play Mode restart and saved-game/entry-checkpoint reconstruction. No duplicated managers/material leaks/property-block conflicts, repeated exceptions or stale hooks.
+- Ordinary pause/HUD/settings, physical capture/death reveal, interference blackout, held flashlight, Radio, key and saves/travel remain unaffected. Test-only travel/restore must not commit or delete user records.
+- Compare shader/Console status to baseline. Report actual visual checks and any remaining limitations; Windows standalone, alternative resolutions and full-route traversal remain unverified unless performed.
+
